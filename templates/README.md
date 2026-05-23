@@ -37,8 +37,21 @@ qa: Rowan (Quality)
 
 | Template | Purpose | Owner |
 |---|---|---|
+| [`demo-guide/motion-matrix.md`](./demo-guide/motion-matrix.md) | **Start here.** D365 motion × audience × channel → which sections to include | Diego |
 | [`demo-guide/template.md`](./demo-guide/template.md) | Full section library for a customer-facing demo guide | Diego |
 | [`demo-script/template.md`](./demo-script/template.md) | Full section library for the SE's speaking script | Theo |
+
+## D365 Sales Motions supported
+
+| `product_area` | Motion | Example customers in corpus |
+|---|---|---|
+| `customer-service` | D365 CS, Copilot Studio, omnichannel | Moen, Zurn/Elkay, Otis, Carrier, Navico |
+| `sales` | D365 Sales, Copilot for Sales, pipeline | *(template ready, examples in progress)* |
+| `field-service` | D365 Field Service, mobile tech, scheduling | *(template ready, Ametek partially)* |
+| `mixed-cs-fs` | Service case → work order → asset loop | Ametek HKP RMA |
+| `mixed-sales-cs` | Post-sale handoff, renewal risk | *(template ready)* |
+
+The agent reads `motion-matrix.md` **first**, then fills `template.md` with only the matching sections.
 
 ---
 
