@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SE OS · The Operating System for Microsoft SEs</title>
+<meta name="description" content="An AI-powered platform that gives every Microsoft Solution Engineer their own Digital SE Team, a CoE-in-a-Box, and a library of Specialist Cloud Agents. Open source. Turnkey." />
+<meta property="og:title" content="SE OS — The Operating System for Microsoft SEs" />
+<meta property="og:description" content="A turnkey template that gives every SE their own AI team. Digital SE Team. CoE-in-a-Box. Specialist Cloud Agents." />
+<meta property="og:type" content="website" />
+<meta name="theme-color" content="#0a0e1a" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%235b8def'/%3E%3Cstop offset='100%25' style='stop-color:%238b5cf6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='20' fill='url(%23g)'/%3E%3Ctext x='50' y='62' font-family='Segoe UI,sans-serif' font-size='40' font-weight='800' text-anchor='middle' fill='white'%3EOS%3C/text%3E%3C/svg%3E" />
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg-elev: #131927;
+    --bg-elev2: #1a2235;
+    --bg-elev3: #232d44;
+    --border: #2a3550;
+    --border-soft: #1f2740;
+    --text: #e8edf5;
+    --text-dim: #94a3b8;
+    --text-muted: #64748b;
+    --accent: #5b8def;
+    --accent-2: #8b5cf6;
+    --good: #10b981;
+    --warn: #f59e0b;
+    --neighborhoods-cf: #4ade80;
+    --neighborhoods-bt: #5b8def;
+    --neighborhoods-q:  #fbbf24;
+    --neighborhoods-s:  #c084fc;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-2); }
+  code, pre { font-family: ui-monospace, "SF Mono", Consolas, "Cascadia Code", monospace; }
+
+  /* ---------- NAV ---------- */
+  nav.top {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(12px);
+    background: rgba(10, 14, 26, 0.85);
+    border-bottom: 1px solid var(--border-soft);
+  }
+  nav.top .inner {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 17px; }
+  .brand-mark {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 800; font-size: 13px;
+    letter-spacing: 0.5px;
+  }
+  nav.top .links { margin-left: auto; display: flex; align-items: center; gap: 22px; }
+  nav.top .links a { color: var(--text-dim); font-size: 14px; font-weight: 500; }
+  nav.top .links a:hover { color: var(--text); }
+  .nav-cta {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: white !important;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+  }
+  .nav-cta:hover { color: white !important; opacity: 0.92; }
+  @media (max-width: 720px) {
+    nav.top .links a:not(.nav-cta) { display: none; }
+  }
+
+  /* ---------- LAYOUT ---------- */
+  section { padding: 96px 28px; }
+  .container { max-width: 1240px; margin: 0 auto; }
+  .eyebrow {
+    display: inline-block;
+    padding: 5px 14px;
+    background: rgba(91,141,239,0.12);
+    border: 1px solid rgba(91,141,239,0.3);
+    color: var(--accent);
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  h1 { font-size: 64px; line-height: 1.05; margin: 0 0 20px; font-weight: 800; letter-spacing: -1.5px; }
+  h2 { font-size: 42px; line-height: 1.15; margin: 0 0 16px; font-weight: 700; letter-spacing: -0.8px; }
+  h3 { font-size: 22px; margin: 0 0 10px; font-weight: 700; }
+  p.lead { font-size: 19px; color: var(--text-dim); margin: 0 0 32px; max-width: 720px; }
+  @media (max-width: 720px) {
+    h1 { font-size: 42px; }
+    h2 { font-size: 32px; }
+    section { padding: 64px 22px; }
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    padding-top: 100px;
+    padding-bottom: 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px;
+    right: -200px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(91,141,239,0.18), transparent 70%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -300px;
+    left: -200px;
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, rgba(139,92,246,0.13), transparent 70%);
+    pointer-events: none;
+  }
+  .hero .container { position: relative; z-index: 1; }
+  .hero p.lead { font-size: 22px; max-width: 740px; }
+  .cta-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 12px; }
+  .btn {
+    padding: 14px 24px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform .15s ease, opacity .15s ease;
+    white-space: nowrap;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: white !important;
+  }
+  .btn-secondary {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    color: var(--text) !important;
+  }
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-top: 60px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border-soft);
+  }
+  .hero-stat .n {
+    font-size: 38px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+  }
+  .hero-stat .l { color: var(--text-dim); font-size: 13px; margin-top: 8px; }
+  @media (max-width: 720px) {
+    .hero-stats { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ---------- 3-CARD WHAT'S INSIDE ---------- */
+  .cards-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+    margin-top: 48px;
+  }
+  @media (max-width: 900px) { .cards-3 { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    transition: border-color .2s ease, transform .2s ease;
+  }
+  .card:hover { border-color: var(--accent); transform: translateY(-3px); }
+  .card .ico {
+    width: 48px; height: 48px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    margin-bottom: 16px;
+  }
+  .card p { color: var(--text-dim); font-size: 15px; margin: 8px 0 0; }
+
+  /* ---------- 5 CONVICTIONS ---------- */
+  .convictions {
+    background: var(--bg-elev);
+    border-top: 1px solid var(--border-soft);
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .conv-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px;
+    margin-top: 40px;
+  }
+  .conv {
+    background: var(--bg-elev2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    position: relative;
+  }
+  .conv .num {
+    position: absolute;
+    top: -16px;
+    left: 22px;
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 16px; color: white;
+  }
+  .conv h4 { margin: 14px 0 8px; font-size: 17px; font-weight: 700; }
+  .conv p { color: var(--text-dim); font-size: 14px; margin: 0; }
+
+  /* ---------- NEIGHBORHOODS ---------- */
+  .neigh-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-top: 48px;
+  }
+  @media (max-width: 1000px) { .neigh-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .neigh-grid { grid-template-columns: 1fr; } }
+  .neigh {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px;
+    transition: border-color .2s ease;
+  }
+  .neigh:hover { border-color: var(--accent); }
+  .neigh .top-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .neigh-emoji { font-size: 26px; }
+  .neigh-name { font-size: 15px; font-weight: 700; }
+  .neigh-mission { color: var(--text-dim); font-size: 13px; margin-bottom: 14px; min-height: 56px; }
+  .neigh-residents {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border-soft);
+  }
+  .chip {
+    background: var(--bg-elev2);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .neigh.cf .neigh-emoji { color: var(--neighborhoods-cf); }
+  .neigh.bt .neigh-emoji { color: var(--neighborhoods-bt); }
+  .neigh.q .neigh-emoji { color: var(--neighborhoods-q); }
+  .neigh.s .neigh-emoji { color: var(--neighborhoods-s); }
+
+  /* ---------- SPECIALISTS ---------- */
+  .specialists {
+    background: linear-gradient(180deg, var(--bg), var(--bg-elev) 50%, var(--bg) 100%);
+  }
+  .spec-feature {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 40px;
+    margin-top: 36px;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 36px;
+    align-items: center;
+  }
+  @media (max-width: 900px) { .spec-feature { grid-template-columns: 1fr; padding: 28px; } }
+  .spec-feature .tag {
+    display: inline-block;
+    background: rgba(16,185,129,0.15);
+    color: var(--good);
+    border: 1px solid rgba(16,185,129,0.3);
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .spec-feature h3 { font-size: 26px; margin-bottom: 14px; }
+  .spec-feature p { color: var(--text-dim); margin: 0 0 16px; }
+  .spec-feature .install {
+    background: var(--bg-elev2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 13px;
+    color: var(--text);
+    margin-top: 18px;
+    overflow-x: auto;
+  }
+  .spec-feature .install .prompt { color: var(--text-muted); user-select: none; }
+  .spec-mock {
+    background: var(--bg-elev2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    font-family: ui-monospace, monospace;
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.7;
+    min-height: 280px;
+  }
+  .spec-mock .green { color: var(--good); }
+  .spec-mock .blue { color: var(--accent); }
+  .spec-mock .purple { color: var(--accent-2); }
+  .spec-mock .yel { color: var(--warn); }
+
+  .spec-table {
+    margin-top: 36px;
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .spec-table th, .spec-table td {
+    text-align: left;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border-soft);
+    font-size: 14px;
+  }
+  .spec-table th {
+    background: var(--bg-elev2);
+    color: var(--text-dim);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 600;
+  }
+  .spec-table tr:last-child td { border-bottom: none; }
+  .badge-on { background: rgba(16,185,129,0.18); color: var(--good); padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+  .badge-plan { background: rgba(245,158,11,0.18); color: var(--warn); padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+
+  /* ---------- DAY IN THE LIFE PROMO ---------- */
+  .ditl {
+    background: var(--bg-elev);
+    border-top: 1px solid var(--border-soft);
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .ditl-card {
+    background: linear-gradient(135deg, rgba(91,141,239,0.12), rgba(139,92,246,0.12));
+    border: 1px solid rgba(91,141,239,0.3);
+    border-radius: 18px;
+    padding: 48px;
+    text-align: center;
+    margin-top: 36px;
+  }
+  .ditl-card h3 { font-size: 28px; margin-bottom: 12px; }
+  .ditl-card p { color: var(--text-dim); font-size: 17px; max-width: 600px; margin: 0 auto 28px; }
+  .ditl-mini {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-top: 32px;
+  }
+  @media (max-width: 720px) { .ditl-mini { grid-template-columns: repeat(2, 1fr); } }
+  .ditl-mini .mini {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: left;
+  }
+  .ditl-mini .mini .v {
+    font-size: 26px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+  }
+  .ditl-mini .mini .l { color: var(--text-dim); font-size: 12px; margin-top: 6px; }
+
+  /* ---------- INSTALL ---------- */
+  .install-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+    margin-top: 40px;
+  }
+  @media (max-width: 900px) { .install-grid { grid-template-columns: 1fr; } }
+  .install-card {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+  }
+  .install-card .step {
+    display: flex; gap: 14px; padding: 12px 0; align-items: flex-start;
+  }
+  .step-num {
+    flex-shrink: 0;
+    width: 26px; height: 26px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700; font-size: 13px;
+  }
+  .step-text { color: var(--text-dim); font-size: 14px; }
+  .step-text code {
+    background: var(--bg-elev2);
+    color: var(--text);
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    border-top: 1px solid var(--border-soft);
+    padding: 48px 28px 36px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+  footer .f-links { display: flex; gap: 22px; justify-content: center; margin-bottom: 18px; flex-wrap: wrap; }
+  footer .f-links a { color: var(--text-dim); }
+  footer .f-credit { margin-top: 14px; color: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<nav class="top">
+  <div class="inner">
+    <a href="#" class="brand">
+      <div class="brand-mark">OS</div>
+      <span>SE OS</span>
+    </a>
+    <div class="links">
+      <a href="#what">What it is</a>
+      <a href="#team">Digital SE Team</a>
+      <a href="#specialists">Specialists</a>
+      <a href="#promise">The promise</a>
+      <a href="#install">Get started</a>
+      <a class="nav-cta" href="https://github.com/billwhalenmsft/se-os">★ GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="container">
+    <span class="eyebrow">An open source SE platform · v1.0</span>
+    <h1>The <span class="gradient-text">Operating System</span><br/>for Microsoft SEs.</h1>
+    <p class="lead">
+      A turnkey GitHub template that gives every Solution Engineer their own
+      AI-powered command center, a Digital SE Team of 12 AI personas, and a library
+      of Specialist Cloud Agents that turn solution ZIPs into customer-grade architecture.
+    </p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="https://github.com/billwhalenmsft/se-os/generate">⚡ Use this template</a>
+      <a class="btn btn-secondary" href="../MANIFESTO.md">📜 Read the Manifesto</a>
+      <a class="btn btn-secondary" href="../web_ui/day-in-the-life.html">📅 A day in the life</a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="n">12</div><div class="l">AI personas organized into 4 neighborhoods</div></div>
+      <div class="hero-stat"><div class="n">−60%</div><div class="l">Prep time per customer meeting</div></div>
+      <div class="hero-stat"><div class="n">+40%</div><div class="l">Time available for customer conversation</div></div>
+      <div class="hero-stat"><div class="n">&lt;1wk</div><div class="l">New SE time to productivity</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WHAT'S INSIDE ============ -->
+<section id="what">
+  <div class="container">
+    <span class="eyebrow">What's Inside</span>
+    <h2>Three layers. <span class="gradient-text">One platform.</span></h2>
+    <p class="lead">SE OS is not a chatbot. It's a full operating model — from a command-center UI to a Digital SE Team to deep technical specialists you can install in seconds.</p>
+
+    <div class="cards-3">
+      <div class="card">
+        <div class="ico">🖥️</div>
+        <h3>SE Command Center</h3>
+        <p>A dark-themed dashboard that surfaces top priorities, action items, calendar, recent customers, and one-click workflows. Less cluttered than a chat window. Built for the SE that ships, not browses.</p>
+      </div>
+      <div class="card">
+        <div class="ico">🧑‍💼</div>
+        <h3>Digital SE Team</h3>
+        <p>12 named AI personas with backstories, working styles, and quality bars — organized into 4 neighborhoods (Customer-Facing, Build-Time, Quality, Strategy). They partner with you, not replace you.</p>
+      </div>
+      <div class="card">
+        <div class="ico">🧠</div>
+        <h3>Specialist Cloud Agents</h3>
+        <p>CLI plugins that go deep on one technical job. Power Platform analysis, D365 audits, Foundry config — the generalists call them; you ship customer-grade artifacts in 60 seconds.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FIVE CONVICTIONS ============ -->
+<section class="convictions">
+  <div class="container">
+    <span class="eyebrow">The Reinvention</span>
+    <h2>Five convictions <span class="gradient-text">we will not negotiate.</span></h2>
+    <p class="lead">From <a href="../MANIFESTO.md">the SE OS Manifesto</a> — what we believe about what it means to be an SE at Microsoft, now and forever.</p>
+
+    <div class="conv-grid">
+      <div class="conv">
+        <div class="num">1</div>
+        <h4>SEs are architects, not assemblers.</h4>
+        <p>Stop hand-building one-off demos. Compose, customize, and curate from a living library of reusable assets.</p>
+      </div>
+      <div class="conv">
+        <div class="num">2</div>
+        <h4>Knowledge must compound.</h4>
+        <p>Every customer conversation, every demo, every win — feeds back into the team's collective intelligence. No more re-learning.</p>
+      </div>
+      <div class="conv">
+        <div class="num">3</div>
+        <h4>Agents are colleagues, not chatbots.</h4>
+        <p>They have names, backstories, working styles, and quality bars. You assign work to them like you would a junior consultant.</p>
+      </div>
+      <div class="conv">
+        <div class="num">4</div>
+        <h4>Customer time is the only time that matters.</h4>
+        <p>Every minute the system saves is a minute returned to the customer conversation. The metric is hours-back-per-week.</p>
+      </div>
+      <div class="conv">
+        <div class="num">5</div>
+        <h4>Quality compounds — or trust collapses.</h4>
+        <p>Three guilds (AI Craft, Demo Excellence, Customer Empathy) enforce review gates on everything that leaves the team.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DIGITAL SE TEAM ============ -->
+<section id="team">
+  <div class="container">
+    <span class="eyebrow">The Digital SE Team</span>
+    <h2>Four neighborhoods. <span class="gradient-text">Twelve colleagues.</span></h2>
+    <p class="lead">No solo agents and no monoliths. The team is organized so handoffs are obvious, ownership is clear, and SEs always know who to call.</p>
+
+    <div class="neigh-grid">
+      <div class="neigh cf">
+        <div class="top-row">
+          <div class="neigh-emoji">🤝</div>
+          <div class="neigh-name">Customer-Facing</div>
+        </div>
+        <div class="neigh-mission">First contact, discovery, narrative, and the customer-side relationship work.</div>
+        <div class="neigh-residents">
+          <span class="chip">Vera</span>
+          <span class="chip">Priya</span>
+          <span class="chip">Jonas</span>
+          <span class="chip">Felix</span>
+        </div>
+      </div>
+
+      <div class="neigh bt">
+        <div class="top-row">
+          <div class="neigh-emoji">🛠️</div>
+          <div class="neigh-name">Build-Time</div>
+        </div>
+        <div class="neigh-mission">Engineering muscle — demos, assets, code, environments, integrations.</div>
+        <div class="neigh-residents">
+          <span class="chip">Sam</span>
+          <span class="chip">Theo</span>
+          <span class="chip">Diego</span>
+          <span class="chip">Iris</span>
+        </div>
+      </div>
+
+      <div class="neigh q">
+        <div class="top-row">
+          <div class="neigh-emoji">✅</div>
+          <div class="neigh-name">Quality</div>
+        </div>
+        <div class="neigh-mission">The guild enforcers. Allied with all three craft guilds — review gates and risk audits.</div>
+        <div class="neigh-residents">
+          <span class="chip">Rowan</span>
+          <span class="chip">Naomi</span>
+        </div>
+      </div>
+
+      <div class="neigh s">
+        <div class="top-row">
+          <div class="neigh-emoji">🧭</div>
+          <div class="neigh-name">Strategy</div>
+        </div>
+        <div class="neigh-mission">The smallest neighborhood by design — pattern recognition, prioritization, measurement.</div>
+        <div class="neigh-residents">
+          <span class="chip">Maya</span>
+          <span class="chip">Aria</span>
+        </div>
+      </div>
+    </div>
+
+    <p style="margin-top: 36px; text-align: center;">
+      <a class="btn btn-secondary" href="../agents/neighborhoods/">📖 Read the neighborhood charters →</a>
+    </p>
+  </div>
+</section>
+
+<!-- ============ SPECIALIST CLOUD AGENTS ============ -->
+<section id="specialists" class="specialists">
+  <div class="container">
+    <span class="eyebrow">Specialist Cloud Agents</span>
+    <h2>Generalists call specialists. <br/><span class="gradient-text">That's how real teams scale.</span></h2>
+    <p class="lead">The Digital SE Team handles the workflow. Specialist Cloud Agents handle the deep technical analysis — installed as CLI plugins, invoked by any neighborhood, producing customer-grade artifacts in seconds.</p>
+
+    <!-- Featured Specialist: Power Platform Architect -->
+    <div class="spec-feature">
+      <div>
+        <span class="tag">✦ Featured Specialist · Available now</span>
+        <h3>Power Platform Architect</h3>
+        <p>Solution ZIP, Copilot Studio directory, or Foundry config in → <strong>interactive HTML dashboard out</strong>. Architecture diagrams, ERDs, flow timelines, components inventory, and risk notes. Self-contained. Shareable in one click.</p>
+        <p>Built by <a href="https://github.com/promptclickrun/power-agents-blueprint" target="_blank">promptclickrun</a>. Integrated as the first specialist in the SE OS library.</p>
+        <div class="install">
+          <span class="prompt">$ </span>copilot plugin install promptclickrun/power-agents-blueprint
+        </div>
+        <p style="margin-top: 18px;">
+          <a href="../agents/specialist-cloud-agents/power-platform-architect.md">→ How SE OS wires it in</a>
+        </p>
+      </div>
+
+      <div class="spec-mock">
+<span class="purple">▸ se-os@main</span> theo: <span class="blue">analyze customer-x/solution.zip</span>
+<br/><span class="green">✓</span> Extracted 47 components
+<br/><span class="green">✓</span> Parsed 12 entities, 8 flows, 5 connectors
+<br/><span class="green">✓</span> Invoking <span class="yel">power-platform-architect</span>...
+<br/><span class="green">✓</span> Generated architecture dashboard
+<br/><span class="green">✓</span> 5 tabs · 923 lines · self-contained HTML
+<br/><span class="green">✓</span> Uploaded to PageDrop (3-day link)
+<br/><br/><span class="purple">→</span> <a href="https://promptclickrun.github.io/power-agents-blueprint/" style="color: var(--accent);">https://pgdrop.io/x9k-arch.html</a>
+<br/><br/><span class="green">⏱</span> <span style="color:var(--good);">Logged +2.0h saved to Time-Back ledger</span>
+      </div>
+    </div>
+
+    <!-- Specialist roadmap table -->
+    <table class="spec-table">
+      <thead>
+        <tr>
+          <th>Specialist</th>
+          <th>What it does</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Power Platform Architect</strong></td>
+          <td>Solution ZIP → interactive architecture dashboard</td>
+          <td><span class="badge-on">Available</span></td>
+        </tr>
+        <tr>
+          <td><strong>D365 Solution Analyzer</strong></td>
+          <td>Entity model, plugin inventory, security role audit</td>
+          <td><span class="badge-plan">Planned</span></td>
+        </tr>
+        <tr>
+          <td><strong>Copilot Studio Mechanic</strong></td>
+          <td>Topic flow diagram, escalation map, tone audit</td>
+          <td><span class="badge-plan">Planned</span></td>
+        </tr>
+        <tr>
+          <td><strong>Azure Foundry Configurator</strong></td>
+          <td>Deployment plan, safety eval matrix, cost estimate</td>
+          <td><span class="badge-plan">Planned</span></td>
+        </tr>
+        <tr>
+          <td><strong>Fabric Workspace Reviewer</strong></td>
+          <td>Lakehouse layout, pipeline DAG, lineage map</td>
+          <td><span class="badge-plan">Planned</span></td>
+        </tr>
+        <tr>
+          <td><strong>Synapse Lake Designer</strong></td>
+          <td>Source shapes → Synapse architecture + Spark scaffold</td>
+          <td><span class="badge-plan">Planned</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ DAY IN THE LIFE PROMO ============ -->
+<section class="ditl">
+  <div class="container">
+    <span class="eyebrow">The Day, Reimagined</span>
+    <h2>Same SE. Same Tuesday. <span class="gradient-text">Two very different days.</span></h2>
+    <p class="lead">A side-by-side walkthrough of one Tuesday — the way an SE works today vs. the way an SE works with SE OS. It's the most viscerally clear case for why this matters.</p>
+
+    <div class="ditl-card">
+      <h3>Open the narrative</h3>
+      <p>The "old way" Tuesday: 4 customer-facing hours and 6 hours hunting context. The SE OS Tuesday: 8 customer-facing hours and 2 hours strategic. Plus a published asset for the next SE.</p>
+      <a class="btn btn-primary" href="../web_ui/day-in-the-life.html">📅 Read the Tuesday narrative →</a>
+
+      <div class="ditl-mini">
+        <div class="mini"><div class="v">+4.5h</div><div class="l">Hours returned to customer time</div></div>
+        <div class="mini"><div class="v">+3</div><div class="l">Reusable assets shipped to library</div></div>
+        <div class="mini"><div class="v">0</div><div class="l">Hours hunting through Outlook</div></div>
+        <div class="mini"><div class="v">100%</div><div class="l">Quality gates passed before send</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE PROMISE ============ -->
+<section id="promise">
+  <div class="container">
+    <span class="eyebrow">The Measurable Promise</span>
+    <h2>If it doesn't move the metric, <span class="gradient-text">it's not working.</span></h2>
+    <p class="lead">Every SE OS deployment instruments the <a href="../docs/TIME_BACK_METRIC.md">Time-Back Metric</a> — a weekly tally of hours saved from SE overhead and returned to customer conversation. The reinvention is real or it isn't. The number says which.</p>
+
+    <div class="cards-3" style="margin-top: 32px;">
+      <div class="card">
+        <div class="ico">⏱️</div>
+        <h3>Hours-back per week</h3>
+        <p>Tracks five overhead categories (prep, demo build, context hunting, follow-up, onboarding) against a per-SE baseline.</p>
+      </div>
+      <div class="card">
+        <div class="ico">📊</div>
+        <h3>Team aggregate view</h3>
+        <p>Rolls up across an SE team so leaders can see deployment ROI. 100 SEs × 20 hrs/wk = 2,000 hours back.</p>
+      </div>
+      <div class="card">
+        <div class="ico">🚦</div>
+        <h3>Stall detection</h3>
+        <p>If the number isn't moving after 4 weeks, Maya (Strategy) auto-flags it. The system tells you when it's not earning its keep.</p>
+      </div>
+    </div>
+
+    <p style="margin-top: 36px; text-align: center;">
+      <a class="btn btn-secondary" href="../web_ui/time-back.html">📊 See the live report template →</a>
+    </p>
+  </div>
+</section>
+
+<!-- ============ INSTALL / GET STARTED ============ -->
+<section id="install" class="convictions">
+  <div class="container">
+    <span class="eyebrow">Get Started</span>
+    <h2>From zero to SE OS in <span class="gradient-text">under 10 minutes.</span></h2>
+    <p class="lead">SE OS is a GitHub template repository. Click "Use this template" and you get your own copy — customize it for your practice area, your customers, your demos.</p>
+
+    <div class="install-grid">
+      <div class="install-card">
+        <h3 style="margin-bottom: 16px;">🚀 Stand up SE OS</h3>
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-text">Click <a href="https://github.com/billwhalenmsft/se-os/generate">Use this template</a> on the repo. Name your fork. Make it private if you want.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-text">Open it in VS Code: <code>code your-se-os</code></div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-text">Open <code>web_ui/index.html</code> in your browser — that's your Command Center.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-text">Edit <code>agents/personas/</code> to match your team. The personas are yours to evolve.</div>
+        </div>
+      </div>
+
+      <div class="install-card">
+        <h3 style="margin-bottom: 16px;">🧠 Add your first specialist</h3>
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-text">From any terminal: <code>copilot plugin install promptclickrun/power-agents-blueprint</code></div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-text">Drop a Power Platform solution ZIP into your repo's <code>customers/&lt;name&gt;/</code></div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-text">In a Copilot CLI session: <code>analyze customers/&lt;name&gt;/solution.zip</code></div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-text">Specialist produces a self-contained HTML dashboard. Share with the customer.</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 48px;">
+      <a class="btn btn-primary" href="https://github.com/billwhalenmsft/se-os/generate" style="font-size: 17px; padding: 16px 28px;">⚡ Use this template now</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="f-links">
+    <a href="https://github.com/billwhalenmsft/se-os">GitHub</a>
+    <a href="../MANIFESTO.md">Manifesto</a>
+    <a href="../agents/neighborhoods/">Neighborhoods</a>
+    <a href="../agents/specialist-cloud-agents/">Specialists</a>
+    <a href="../docs/TIME_BACK_METRIC.md">Time-Back Metric</a>
+    <a href="../web_ui/day-in-the-life.html">Day in the Life</a>
+  </div>
+  <div>SE OS is open source · MIT License</div>
+  <div class="f-credit">An open-source project for the Microsoft SE community. Not a Microsoft product.</div>
+</footer>
+
+</body>
+</html>

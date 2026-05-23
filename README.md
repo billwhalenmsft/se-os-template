@@ -4,6 +4,7 @@
 
 [![Use this template](https://img.shields.io/badge/Use_this_template-2ea44f?style=for-the-badge)](https://github.com/billwhalenmsft/se-os/generate)
 
+> 🌐 **Landing site:** [billwhalenmsft.github.io/se-os](https://billwhalenmsft.github.io/se-os/) — the marketing/leadership view
 > 📖 **Start here:** [The SE Reinvention Manifesto](./MANIFESTO.md) — why this exists, what it changes, and the measurable promise.
 > 📅 **See it in action:** [A Day in the Life — reinvented](./web_ui/day-in-the-life.html) — same SE, same customer, two very different days.
 
@@ -11,13 +12,14 @@
 
 ## What is SE OS?
 
-Three components. One platform.
+Three layers. One platform.
 
-| Component | What it does |
+| Layer | What it does |
 |---|---|
-| **SE Command Center** | Your operational hub — priorities, customer meetings, demo queue, team activity, AI assistant — all in one tab |
-| **Digital SE Team** | 12 AI agents with distinct personas (PM, Architect, SME, Developer, Demo Builder, etc.) that build demo assets, SOPs, and architectures autonomously |
-| **CoE in a Box** | Practice area tracks, guild-based quality gates, and an issue-driven workflow — everything your team builds becomes reusable knowledge |
+| **🖥️ SE Command Center** | Your operational hub — priorities, customer meetings, demo queue, team activity, AI assistant — all in one tab |
+| **🧑‍💼 Digital SE Team** | 12 AI personas in 4 neighborhoods (Customer-Facing, Build-Time, Quality, Strategy) that build demo assets, SOPs, and architectures autonomously |
+| **🧠 Specialist Cloud Agents** | CLI-installable plugins ([example](https://github.com/promptclickrun/power-agents-blueprint)) that do one technical job deeply. The generalists call them. See [the specialist library](./agents/specialist-cloud-agents/) |
+| **🏛️ CoE in a Box** | Practice area tracks, guild-based quality gates, and an issue-driven workflow — everything your team builds becomes reusable knowledge |
 
 ---
 

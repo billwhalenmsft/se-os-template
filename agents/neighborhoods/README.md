@@ -27,6 +27,8 @@ With neighborhoods:
 | ✅ [Quality](./quality.md) | Guard the bar before anything ships | Rowan · Naomi |
 | 🧭 [Strategy](./strategy.md) | Decide what's worth doing and measure whether it worked | Maya · Aria |
 
+> ✨ **The neighborhoods call [Specialist Cloud Agents](../specialist-cloud-agents/)** for deep technical work — Power Platform analysis, D365 audits, Foundry configuration, etc. The generalists handle workflow; the specialists handle the deep technical job.
+
 ---
 
 ## Cross-neighborhood handoffs

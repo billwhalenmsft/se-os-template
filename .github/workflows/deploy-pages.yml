@@ -1,0 +1,62 @@
+name: Deploy SE OS site to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "MANIFESTO.md"
+      - "agents/**"
+      - "docs/**"
+      - "web_ui/**"
+      - ".github/workflows/deploy-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Stage site
+        run: |
+          mkdir -p _publish
+          # Marketing landing page at root
+          cp -r site/* _publish/
+          # Carry along the supporting assets users can deep-link to
+          mkdir -p _publish/web_ui _publish/agents _publish/docs
+          cp -r web_ui/* _publish/web_ui/ 2>/dev/null || true
+          cp -r agents/* _publish/agents/ 2>/dev/null || true
+          cp -r docs/* _publish/docs/ 2>/dev/null || true
+          cp MANIFESTO.md _publish/MANIFESTO.md
+          # Disable Jekyll processing so underscored paths work
+          touch _publish/.nojekyll
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _publish
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
