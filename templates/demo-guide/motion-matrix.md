@@ -56,23 +56,53 @@ Set `product_area` to one of:
 
 ### `product_area: sales`
 
+**Canonical example 1: ABC Supply Outside Sales Agent** — "Voice-Activated AI for Field Reps"  
+*Mobile-first outside sales rep enablement: D365 Sales + Copilot Studio + voice commands*
+
+**Canonical example 2: ABC Supply Inside Sales layer** (from unified CS+FS demo)  
+*Lead management, quoting & approvals inline in the CS Workspace sidebar*
+
+**Narrative anchor (outside sales):** Sales rep pulls into a job site → voice: "Create a lead for Acme Construction" → Copilot guides through qualification → lead lands in D365 in <30 seconds — no laptop, no manual data entry, no lost leads.
+
+**Narrative anchor (inside sales):** Coordinator handles inbound call → closes case → clicks into Service Toolkit Sidebar → draft quote right there → no app switching.
+
+**Hero arc:** Outside rep captures lead while standing in a parking lot. AI fuzzy-matches company name against existing accounts. If account exists, suggests "create opportunity instead" — no duplicate data, smart routing.
+
+**Section matrix:**
+
 | `audience` | `duration` | `deal_stage` | Include Sections |
 |---|---|---|---|
-| exec | 30min | awareness | Cover, Business Challenge, Opportunity Pipeline View, AI-Suggested Next Actions, CTA |
-| exec | 30min | trial-close | + ROI Framing, Competitive Comparison, Specific Next Step |
-| technical | 60min+ | poc | Cover, Architecture, Dataverse Schema, Custom Pages/Copilot, Admin Config, Integration Points |
-| mixed | 60min | poc | Cover, Pipeline Demo, AI Insights, Forecasting, Technical Architecture, Next Steps |
+| exec | 30min | awareness | Cover, Business Challenge (reps losing leads in the field), Voice Lead Creation demo, Pipeline View, AI Next Actions, CTA |
+| exec | 30min | trial-close | + ROI (30 sec vs. 20 min manual), Competitive (vs. Salesforce, manual spreadsheets), Specific Next Step |
+| technical | 60min+ | poc | Cover, Architecture (Mobile → Copilot Studio → Azure Function → Dataverse), Fuzzy Match Logic, Topics walkthrough, D365 entity schema, Integration Points |
+| mixed | 60min | poc | Cover, Voice Lead Demo, Pipeline, AI Insights, Inside Sales Sidebar, Technical Architecture, Next Steps |
+| field rep / agent | 45min | poc | Cover, Voice Lead Creation (full walkthrough), Product Inquiry, Email Draft, Create Opportunity, Log Site Visit |
 
-### Sales-specific sections (not in CS)
+**Sales-specific sections (grounded in ABC Supply corpus):**
 
 | Section | When |
 |---|---|
-| **Opportunity Pipeline View** | always for sales motion |
-| **AI-Suggested Next Actions** (Copilot for Sales) | always |
-| **Deal Progression / Stage Coaching** | when `duration >= 60min` |
+| **Voice Lead Creation** (Copilot Studio + D365) | always for outside sales motion |
+| **Fuzzy Account Match** ("account exists → create opportunity?") | always — this is the differentiator |
+| **Product Inquiry via Voice** ("Tell me about GAF Timberline") | when `products` includes Copilot Studio Knowledge Sources |
+| **Email Pre-Draft with Product Specs** | when `duration >= 60min` or `audience` includes field rep |
+| **Inside Sales Sidebar** (quote + order status in case panel) | when `product_area` is `mixed-cs-sales` or ABC-Supply style build |
+| **Opportunity Pipeline View + AI Next Actions** | when `audience` includes leader or exec |
 | **Forecasting & Revenue Intelligence** | when `audience` includes leader or exec |
-| **Relationship Health / Who Knows Who** | when `products` includes Sales Insights |
 | **Sales Copilot in Teams / Outlook** | when `products` includes M365 Copilot |
+| **Create Quote from Voice** | when `duration >= 60min` |
+
+**Competitive context for Sales motion:**  
+- vs. Salesforce Sales Cloud — CS story (contact center) is weaker in SF; mobile field rep story is comparable but D365 + Copilot Studio voice is differentiated  
+- vs. manual spreadsheets / sticky notes — the field rep's current state; "30 seconds vs. 20 minutes" is the win  
+- vs. HubSpot — enterprise scale + Dataverse unified data model; "one platform from field rep to field tech"
+
+**Key technical proof points:**
+- Voice → Copilot Studio → Azure Function → D365 Dataverse (complete flow)
+- Fuzzy matching logic prevents duplicate accounts
+- Lead auto-creates follow-up task + phone call activity
+- Email draft pulls product specs from D365 Sales Literature + manufacturer URLs
+- All data unified: same account record serves CS coordinator, FS dispatcher, outside sales rep
 
 ---
 
