@@ -90,6 +90,107 @@ required: true
 ---
 
 <!-- ============================================================
+     SECTION 2b: BILL OF MATERIALS (BOM)
+     required: true
+     ============================================================ -->
+## SECTION: Bill of Materials
+```yaml
+required: true
+```
+
+---
+
+## Bill of Materials
+
+> Everything you need to run this demo. Verify each item 24 hours before and again 30 min before.
+
+| Item | Description | Location / Link |
+|---|---|---|
+| Demo environment | [CONTENT: D365 org URL or Copilot Studio link] | [CONTENT: URL] |
+| Persona login | [CONTENT: login email] | [CONTENT: password location — e.g., "KeePass / team vault"] |
+| Backup video | [CONTENT: recording if live env fails] | [CONTENT: SharePoint / OneDrive link] |
+| Slide deck | [CONTENT: deck name + slide # to start on] | [CONTENT: link] |
+| Demo script | This document | [CONTENT: link to this file] |
+| [CONTENT: additional item] | [CONTENT] | [CONTENT] |
+
+---
+
+<!-- ============================================================
+     SECTION 2c: DEMO PERSONAS
+     required: true
+     ============================================================ -->
+## SECTION: Demo Personas
+```yaml
+required: true
+```
+
+---
+
+## Demo Personas
+
+> One row per scenario actor. Know who you're playing before you click anything.
+
+| Scenario | Persona Name | Role | D365 Login |
+|---|---|---|---|
+| [CONTENT: Scenario 1 name] | [CONTENT: e.g., "Linda Johnson"] | [CONTENT: e.g., "Customer Service Agent"] | [CONTENT: login@org.com] |
+| [CONTENT: Scenario 2 name] | [CONTENT: e.g., "Marcus Webb"] | [CONTENT: e.g., "Field Service Dispatcher"] | [CONTENT: login@org.com] |
+| [CONTENT: Scenario 3 name] | [CONTENT: e.g., "Priya Ramos"] | [CONTENT: e.g., "Field Technician (mobile)"] | [CONTENT: login@org.com] |
+| [CONTENT: add more as needed] | | | |
+
+---
+
+<!-- ============================================================
+     SECTION 2d: SCENARIOS & TIMING
+     required: true
+     ============================================================ -->
+## SECTION: Scenarios & Timing
+```yaml
+required: true
+```
+
+---
+
+## Scenarios & Timing
+
+> Send this table to your AE before the demo so they can manage the clock.
+
+| # | Scenario | Duration | Summary |
+|---|---|---|---|
+| 1 | [CONTENT: scenario name] | [CONTENT: X min] | [CONTENT: 2-sentence summary of what you'll show and why it matters] |
+| 2 | [CONTENT: scenario name] | [CONTENT: X min] | [CONTENT: 2-sentence summary] |
+| 3 | [CONTENT: scenario name] | [CONTENT: X min] | [CONTENT: 2-sentence summary] |
+| — | Buffer / Q&A | 10 min | Always protect this time. |
+| — | **Total** | **[CONTENT: sum] min** | |
+
+---
+
+<!-- ============================================================
+     SECTION 2e: ZERO STATE / RESTORE CHECKLIST
+     required: true
+     ============================================================ -->
+## SECTION: Zero State Restore
+```yaml
+required: true
+```
+
+---
+
+## Zero State / Pre-Demo Restore Checklist
+
+> Run through this list to restore the environment to its starting state.  
+> Critical if you're running the demo multiple times in one day.
+
+- [ ] [CONTENT: e.g., "Close any open cases created in previous run"]
+- [ ] [CONTENT: e.g., "Reset [persona] login — clear browser cache if needed"]
+- [ ] [CONTENT: e.g., "Verify all [X] work orders are hydrated and in 'Open' status"]
+- [ ] [CONTENT: e.g., "Copilot Studio agent loaded and responding — send test message 'Hello'"]
+- [ ] [CONTENT: e.g., "Slide deck on slide [X] — not the title slide"]
+- [ ] [CONTENT: e.g., "IoT alert in queued / not-yet-fired state"]
+- [ ] Backup video accessible and loaded (don't skip this — always have a fallback)
+
+---
+
+<!-- ============================================================
      SECTION 3: DEMO MODULES
      required: true
      ============================================================ -->
@@ -102,52 +203,55 @@ required: true
 
 ## DEMO MODULES
 
-[CONTENT: Write one sub-section per demo module. Each module should include:
-- What you say before you click anything (the setup)
-- The specific click sequence
-- What to call out while it's happening
-- The "land the plane" line that makes them feel the value]
+[CONTENT: Write one sub-section per demo scenario. Each scenario has:
+1. A Story block — "day in the life" narrative prose (2–3 sentences) that sets the scene
+2. Click-by-click steps with Show | Say/Do format
+3. A "land the plane" line at the end]
 
 ---
 
-### MODULE 1: [CONTENT: module name]
+### SCENARIO 1: [CONTENT: scenario name]
 
-**Setup (say this before clicking):**
-> "[CONTENT: 1–2 sentences that frame what they're about to see. Lead with the business scenario, not the product.]"
+**Story (say this to set the scene before clicking):**
+> "[CONTENT: 2–3 sentence 'day in the life' narrative. Name the persona, describe their morning, state the problem they're about to face. E.g., 'It's Monday morning. Linda Johnson, one of our top customer service agents at [company], just sat down to start her shift. She has 47 cases in her queue — and her phone is already ringing.']"
 
-**Click sequence:**
-1. [CONTENT: specific action, e.g. "Open Copilot Studio → Navigate to [agent name]"]
-2. [CONTENT: next action]
-3. [CONTENT: next action]
+**Persona:** [CONTENT: persona name] | **Login:** [CONTENT: credential]
 
-**Call out while it's running:**
-> "[CONTENT: what to narrate as it loads/responds — keep it to 1 sentence so you don't overshare]"
+| Step | Show (click) | Say / Do |
+|---|---|---|
+| 1 | [CONTENT: e.g., "Open D365 CS Workspace"] | [CONTENT: talk track — what you say while navigating] |
+| 2 | [CONTENT: specific action] | [CONTENT: talk track] |
+| 3 | [CONTENT: specific action] | **[CLICK: [CONTENT: element name]]** [CONTENT: what you say] |
+| 4 | [CONTENT: specific action] | [CONTENT: talk track] |
 
 **Land the plane:**
-> "[CONTENT: the 1 sentence that crystallizes the value. Should be the thing they tweet about. E.g., 'So that's 45 seconds to go from an alert firing to a work order assigned and a technician en route — no human dispatcher in the loop.']"
+> "[CONTENT: the 1 sentence that crystallizes the value. Should be quotable. E.g., 'So that entire triage — what used to take 10 minutes of case notes and system switching — happened in 45 seconds, and Linda never had to leave the call.']"
 
 [PAUSE — let it land. Don't fill the silence.]
 
 ---
 
-### MODULE 2: [CONTENT: module name]
+### SCENARIO 2: [CONTENT: scenario name]
 
-**Setup:**
-> "[CONTENT]"
+**Story:**
+> "[CONTENT: day-in-the-life narrative for this scenario's persona]"
 
-**Click sequence:**
-1. [CONTENT]
-2. [CONTENT]
+**Persona:** [CONTENT: persona name] | **Login:** [CONTENT: credential]
 
-**Call out:**
-> "[CONTENT]"
+| Step | Show (click) | Say / Do |
+|---|---|---|
+| 1 | [CONTENT] | [CONTENT] |
+| 2 | [CONTENT] | [CONTENT] |
+| 3 | [CONTENT] | [CONTENT] |
 
 **Land the plane:**
 > "[CONTENT]"
 
+[PAUSE]
+
 ---
 
-*[CONTENT: Add MODULE 3, 4, etc. as needed for the demo's actual modules]*
+*[CONTENT: Add SCENARIO 3, 4, etc. as needed — one sub-section per scenario]*
 
 ---
 
@@ -272,6 +376,15 @@ Note: [CONTENT: who to CC — include technical champion + exec sponsor if both 
 - [ ] Update SE OS Command Center: mark [use_case] demo as delivered
 - [ ] Debrief with Maya (Strategy): did the demo land? what objections came up?
 - [ ] If advanced to next stage: tag Vera (Customer-Facing) to prep follow-up assets
+
+---
+
+## Version History
+
+| Date | Modified By | Notes |
+|---|---|---|
+| [CONTENT: date] | [CONTENT: your name] | Initial version |
+| [CONTENT] | [CONTENT] | [CONTENT: e.g., "Updated persona credentials after env refresh"] |
 
 ---
 

@@ -39,7 +39,8 @@ qa: Rowan (Quality)
 |---|---|---|
 | [`demo-guide/motion-matrix.md`](./demo-guide/motion-matrix.md) | **Start here.** D365 motion × audience × channel → which sections to include | Diego |
 | [`demo-guide/template.md`](./demo-guide/template.md) | Full section library for a customer-facing demo guide | Diego |
-| [`demo-script/template.md`](./demo-script/template.md) | Full section library for the SE's speaking script | Theo |
+| [`demo-script/template.md`](./demo-script/template.md) | Full section library for the SE's speaking script (BOM, Personas, Scenarios, Story blocks, Zero State) | Theo |
+| [`scoping/template.md`](./scoping/template.md) | **New.** Discovery / pre-demo scoping doc — deal brief, stakeholder grid, competitive positioning, ROI | Maya |
 
 ## D365 Sales Motions supported
 
