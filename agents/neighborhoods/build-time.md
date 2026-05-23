@@ -25,6 +25,18 @@ mission: Turn ideas into working things — agents, demos, architectures, apps.
 - Demo app prototypes
 - Prompts, evals, model configurations
 - Setup scripts and deployment automation
+- **Demo guides and scripts** — generated from [`templates/`](../../templates/) by Diego + Theo
+  - Diego owns the guide (customer-facing)
+  - Theo owns the script (SE's speaking notes)
+  - Invocation: `@Diego produce a demo guide for [customer] context: [fields]`
+
+## Specialist Cloud Agents this neighborhood calls
+
+| Specialist | Who calls it | Why |
+|---|---|---|
+| [Power Platform Architect](../../agents/specialist-cloud-agents/power-platform-architect.md) | Theo, Diego, Iris | Generates architecture diagrams + solution analysis for Power Platform customers |
+| D365 Solution Analyzer *(planned)* | Diego | Audits D365 org structure before building demo — surfaces integration points |
+| Copilot Studio Mechanic *(planned)* | Iris, Sam | Inspects topic flows, escalation paths, and quality gaps in Copilot Studio agents |
 
 ## Default rhythm
 
