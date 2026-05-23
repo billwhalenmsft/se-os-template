@@ -9,6 +9,7 @@ on:
       - "agents/**"
       - "docs/**"
       - "web_ui/**"
+      - "templates/**"
       - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 

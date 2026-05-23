@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Demo Request Intake — SE Command Center</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+    :root {
+      --bg:      #0d1117;
+      --bg2:     #161b22;
+      --bg3:     #21262d;
+      --border:  #30363d;
+      --text:    #e6edf3;
+      --text2:   #8b949e;
+      --accent:  #58a6ff;
+      --accent2: #1f6feb;
+      --green:   #3fb950;
+      --yellow:  #d29922;
+      --red:     #f85149;
+      --purple:  #bc8cff;
+      --orange:  #ffa657;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* ── Layout ── */
+    .page { max-width: 760px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    /* ── Header ── */
+    .header { text-align: center; margin-bottom: 40px; }
+    .header .icon { font-size: 48px; margin-bottom: 12px; }
+    .header h1 { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+    .header p { color: var(--text2); font-size: 15px; max-width: 500px; margin: 0 auto; }
+    .header .badge { display: inline-block; margin-top: 12px; background: rgba(88,166,255,0.1); border: 1px solid rgba(88,166,255,0.3); color: var(--accent); font-size: 12px; font-weight: 600; padding: 4px 14px; border-radius: 20px; }
+
+    /* ── Card wrapper ── */
+    .form-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 32px; margin-bottom: 20px; }
+    .form-card h2 { font-size: 16px; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+    .form-card .desc { font-size: 12px; color: var(--text2); margin-bottom: 22px; }
+    .form-card .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+    /* ── Form fields ── */
+    .field-group { display: grid; gap: 16px; }
+    .field-group.grid-2 { grid-template-columns: 1fr 1fr; }
+
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    .field label { font-size: 12px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px; }
+    .field label .req { color: var(--red); margin-left: 3px; }
+
+    input, select, textarea {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 13px;
+      padding: 9px 12px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--accent2); }
+    input::placeholder, textarea::placeholder { color: var(--text2); }
+    select option { background: var(--bg3); }
+    textarea { resize: vertical; min-height: 80px; }
+
+    /* ── Checkbox group ── */
+    .check-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; }
+    .check-item-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--bg3); border: 1px solid var(--border); border-radius: 6px;
+      padding: 7px 12px; cursor: pointer; font-size: 12px; font-weight: 500;
+      transition: border-color 0.15s, background 0.15s;
+      user-select: none;
+    }
+    .check-item-btn input[type="checkbox"] { display: none; }
+    .check-item-btn.selected { border-color: var(--accent2); background: rgba(31,111,235,0.15); color: var(--accent); }
+    .check-item-btn .chk-icon { font-size: 14px; }
+
+    /* ── Priority selector ── */
+    .priority-group { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .priority-btn {
+      background: var(--bg3); border: 1px solid var(--border); border-radius: 7px;
+      padding: 10px 8px; text-align: center; cursor: pointer; transition: border-color 0.15s, background 0.15s;
+    }
+    .priority-btn input[type="radio"] { display: none; }
+    .priority-btn .p-icon { font-size: 22px; margin-bottom: 4px; }
+    .priority-btn .p-label { font-size: 11px; font-weight: 600; }
+    .priority-btn .p-desc { font-size: 10px; color: var(--text2); margin-top: 2px; }
+    .priority-btn.selected { border-color: var(--accent2); background: rgba(31,111,235,0.12); }
+    .priority-btn.selected .p-label { color: var(--accent); }
+
+    /* ── Submit button ── */
+    .submit-btn {
+      width: 100%; background: var(--accent2); color: white; border: none;
+      border-radius: 8px; padding: 14px; font-size: 15px; font-weight: 700;
+      cursor: pointer; transition: background 0.15s; margin-top: 8px;
+    }
+    .submit-btn:hover { background: var(--accent); }
+    .submit-btn:disabled { background: var(--bg3); color: var(--text2); cursor: not-allowed; }
+
+    /* ── Result card ── */
+    .result-card {
+      background: var(--bg2); border: 1px solid rgba(63,185,80,0.4); border-radius: 12px;
+      padding: 28px 32px; margin-top: 24px; display: none;
+    }
+    .result-card.show { display: block; }
+    .result-card h2 { font-size: 18px; font-weight: 800; color: var(--green); margin-bottom: 4px; }
+    .result-card .subtitle { font-size: 13px; color: var(--text2); margin-bottom: 20px; }
+    .result-output {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+      padding: 20px; font-size: 12px; color: var(--text); line-height: 1.7;
+      white-space: pre-wrap; font-family: 'Cascadia Code', 'Consolas', monospace;
+      max-height: 500px; overflow-y: auto;
+    }
+    .result-actions { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+    .btn-secondary {
+      background: var(--bg3); border: 1px solid var(--border); color: var(--text);
+      border-radius: 7px; padding: 9px 18px; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: border-color 0.15s;
+    }
+    .btn-secondary:hover { border-color: var(--accent); }
+    .btn-primary {
+      background: var(--accent2); border: none; color: white;
+      border-radius: 7px; padding: 9px 18px; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .btn-primary:hover { background: var(--accent); }
+
+    /* ── Footer ── */
+    .footer { text-align: center; margin-top: 48px; font-size: 12px; color: var(--text2); }
+    .footer a { color: var(--accent); text-decoration: none; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px; z-index: 999;
+      background: var(--bg2); border: 1px solid var(--green); border-radius: 8px;
+      padding: 12px 20px; font-size: 13px; font-weight: 600; color: var(--green);
+      transform: translateY(80px); opacity: 0; transition: transform 0.3s, opacity 0.3s;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    @media (max-width: 640px) {
+      .field-group.grid-2 { grid-template-columns: 1fr; }
+      .priority-group { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="icon">🎯</div>
+    <h1>Demo Request Intake</h1>
+    <p>Tell Bill what you need. He'll build it — with your customer's context, not generic samples.</p>
+    <div class="badge">SE Command Center · Discrete Manufacturing</div>
+  </div>
+
+  <!-- SECTION 1: Customer Info -->
+  <div class="form-card">
+    <h2>🏢 Customer Information</h2>
+    <div class="desc">Who is this demo for? This drives all data generation and storytelling.</div>
+
+    <div class="field-group grid-2">
+      <div class="field">
+        <label>Customer / Company Name <span class="req">*</span></label>
+        <input id="f-customer" type="text" placeholder="e.g., Acme Manufacturing, Sandvik" />
+      </div>
+      <div class="field">
+        <label>Industry <span class="req">*</span></label>
+        <select id="f-industry">
+          <option value="">— Select industry —</option>
+          <option value="Discrete Manufacturing">Discrete Manufacturing</option>
+          <option value="Process Manufacturing">Process Manufacturing</option>
+          <option value="Automotive / Mobility">Automotive / Mobility</option>
+          <option value="Industrial Equipment">Industrial Equipment</option>
+          <option value="High Tech / Electronics">High Tech / Electronics</option>
+          <option value="Aerospace & Defense">Aerospace &amp; Defense</option>
+          <option value="Consumer Goods">Consumer Goods</option>
+          <option value="Energy / Utilities">Energy / Utilities</option>
+          <option value="Financial Services">Financial Services</option>
+          <option value="Retail">Retail</option>
+          <option value="Healthcare">Healthcare</option>
+          <option value="Public Sector">Public Sector</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Customer's Incumbent System (if known)</label>
+        <input id="f-incumbent" type="text" placeholder="e.g., ServiceNow, Salesforce Service Cloud, SAP CRM" />
+      </div>
+      <div class="field">
+        <label>Company Description for AI Context</label>
+        <input id="f-context" type="text" placeholder="e.g., Makes industrial pumps for oil & gas. 5000 employees, global." />
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: Demo Focus -->
+  <div class="form-card">
+    <h2>🎭 Demo Focus</h2>
+    <div class="desc">What are we showcasing? Select all that apply.</div>
+
+    <div class="field">
+      <label>D365 Scenario <span class="req">*</span></label>
+      <div class="check-group" id="scenario-group">
+        <label class="check-item-btn">
+          <input type="checkbox" value="Customer Service" onchange="toggleCheck(this)" />
+          <span class="chk-icon">🎧</span> Customer Service
+        </label>
+        <label class="check-item-btn">
+          <input type="checkbox" value="Sales" onchange="toggleCheck(this)" />
+          <span class="chk-icon">💼</span> Sales
+        </label>
+        <label class="check-item-btn">
+          <input type="checkbox" value="Field Service" onchange="toggleCheck(this)" />
+          <span class="chk-icon">🔧</span> Field Service
+        </label>
+        <label class="check-item-btn">
+          <input type="checkbox" value="Copilot Studio Agents" onchange="toggleCheck(this)" />
+          <span class="chk-icon">🤖</span> Copilot Studio Agents
+        </label>
+        <label class="check-item-btn">
+          <input type="checkbox" value="Power Automate" onchange="toggleCheck(this)" />
+          <span class="chk-icon">⚡</span> Power Automate
+        </label>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field-group grid-2" style="margin-top:0;">
+      <div class="field">
+        <label>Primary Pain Point / Use Case <span class="req">*</span></label>
+        <textarea id="f-usecase" placeholder="e.g., Customers call in about broken equipment. Need AI to auto-route cases, suggest KB articles, and escalate to field service when needed."></textarea>
+      </div>
+      <div class="field">
+        <label>Key AI Capabilities to Showcase</label>
+        <textarea id="f-ai-features" placeholder="e.g., Case summarization, AI-suggested responses, autonomous agent escalation, Copilot for Service"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: Audience & Date -->
+  <div class="form-card">
+    <h2>👥 Audience &amp; Timeline</h2>
+    <div class="desc">Who's in the room? This shapes the narrative and depth.</div>
+
+    <div class="field-group grid-2">
+      <div class="field">
+        <label>Audience Type <span class="req">*</span></label>
+        <select id="f-audience">
+          <option value="">— Select audience —</option>
+          <option value="Executive / C-Suite">Executive / C-Suite</option>
+          <option value="IT / Technical team">IT / Technical team</option>
+          <option value="Business / Operations">Business / Operations</option>
+          <option value="Mixed (Business + IT)">Mixed (Business + IT)</option>
+          <option value="Customer Service leadership">Customer Service leadership</option>
+          <option value="Sales / Revenue team">Sales / Revenue team</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Demo Date Needed</label>
+        <input id="f-date" type="date" />
+      </div>
+      <div class="field">
+        <label>Who is requesting?</label>
+        <input id="f-requester" type="text" placeholder="e.g., Dana Geiser (AE), field specialist name, your own name" />
+      </div>
+      <div class="field">
+        <label>Data Volume</label>
+        <select id="f-volume">
+          <option value="50">50 records (quick prototype)</option>
+          <option value="100" selected>100 records (standard demo)</option>
+          <option value="250">250 records (full demo)</option>
+          <option value="500">500 records (executive showcase)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: Priority -->
+  <div class="form-card">
+    <h2>🚦 Priority</h2>
+    <div class="desc">How urgent is this?</div>
+    <div class="priority-group" id="priority-group">
+      <label class="priority-btn">
+        <input type="radio" name="priority" value="🔴 ASAP — needed within 24h" onchange="selectPriority(this.parentElement)" />
+        <div class="p-icon">🔴</div>
+        <div class="p-label">ASAP</div>
+        <div class="p-desc">24h or less</div>
+      </label>
+      <label class="priority-btn">
+        <input type="radio" name="priority" value="🟡 This week" onchange="selectPriority(this.parentElement)" />
+        <div class="p-icon">🟡</div>
+        <div class="p-label">This Week</div>
+        <div class="p-desc">2–5 days</div>
+      </label>
+      <label class="priority-btn selected">
+        <input type="radio" name="priority" value="🟢 Planning ahead" onchange="selectPriority(this.parentElement)" checked />
+        <div class="p-icon">🟢</div>
+        <div class="p-label">Planning</div>
+        <div class="p-desc">1–2 weeks</div>
+      </label>
+      <label class="priority-btn">
+        <input type="radio" name="priority" value="🔵 Exploratory — no hard date" onchange="selectPriority(this.parentElement)" />
+        <div class="p-icon">🔵</div>
+        <div class="p-label">Exploratory</div>
+        <div class="p-desc">No hard date</div>
+      </label>
+    </div>
+  </div>
+
+  <!-- SECTION 5: Additional Notes -->
+  <div class="form-card">
+    <h2>📝 Additional Notes</h2>
+    <div class="desc">Anything else? Links, competitor context, specific talking points, exec focus areas.</div>
+    <div class="field">
+      <textarea id="f-notes" style="min-height:100px;" placeholder="e.g., They're currently on ServiceNow — need to show how Copilot Studio agents reduce tier-1 ticket volume. Exec is focused on TCO reduction. Need Field Service integration because they have 200 field techs."></textarea>
+    </div>
+  </div>
+
+  <button class="submit-btn" onclick="generateBrief()">✨ Generate Demo Brief</button>
+
+  <!-- Result -->
+  <div class="result-card" id="result-card">
+    <h2>✅ Demo Brief Generated</h2>
+    <div class="subtitle">Copy this into Bots in Blazers chat, paste in a Teams message to Bill, or use the CoWork skill in M365 Copilot.</div>
+    <div class="result-output" id="result-output"></div>
+    <div class="result-actions">
+      <button class="btn-primary" onclick="copyBrief()">📋 Copy to Clipboard</button>
+      <button class="btn-secondary" onclick="downloadBrief()">⬇️ Download .txt</button>
+      <button class="btn-secondary" onclick="resetForm()">🔄 New Request</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    <a href="https://bots-in-blazers.fun" target="_blank">Bots in Blazers</a> · SE Command Center · Discrete Manufacturing CoE
+    <br>Questions? Ping <a href="mailto:billwhalen@microsoft.com">Bill Whalen</a>
+  </div>
+
+</div><!-- /page -->
+
+<div class="toast" id="toast">✅ Copied to clipboard!</div>
+
+<script>
+  function toggleCheck(input) {
+    input.parentElement.classList.toggle('selected', input.checked);
+  }
+
+  function selectPriority(el) {
+    document.querySelectorAll('.priority-btn').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function getSelectedScenarios() {
+    return [...document.querySelectorAll('#scenario-group input[type="checkbox"]:checked')]
+      .map(cb => cb.value);
+  }
+
+  function getPriority() {
+    const sel = document.querySelector('input[name="priority"]:checked');
+    return sel ? sel.value : '🟢 Planning ahead';
+  }
+
+  function generateBrief() {
+    const customer  = document.getElementById('f-customer').value.trim();
+    const industry  = document.getElementById('f-industry').value;
+    const incumbent = document.getElementById('f-incumbent').value.trim();
+    const context   = document.getElementById('f-context').value.trim();
+    const usecase   = document.getElementById('f-usecase').value.trim();
+    const aiFeats   = document.getElementById('f-ai-features').value.trim();
+    const audience  = document.getElementById('f-audience').value;
+    const date      = document.getElementById('f-date').value;
+    const requester = document.getElementById('f-requester').value.trim();
+    const volume    = document.getElementById('f-volume').value;
+    const notes     = document.getElementById('f-notes').value.trim();
+    const scenarios = getSelectedScenarios();
+    const priority  = getPriority();
+
+    // Validation
+    if (!customer) { alert('Please enter a customer name.'); document.getElementById('f-customer').focus(); return; }
+    if (!industry) { alert('Please select an industry.'); document.getElementById('f-industry').focus(); return; }
+    if (!scenarios.length) { alert('Please select at least one D365 scenario.'); return; }
+    if (!usecase) { alert('Please describe the primary use case.'); document.getElementById('f-usecase').focus(); return; }
+    if (!audience) { alert('Please select the audience type.'); document.getElementById('f-audience').focus(); return; }
+
+    const now = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+
+    const brief = `═══════════════════════════════════════════════════
+DEMO REQUEST BRIEF — SE Command Center
+Submitted: ${now}${requester ? '\nRequested by: ' + requester : ''}
+Priority: ${priority}
+═══════════════════════════════════════════════════
+
+CUSTOMER
+  Name:       ${customer}
+  Industry:   ${industry}${incumbent ? '\n  Incumbent:  ' + incumbent : ''}${context ? '\n  Context:    ' + context : ''}
+
+DEMO FOCUS
+  Scenarios:  ${scenarios.join(' · ')}
+  Audience:   ${audience}
+  Data Volume: ${volume} records${date ? '\n  Demo Date:  ' + new Date(date + 'T12:00:00').toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' }) : ''}
+
+USE CASE & PAIN POINT
+${usecase.split('\n').map(l => '  ' + l).join('\n')}${aiFeats ? '\n\nAI CAPABILITIES TO SHOWCASE\n' + aiFeats.split('\n').map(l => '  · ' + l).join('\n') : ''}${notes ? '\n\nADDITIONAL NOTES\n' + notes.split('\n').map(l => '  ' + l).join('\n') : ''}
+
+═══════════════════════════════════════════════════
+RAPP BUILD STEPS (for Bill)
+═══════════════════════════════════════════════════
+
+STEP 1 — CXAI DATA GENERATION
+  1. Open CxAI agent in Mfg CoE D365 org
+  2. Customer context: "${customer}" — ${industry}
+  3. Scenario: ${scenarios.join(' + ')}
+  4. Volume: ${volume} records
+  5. Monitor msdyn_agentrunjob table for completion
+
+STEP 2 — RAPP PS CONFIGURATION SCRIPTS
+  Run from: d365/scripts/
+  Command:  .\\00-Setup.ps1 -Customer "${customer.toLowerCase().replace(/[^a-z0-9]/g,'')}"
+  Applies: SLAs, routing rules, KB articles, portal, chat widgets${scenarios.includes('Field Service') ? ', FS work orders + assets' : ''}
+
+STEP 3 — D365DEMOPREPAGENT VALIDATION
+  Action: validate_environment
+  Customer: ${customer}
+  Verifies: data counts, agent config, feature flags, Copilot Studio health
+
+STEP 4 — DEMO NARRATIVE PREP
+  Audience: ${audience}
+  Primary story: ${usecase.slice(0, 120)}...
+  Prep DemoOrchestratorAgent with customer context before the call.
+
+═══════════════════════════════════════════════════`;
+
+    document.getElementById('result-output').textContent = brief;
+    document.getElementById('result-card').classList.add('show');
+    document.getElementById('result-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function copyBrief() {
+    const text = document.getElementById('result-output').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    });
+  }
+
+  function downloadBrief() {
+    const text = document.getElementById('result-output').textContent;
+    const customer = document.getElementById('f-customer').value.trim().toLowerCase().replace(/[^a-z0-9]/g, '-') || 'demo';
+    const blob = new Blob([text], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `demo-brief-${customer}-${new Date().toISOString().slice(0,10)}.txt`;
+    a.click();
+  }
+
+  function resetForm() {
+    document.getElementById('result-card').classList.remove('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>

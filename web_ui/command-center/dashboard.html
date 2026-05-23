@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SE OS · Dashboard</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-primary:#0d1117;--bg-secondary:#161b22;--bg-card:#1c2129;--bg-card-hover:#22272e;
+  --border:#2d333b;--border-light:#373e47;
+  --text-primary:#e6edf3;--text-muted:#8b949e;--text-dim:#484f58;
+  --green:#3fb950;--orange:#d29922;--blue:#58a6ff;--red:#f85149;--purple:#a371f7;--teal:#39d353;--yellow:#e3b341;
+  --radius-card:12px;--radius-pill:8px;--radius-sm:6px;
+  --shadow:0 2px 8px rgba(0,0,0,.3);
+}
+html{font-size:14px}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  background:linear-gradient(135deg,var(--bg-primary) 0%,var(--bg-secondary) 100%);
+  color:var(--text-primary);min-height:100vh;
+}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ── Top bar ── */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 24px;background:rgba(13,17,23,.85);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;
+}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.topbar-brand{font-weight:700;font-size:.95rem;letter-spacing:.5px;color:var(--text-muted)}
+.topbar-brand span{color:var(--text-primary)}
+.live-badge{
+  display:inline-flex;align-items:center;gap:6px;font-size:.75rem;
+  background:rgba(63,185,80,.12);color:var(--green);padding:3px 10px;
+  border-radius:var(--radius-pill);border:1px solid rgba(63,185,80,.25);
+}
+.live-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.topbar-center{font-size:.85rem;color:var(--text-muted);font-variant-numeric:tabular-nums}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.btn-refresh{
+  background:var(--bg-card);border:1px solid var(--border);color:var(--text-muted);
+  padding:5px 12px;border-radius:var(--radius-pill);cursor:pointer;font-size:.8rem;
+  transition:all .15s;
+}
+.btn-refresh:hover{border-color:var(--blue);color:var(--blue)}
+.avatar{
+  width:30px;height:30px;border-radius:50%;background:var(--purple);
+  display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;
+}
+
+/* ── Hero ── */
+.hero{
+  padding:28px 32px 20px;
+  background:linear-gradient(90deg,rgba(13,17,23,.95),rgba(22,27,34,.9));
+  border-bottom:1px solid var(--border);
+}
+.hero-inner{display:flex;align-items:flex-end;justify-content:space-between;max-width:1600px;margin:0 auto}
+.hero-eyebrow{
+  font-size:.65rem;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--blue);font-weight:600;margin-bottom:6px;
+}
+.hero-greeting{font-size:1.85rem;font-weight:700;margin-bottom:2px}
+.hero-date{font-size:.9rem;color:var(--text-muted)}
+.hero-stats{display:flex;gap:12px}
+.stat-badge{
+  background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-pill);
+  padding:8px 16px;text-align:center;min-width:90px;
+}
+.stat-badge .num{font-size:1.3rem;font-weight:700;display:block;line-height:1.2}
+.stat-badge .label{font-size:.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px}
+
+/* ── 3-column grid ── */
+.dashboard{
+  display:grid;grid-template-columns:320px 1fr 340px;gap:20px;
+  padding:20px 24px 40px;max-width:1600px;margin:0 auto;
+}
+
+/* ── Cards ── */
+.card{
+  background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-card);
+  padding:16px 18px;box-shadow:var(--shadow);
+}
+.card-title{
+  font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;
+  color:var(--text-muted);margin-bottom:12px;display:flex;align-items:center;gap:8px;
+}
+
+/* ── Left: Priorities ── */
+.priorities{display:flex;flex-direction:column;gap:10px}
+.priority-item{
+  background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-card);
+  padding:12px 14px;transition:border-color .15s;cursor:default;
+}
+.priority-item:hover{border-color:var(--border-light)}
+.priority-header{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.priority-label{font-size:.85rem;font-weight:600;flex:1}
+.badge{
+  font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;
+  padding:2px 8px;border-radius:4px;white-space:nowrap;
+}
+.badge-now{background:rgba(248,81,73,.15);color:var(--red);border:1px solid rgba(248,81,73,.3)}
+.badge-today{background:rgba(210,153,34,.15);color:var(--orange);border:1px solid rgba(210,153,34,.3)}
+.badge-tomorrow{background:rgba(88,166,255,.15);color:var(--blue);border:1px solid rgba(88,166,255,.3)}
+.badge-open{background:rgba(227,179,65,.15);color:var(--yellow);border:1px solid rgba(227,179,65,.3)}
+.badge-inflight{background:rgba(163,113,247,.15);color:var(--purple);border:1px solid rgba(163,113,247,.3)}
+.badge-followup{background:rgba(57,211,83,.15);color:var(--teal);border:1px solid rgba(57,211,83,.3)}
+.priority-meta{font-size:.75rem;color:var(--text-muted)}
+
+/* ── Center ── */
+.center-col{display:flex;flex-direction:column;gap:18px}
+
+/* Quick Launch */
+.quick-launch-grid{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:10px;
+}
+.ql-tile{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-card);
+  padding:14px 6px 10px;cursor:pointer;transition:all .15s;text-decoration:none;color:var(--text-primary);
+}
+.ql-tile:hover{border-color:var(--blue);background:var(--bg-card-hover);transform:translateY(-1px);text-decoration:none}
+.ql-icon{font-size:1.5rem;margin-bottom:4px}
+.ql-label{font-size:.7rem;color:var(--text-muted);text-align:center}
+
+/* Always Running */
+.running-pills{display:flex;flex-wrap:wrap;gap:8px}
+.running-pill{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(63,185,80,.08);border:1px solid rgba(63,185,80,.2);
+  padding:4px 10px;border-radius:var(--radius-pill);font-size:.72rem;color:var(--green);
+}
+.running-pill::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green)}
+
+/* Focus card */
+.focus-card{border-left:3px solid var(--purple)}
+.focus-theme{font-size:.95rem;font-weight:600;margin-bottom:6px}
+.focus-body{font-size:.82rem;color:var(--text-muted);line-height:1.5}
+.focus-asset{font-size:.78rem;color:var(--blue);margin-top:6px}
+
+/* Customer cards */
+.customer-cards{display:flex;gap:12px}
+.customer-card{
+  flex:1;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-card);
+  padding:14px;cursor:pointer;transition:all .15s;text-decoration:none;color:var(--text-primary);display:block;
+}
+.customer-card:hover{border-color:var(--blue);background:var(--bg-card-hover);text-decoration:none}
+.cc-emoji{font-size:1.6rem;margin-bottom:4px}
+.cc-name{font-size:.85rem;font-weight:600;margin-bottom:2px}
+.cc-sub{font-size:.7rem;color:var(--text-muted)}
+.cc-badges{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
+.cc-badge{
+  font-size:.6rem;padding:1px 6px;border-radius:3px;
+  background:rgba(88,166,255,.1);color:var(--blue);border:1px solid rgba(88,166,255,.2);
+}
+.cc-badge.provisioned{background:rgba(63,185,80,.1);color:var(--green);border-color:rgba(63,185,80,.2)}
+
+/* ── Right: Calendar ── */
+.right-col{display:flex;flex-direction:column;gap:16px}
+.cal-section-label{
+  font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;
+  color:var(--text-muted);margin-bottom:8px;display:flex;align-items:center;gap:6px;
+}
+.cal-section-label .dot{width:6px;height:6px;border-radius:50%}
+.cal-section-label .dot-today{background:var(--orange)}
+.cal-section-label .dot-tomorrow{background:var(--blue)}
+.cal-item{
+  background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-card);
+  padding:12px 14px;margin-bottom:8px;
+}
+.cal-time{font-size:.72rem;color:var(--text-muted);font-weight:600;margin-bottom:3px}
+.cal-title{font-size:.85rem;font-weight:600;margin-bottom:5px}
+.cal-tags{display:flex;flex-wrap:wrap;gap:4px}
+.cal-tag{
+  font-size:.6rem;padding:2px 7px;border-radius:4px;font-weight:600;
+}
+.cal-tag-customer{background:rgba(248,81,73,.12);color:var(--red);border:1px solid rgba(248,81,73,.2)}
+.cal-tag-prep{background:rgba(210,153,34,.12);color:var(--orange);border:1px solid rgba(210,153,34,.2)}
+.cal-tag-internal{background:rgba(88,166,255,.1);color:var(--blue);border:1px solid rgba(88,166,255,.2)}
+.cal-tag-heavy{background:rgba(163,113,247,.12);color:var(--purple);border:1px solid rgba(163,113,247,.2)}
+.cal-tag-product{background:rgba(57,211,83,.12);color:var(--teal);border:1px solid rgba(57,211,83,.2)}
+.cal-not-connected{
+  text-align:center;padding:24px 12px;color:var(--text-dim);font-size:.82rem;
+}
+.cal-not-connected .icon{font-size:1.5rem;margin-bottom:6px}
+
+/* ── Responsive ── */
+@media(max-width:1200px){.dashboard{grid-template-columns:1fr;}.hero-inner{flex-direction:column;align-items:flex-start;gap:12px}}
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<header class="topbar">
+  <div class="topbar-left">
+    <span class="topbar-brand">SE OS · <span id="topbar-user">Bill Whalen</span></span>
+    <span class="live-badge">Live via WorkIQ</span>
+  </div>
+  <div class="topbar-center" id="clock"></div>
+  <div class="topbar-right">
+    <button class="btn-refresh" onclick="loadDashboard()" title="Refresh dashboard">↻ Refresh</button>
+    <div class="avatar" id="avatar">BW</div>
+  </div>
+</header>
+
+<!-- Hero Banner -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow">MICROSOFT · <span id="hero-practice">DISCRETE MANUFACTURING SE</span></div>
+      <div class="hero-greeting" id="hero-greeting">Good Morning, Bill 👋</div>
+      <div class="hero-date" id="hero-date"></div>
+    </div>
+    <div class="hero-stats" id="hero-stats">
+      <div class="stat-badge"><span class="num" id="stat-meetings">2</span><span class="label">Meetings Today</span></div>
+      <div class="stat-badge"><span class="num" id="stat-followup">5</span><span class="label">Open Follow-up</span></div>
+      <div class="stat-badge"><span class="num" id="stat-customers">3</span><span class="label">Active Customers</span></div>
+      <div class="stat-badge"><span class="num" id="stat-actions">5</span><span class="label">Action Items</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- Dashboard Grid -->
+<main class="dashboard">
+
+  <!-- LEFT: Priorities -->
+  <div class="left-col">
+    <div class="card-title">📌 Top Priorities</div>
+    <div class="priorities" id="priorities"></div>
+  </div>
+
+  <!-- CENTER -->
+  <div class="center-col">
+    <!-- Quick Launch -->
+    <div class="card">
+      <div class="card-title">🚀 Quick Launch</div>
+      <div class="quick-launch-grid" id="quick-launch"></div>
+    </div>
+
+    <!-- Always Running -->
+    <div class="card">
+      <div class="card-title">🟢 Always Running</div>
+      <div class="running-pills" id="running-pills"></div>
+    </div>
+
+    <!-- Current Focus -->
+    <div class="card focus-card">
+      <div class="card-title">⚡ Theme This Week</div>
+      <div class="focus-theme" id="focus-theme"></div>
+      <div class="focus-body" id="focus-body"></div>
+      <div class="focus-asset" id="focus-asset"></div>
+    </div>
+
+    <!-- Customer Quick Links -->
+    <div>
+      <div class="card-title">👥 Customer Quick Links</div>
+      <div class="customer-cards" id="customer-cards"></div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Calendar -->
+  <div class="right-col">
+    <div class="card-title">📅 Calendar</div>
+    <div id="calendar-today"></div>
+    <div id="calendar-tomorrow"></div>
+  </div>
+
+</main>
+
+<script>
+// ── Clock ──
+function updateClock(){
+  const now=new Date();
+  document.getElementById('clock').textContent=now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',second:'2-digit',hour12:true});
+}
+setInterval(updateClock,1000);
+updateClock();
+
+// ── Date display ──
+function formatDate(d){
+  return d.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+}
+
+// ── Time-aware greeting ──
+function getGreeting(){
+  const h=new Date().getHours();
+  if(h<12)return'Good Morning';if(h<17)return'Good Afternoon';return'Good Evening';
+}
+
+// ── Fallback data ──
+const FALLBACK={
+  greeting:getGreeting(),
+  user_name:"Bill Whalen",
+  practice_area:"Discrete Manufacturing SE",
+  stats:{active_customers:3,open_action_items:5,in_flight:1,total_agents:12},
+  active_customers:[
+    {slug:"fortunebrands",name:"Fortune Brands — Moen",emoji:"🚿",industry:"Building Products / Plumbing",demo_guide:"moen_cs_demo_guide.html",has_provisioned:true,agent_count:3},
+    {slug:"zurnelkay",name:"Zurn Elkay",emoji:"💧",industry:"Water Solutions",demo_guide:null,has_provisioned:false,agent_count:10},
+    {slug:"otis",name:"Otis Elevator",emoji:"🛗",industry:"Elevators & Escalators",demo_guide:"demo-execution-guide.html",has_provisioned:false,agent_count:0}
+  ],
+  quick_links:[{slug:"fortunebrands",name:"Fortune Brands — Moen",emoji:"🚿"}],
+  action_items:[
+    {customer:"Fortune Brands — Moen",type:"demo_guide",status:"OPEN",message:"Demo next week — verify channel wiring"},
+    {customer:"Zurn Elkay",type:"provision",status:"OPEN",message:"Demo data defined but not provisioned"},
+    {customer:"Otis",type:"demo_guide",status:"IN FLIGHT",message:"Demo guide being generated"}
+  ],
+  calendar:{source:"not_connected"},
+  priorities:{source:"not_connected"}
+};
+
+// ── Static data ──
+const PRIORITIES=[
+  {label:"Prep: Fortune Brands Moen Demo",badge:"NOW",cls:"badge-now",meta:"Today 3:00 PM · Customer service demo prep"},
+  {label:"D365 Sales Learning Journey",badge:"TODAY",cls:"badge-today",meta:"Today 3:30 PM · Dana Nordby · Roadmap alignment"},
+  {label:"Allegion – Field Service Architecture Review",badge:"TOMORROW",cls:"badge-tomorrow",meta:"Tomorrow 8:05 AM · High-impact external"},
+  {label:"Close: Fabric / Copilot Studio Follow-up",badge:"OPEN",cls:"badge-open",meta:"Share recap + screenshots"},
+  {label:"Package Governance Narrative",badge:"IN FLIGHT",cls:"badge-inflight",meta:"AI BP Call + Governance.docx"},
+  {label:"Haworth Innovation Hub Follow-up",badge:"FOLLOW-UP",cls:"badge-followup",meta:"Glenn Higgins email"}
+];
+
+const CALENDAR_TODAY=[
+  {time:"3:00 – 3:30 PM",title:"TE Connectivity — Freight Booking Agent",tags:[{label:"Customer-Facing",cls:"cal-tag-customer"},{label:"Prep Needed",cls:"cal-tag-prep"}]},
+  {time:"3:30 – 4:00 PM",title:"D365 Sales Learning Journey",tags:[{label:"Internal",cls:"cal-tag-internal"}]}
+];
+
+const CALENDAR_TOMORROW=[
+  {time:"8:05 – 10:00 AM",title:"Microsoft | Allegion | Field Service Architecture Review",tags:[{label:"High-Impact Customer",cls:"cal-tag-customer"},{label:"Heavy Prep",cls:"cal-tag-heavy"}]},
+  {time:"TBD",title:"Cat | Bill Connect (1:1)",tags:[{label:"Internal",cls:"cal-tag-internal"}]},
+  {time:"TBD",title:"Agent Builder Feedback Session",tags:[{label:"Product Loop",cls:"cal-tag-product"}]}
+];
+
+const QUICK_LAUNCH=[
+  {icon:"💬",label:"Teams",url:"https://teams.microsoft.com"},
+  {icon:"📧",label:"Outlook",url:"https://outlook.office.com"},
+  {icon:"☁️",label:"Azure Portal",url:"https://portal.azure.com"},
+  {icon:"🤖",label:"Copilot Studio",url:"https://copilotstudio.microsoft.com"},
+  {icon:"⚡",label:"Power Platform",url:"https://make.powerapps.com"},
+  {icon:"🔄",label:"Power Automate",url:"https://make.powerautomate.com"},
+  {icon:"🐙",label:"GitHub",url:"https://github.com"},
+  {icon:"📚",label:"MS Learn",url:"https://learn.microsoft.com"},
+  {icon:"📁",label:"SharePoint",url:"https://microsoft.sharepoint.com"},
+  {icon:"💼",label:"LinkedIn",url:"https://linkedin.com"}
+];
+
+const ALWAYS_RUNNING=["Teams","Outlook","VS Code","Edge","GitHub Desktop","PowerShell","OneNote","M365 Copilot"];
+
+const FOCUS={
+  theme:"Copilot Studio + Agent Governance",
+  body:"You're the go-to voice on governance-as-accelerator for the Discrete Manufacturing practice. Every customer conversation this week should weave in the governance narrative — not as a blocker, but as the thing that lets enterprises say yes faster.",
+  asset:"Key asset to leverage: AI and Copilot Governance.docx (updated last night) + AI BP Community Call recording from Apr 23."
+};
+
+// ── Render functions ──
+function renderPriorities(){
+  const el=document.getElementById('priorities');
+  el.innerHTML=PRIORITIES.map(p=>`
+    <div class="priority-item">
+      <div class="priority-header">
+        <span class="priority-label">${p.label}</span>
+        <span class="badge ${p.cls}">${p.badge}</span>
+      </div>
+      <div class="priority-meta">${p.meta}</div>
+    </div>`).join('');
+}
+
+function renderQuickLaunch(){
+  const el=document.getElementById('quick-launch');
+  el.innerHTML=QUICK_LAUNCH.map(q=>`
+    <a class="ql-tile" href="${q.url}" target="_blank" rel="noopener">
+      <span class="ql-icon">${q.icon}</span>
+      <span class="ql-label">${q.label}</span>
+    </a>`).join('');
+}
+
+function renderRunning(){
+  const el=document.getElementById('running-pills');
+  el.innerHTML=ALWAYS_RUNNING.map(r=>`<span class="running-pill">${r}</span>`).join('');
+}
+
+function renderFocus(){
+  document.getElementById('focus-theme').textContent=FOCUS.theme;
+  document.getElementById('focus-body').textContent=FOCUS.body;
+  document.getElementById('focus-asset').textContent=FOCUS.asset;
+}
+
+function renderCalendar(calData){
+  const todayEl=document.getElementById('calendar-today');
+  const tmrwEl=document.getElementById('calendar-tomorrow');
+
+  if(calData&&calData.source==='not_connected'){
+    // Use hardcoded calendar
+    todayEl.innerHTML=`<div class="cal-section-label"><span class="dot dot-today"></span>Today</div>`+
+      CALENDAR_TODAY.map(c=>`
+        <div class="cal-item">
+          <div class="cal-time">${c.time}</div>
+          <div class="cal-title">${c.title}</div>
+          <div class="cal-tags">${c.tags.map(t=>`<span class="cal-tag ${t.cls}">${t.label}</span>`).join('')}</div>
+        </div>`).join('');
+
+    tmrwEl.innerHTML=`<div class="cal-section-label"><span class="dot dot-tomorrow"></span>Tomorrow</div>`+
+      CALENDAR_TOMORROW.map(c=>`
+        <div class="cal-item">
+          <div class="cal-time">${c.time}</div>
+          <div class="cal-title">${c.title}</div>
+          <div class="cal-tags">${c.tags.map(t=>`<span class="cal-tag ${t.cls}">${t.label}</span>`).join('')}</div>
+        </div>`).join('');
+  } else {
+    todayEl.innerHTML=`<div class="cal-not-connected"><div class="icon">📅</div>Calendar not connected<br><small>Connect via WorkIQ to see meetings</small></div>`;
+    tmrwEl.innerHTML='';
+  }
+}
+
+function renderCustomers(customers){
+  const el=document.getElementById('customer-cards');
+  const list=customers||FALLBACK.active_customers;
+  el.innerHTML=list.slice(0,3).map(c=>{
+    const href=c.demo_guide?`../customers/${c.slug}/docs/${c.demo_guide}`:`../customers/${c.slug}/docs/`;
+    const badges=[];
+    if(c.has_provisioned)badges.push('<span class="cc-badge provisioned">Provisioned</span>');
+    if(c.agent_count>0)badges.push(`<span class="cc-badge">${c.agent_count} Agents</span>`);
+    if(c.demo_guide)badges.push('<span class="cc-badge">Demo Guide</span>');
+    return`<a class="customer-card" href="${href}">
+      <div class="cc-emoji">${c.emoji}</div>
+      <div class="cc-name">${c.name}</div>
+      <div class="cc-sub">${c.industry||''}</div>
+      <div class="cc-badges">${badges.join('')}</div>
+    </a>`;
+  }).join('');
+}
+
+function renderHero(data){
+  const d=data||FALLBACK;
+  const greeting=d.greeting||getGreeting();
+  document.getElementById('hero-greeting').textContent=`${greeting}, ${d.user_name||'Bill'} 👋`;
+  document.getElementById('hero-date').textContent=formatDate(new Date());
+  document.getElementById('hero-practice').textContent=(d.practice_area||'Discrete Manufacturing SE').toUpperCase();
+  document.getElementById('topbar-user').textContent=d.user_name||'Bill Whalen';
+  const initials=(d.user_name||'BW').split(' ').map(w=>w[0]).join('');
+  document.getElementById('avatar').textContent=initials;
+
+  const s=d.stats||{};
+  document.getElementById('stat-meetings').textContent=CALENDAR_TODAY.length;
+  document.getElementById('stat-followup').textContent=s.open_action_items||0;
+  document.getElementById('stat-customers').textContent=s.active_customers||0;
+  document.getElementById('stat-actions').textContent=(d.action_items||[]).length;
+}
+
+// ── Load ──
+async function loadDashboard(){
+  let data=null;
+  try{
+    const r=await fetch('/api/seos_dashboard?action=get_dashboard&user=Bill%20Whalen');
+    if(r.ok)data=await r.json();
+  }catch(e){/* API unavailable — use fallback */}
+
+  const d=data||FALLBACK;
+  renderHero(d);
+  renderPriorities();
+  renderQuickLaunch();
+  renderRunning();
+  renderFocus();
+  renderCalendar(d.calendar);
+  renderCustomers(d.active_customers);
+}
+
+loadDashboard();
+</script>
+</body>
+</html>
