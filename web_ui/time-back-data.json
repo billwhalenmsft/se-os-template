@@ -1,0 +1,55 @@
+{
+  "_schema": "SE OS Time-Back Metric v1",
+  "_description": "Tracks hours returned to the customer conversation by SE OS adoption",
+  "se": {
+    "alias": "youralias",
+    "name": "Your Name",
+    "practice_area": "Discrete Manufacturing",
+    "adoption_date": "2026-05-22"
+  },
+  "baseline": {
+    "_note": "Hours per week the SE spent on these activities BEFORE SE OS",
+    "customer_meeting_prep_hrs_per_week": 12.0,
+    "demo_asset_assembly_hrs_per_week": 6.0,
+    "context_gathering_hrs_per_week": 4.5,
+    "post_meeting_followup_hrs_per_week": 3.5,
+    "new_se_onboarding_support_hrs_per_week": 2.0,
+    "total_baseline_hrs": 28.0
+  },
+  "weekly_snapshots": [
+    {
+      "week_of": "2026-05-22",
+      "customer_meeting_prep_hrs": 4.0,
+      "demo_asset_assembly_hrs": 1.5,
+      "context_gathering_hrs": 0.5,
+      "post_meeting_followup_hrs": 1.0,
+      "new_se_onboarding_support_hrs": 0.5,
+      "total_hrs": 7.5,
+      "hours_saved_vs_baseline": 20.5,
+      "customer_meetings_count": 6,
+      "demos_shipped_to_library": 2,
+      "agent_assists_used": 14,
+      "notes": "First week of SE OS adoption"
+    }
+  ],
+  "rolling_averages": {
+    "_note": "Auto-computed from weekly_snapshots — last 4 weeks",
+    "avg_weekly_hours_saved": 20.5,
+    "avg_weekly_total_hrs_on_overhead": 7.5,
+    "pct_time_returned_to_customer": 73.2
+  },
+  "targets": {
+    "_note": "From the SE OS Manifesto — the measurable promise",
+    "prep_time_reduction_pct": 60,
+    "customer_time_increase_pct": 40,
+    "demo_asset_reuse_multiplier": 5,
+    "new_se_time_to_productivity_days": 7
+  },
+  "team_aggregate": {
+    "_note": "When deployed at team level, aggregates across SEs in the deployment",
+    "ses_using_se_os": 1,
+    "total_team_hours_saved_last_week": 20.5,
+    "shared_assets_count": 31,
+    "cross_se_asset_reuses": 0
+  }
+}

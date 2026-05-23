@@ -4,6 +4,9 @@
 
 [![Use this template](https://img.shields.io/badge/Use_this_template-2ea44f?style=for-the-badge)](https://github.com/billwhalenmsft/se-os/generate)
 
+> 📖 **Start here:** [The SE Reinvention Manifesto](./MANIFESTO.md) — why this exists, what it changes, and the measurable promise.
+> 📅 **See it in action:** [A Day in the Life — reinvented](./web_ui/day-in-the-life.html) — same SE, same customer, two very different days.
+
 ---
 
 ## What is SE OS?
@@ -111,6 +114,12 @@ These are not tools you use. They are team members you work with.
 - 🎬 **Demo Excellence** — five-beat narrative, customer-ready polish
 - 🤝 **Customer Empathy** — customer voice, persona accuracy, industry authenticity
 
+**Four neighborhoods organize the team** ([details](./agents/neighborhoods/)):
+
+| 🤝 Customer-Facing | 🛠️ Build-Time | ✅ Quality | 🧭 Strategy |
+|---|---|---|---|
+| Vera · Priya · Jonas · Felix | Sam · Theo · Diego · Iris | Rowan · Naomi | Maya · Aria |
+
 ---
 
 ## How agents work
@@ -151,6 +160,21 @@ SE OS ships with **Discrete Manufacturing** as the baseline. To add your own:
 - **RAPP pipeline** (optional) — transcript → agent → deployed demo in one step
 - **Azure Functions** (optional) — backend API for the Digital SE Team
 - **GitHub Issues** — the agent inbox and feature backlog
+
+---
+
+## The measurable promise
+
+SE OS commits to specific numbers. We instrument the Command Center to track them — see [Time-Back Metric methodology](./docs/TIME_BACK_METRIC.md) and the [live report template](./web_ui/time-back.html).
+
+| Metric | 60-day target |
+|---|---|
+| Prep time per customer meeting | **−60%** |
+| Time available for customer conversation | **+40%** |
+| Demo assets reused across SE team | **5×** |
+| New SE time to productivity | **<1 week** |
+
+If SE OS doesn't deliver these numbers, it's a failed experiment.
 
 ---
 

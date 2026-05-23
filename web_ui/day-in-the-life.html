@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Day in the Life — SE Reinvented · SE OS</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg-elev: #131927;
+    --bg-elev2: #1a2235;
+    --border: #2a3550;
+    --text: #e8edf5;
+    --text-dim: #94a3b8;
+    --text-muted: #64748b;
+    --accent: #5b8def;
+    --accent-2: #8b5cf6;
+    --bad: #ef4444;
+    --bad-bg: rgba(239,68,68,0.08);
+    --good: #10b981;
+    --good-bg: rgba(16,185,129,0.08);
+    --warn: #f59e0b;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+  }
+  .page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 48px 32px 80px;
+  }
+  header {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+  .eyebrow {
+    display: inline-block;
+    padding: 6px 14px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: white;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  h1 {
+    font-size: 42px;
+    margin: 0 0 16px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #ffffff, #94a3b8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .lede {
+    font-size: 18px;
+    color: var(--text-dim);
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 48px;
+  }
+  @media (max-width: 900px) { .compare { grid-template-columns: 1fr; } }
+  .col {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .col-header {
+    padding: 24px 28px;
+    border-bottom: 1px solid var(--border);
+  }
+  .col-old .col-header { background: var(--bad-bg); }
+  .col-new .col-header { background: var(--good-bg); }
+  .col-tag {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .col-old .col-tag { color: var(--bad); }
+  .col-new .col-tag { color: var(--good); }
+  .col-title { font-size: 22px; font-weight: 700; }
+  .col-sub { color: var(--text-dim); font-size: 14px; margin-top: 4px; }
+  .timeline { padding: 8px 0; }
+  .event {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 16px;
+    padding: 16px 28px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    transition: background 0.15s;
+  }
+  .event:hover { background: rgba(255,255,255,0.02); }
+  .event:last-child { border-bottom: none; }
+  .time {
+    color: var(--text-muted);
+    font-family: 'SF Mono', Consolas, monospace;
+    font-size: 13px;
+    font-weight: 600;
+    padding-top: 2px;
+  }
+  .what {
+    font-size: 14px;
+  }
+  .what strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+  .annotate {
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+  .annotate.bad { color: #f87171; }
+  .annotate.good { color: #34d399; }
+
+  .summary {
+    margin-top: 40px;
+    padding: 36px;
+    background: linear-gradient(135deg, rgba(91,141,239,0.08), rgba(139,92,246,0.08));
+    border: 1px solid rgba(91,141,239,0.2);
+    border-radius: 16px;
+  }
+  .summary h2 {
+    margin: 0 0 24px;
+    font-size: 26px;
+    text-align: center;
+  }
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  @media (max-width: 900px) { .metric-grid { grid-template-columns: repeat(2, 1fr); } }
+  .metric {
+    text-align: center;
+    padding: 20px;
+    background: var(--bg-elev2);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+  .metric-num {
+    font-size: 36px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .metric-label {
+    color: var(--text-dim);
+    font-size: 13px;
+  }
+
+  .narrative {
+    margin-top: 56px;
+    text-align: center;
+    color: var(--text-dim);
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 17px;
+    line-height: 1.7;
+  }
+  .narrative strong { color: var(--text); }
+
+  .cta {
+    margin-top: 40px;
+    text-align: center;
+  }
+  .cta a {
+    display: inline-block;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 15px;
+    transition: transform 0.15s;
+  }
+  .cta a:hover { transform: translateY(-2px); }
+
+  footer {
+    margin-top: 64px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <span class="eyebrow">SE OS · The Reinvention</span>
+    <h1>A Tuesday in the life of a Microsoft SE</h1>
+    <p class="lede">Same customer. Same meeting. Two very different days.</p>
+  </header>
+
+  <div class="compare">
+
+    <!-- BEFORE -->
+    <section class="col col-old">
+      <div class="col-header">
+        <div class="col-tag">Today · Without SE OS</div>
+        <div class="col-title">The Assembly Day</div>
+        <div class="col-sub">Tuesday — customer meeting at 2 PM</div>
+      </div>
+      <div class="timeline">
+        <div class="event">
+          <div class="time">8:30 AM</div>
+          <div class="what">
+            <strong>Open laptop.</strong> Try to remember which D365 demo env you used for this customer last time.
+            <div class="annotate bad">~15 min lost just orienting</div>
+          </div>
+        </div>
+        <div class="event">
+          <div class="time">9:00 AM</div>
+          <div class="what">
+            <strong>Hunt for context.</strong> Open Outlook, Teams, OneNote, SharePoint, the CRM, the deal site, and your demo OneDrive folder. 7 tabs. Skim emails. Find the relevant deck from 3 weeks ago.
+            <div class="annotate bad">35 min · context lives in 7 places</div>
+          </div>
+        </div>
+        <div class="event">
+          <div class="time">9:35 AM</div>
+          <div class="what">
+            <strong>Find your demo script.</strong> Last time you customized it for this customer's vertical. Where did you save that? <em>OneDrive — no, the desktop — wait, the Teams chat.</em>
+            <div class="annotate bad">20 min hunting through personal storage</div>
+          </div>
+        </div>
+        <div class="event">
+          <div class="time">9:55 AM</div>
+          <div class="what">
+            <strong>Refresh the demo env.</strong> Log into CDX, check if records were reset. They weren't. Manual cleanup. Hope nothing broke.
+            <div class="annotate bad">40 min · environment hygiene is on you</div>
+          </div>
+        </div>
+        <div class="event">
+          <div class="time">10:35 AM</div>
+          <div class="what">
+            <strong>Tailor for industry.</strong> Customer is automotive. Demo data is generic mfg. Manually swap product names, account names, terminology so it doesn't look like a cookie-cutter pitch.
+            <div class="annotate bad">45 min of cosmetic editing</div>
+          </div>
+        </div>
+        <div class="event">
+          <div class="time">11:20 AM</div>
+          <div class="what">
+            <strong>Confirm meeting details.</strong> Re-read the email thread. Try to remember what the customer's pain point was. Pull their org chart.
+            <div class="annotate bad">20 min · re-doing context you had 3 weeks ago</div>
+          </div>
+        </div>
+        <div class="event">
+          <div class="time">11:40 AM</div>
+          <div class="what">
+            <strong>Lunch (rushed).</strong> Eating while reviewing the deck. <em>You haven't talked to a colleague all morning.</em>
+          </div>
+        </div>
+        <div class="event">
+          <div class="time">12:30 PM</div>
+          <div class="what">
+            <strong>Practice demo run.</strong> Discover something broke in the env from a recent platform update. Slack a colleague. Wait for a workaround.
+            <div class="annotate bad">45 min lost to brittle env</div>
+          </div>
+        </div>
+        <div class="event">
+          <div class="time">1:30 PM</div>
+          <div class="what">
+            <strong>30 min buffer.</strong> Should be reviewing the customer's strategic priorities. Mostly just hoping the demo works.
+          </div>
+        </div>
+        <div class="event">
+          <div class="time">2:00 PM</div>
+          <div class="what">
+            <strong>Customer meeting.</strong> You're prepared, but it took 5 hours of front-loaded work and your morning is gone.
+            <div class="annotate bad">Total prep: ~5 hours · for one 60-minute meeting</div>
+          </div>
+        </div>
+        <div class="event">
+          <div class="time">3:30 PM</div>
+          <div class="what">
+            <strong>Post-meeting follow-up.</strong> Will get to it tomorrow. Maybe.
+            <div class="annotate bad">Half your notes will never get logged</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AFTER -->
+    <section class="col col-new">
+      <div class="col-header">
+        <div class="col-tag">Tomorrow · With SE OS</div>
+        <div class="col-title">The Customer Day</div>
+        <div class="col-sub">Tuesday — same customer meeting at 2 PM</div>
+      </div>
+      <div class="timeline">
+        <div class="event">
+          <div class="time">8:30 AM</div>
+          <div class="what">
+            <strong>Open SE Command Center.</strong> Dashboard shows: 2 PM customer is highlighted. Brief is already drafted. Demo env health is green.
+            <div class="annotate good">Context is already assembled · Maya prepped overnight</div>
+          </div>
+        </div>
+        <div class="event">
+          <div class="time">8:35 AM</div>
+          <div class="what">
+            <strong>Review the brief.</strong> Felix (Outcome Framer) flagged that the customer's CFO joined the call list — added a "cost-to-serve" angle to the narrative. Priya (Industry SME) added a 30-second framing for automotive supply chain context.
+            <div class="annotate good">10 min reading · everything is contextualized</div>
+          </div>
+        </div>
+        <div class="event">
+          <div class="time">8:45 AM</div>
+          <div class="what">
+            <strong>Skim the demo guide.</strong> Auto-tailored for the customer's vertical. Account names, products, scenarios already swapped. Five-beat narrative arc clean.
+            <div class="annotate good">Jonas + Vera handled the customization · 15 min review</div>
+          </div>
+        </div>
+        <div class="event">
+          <div class="time">9:00 AM</div>
+          <div class="what">
+            <strong>One question to the Digital SE Team.</strong> "Has this customer talked to anyone else at MSFT in the last 90 days?" Maya checks, returns thread with names + summary.
+            <div class="annotate good">5 min · no internal stalking required</div>
+          </div>
+        </div>
+        <div class="event">
+          <div class="time">9:05 AM</div>
+          <div class="what">
+            <strong>You have 4 hours back.</strong> Real choices: deep technical prep, a colleague conversation, working on the *next* customer pipeline, or building a reference architecture you've wanted to ship.
+            <div class="annotate good">+4 hours · the entire morning is yours</div>
+          </div>
+        </div>
+        <div class="event">
+          <div class="time">9:30 AM</div>
+          <div class="what">
+            <strong>Choose: shipping a new use case.</strong> File a GitHub issue with "automotive warranty + Copilot Studio." Sam + Diego start building. Iris kicks off the eval.
+            <div class="annotate good">Your time is now compounding for the team</div>
+          </div>
+        </div>
+        <div class="event">
+          <div class="time">11:00 AM</div>
+          <div class="what">
+            <strong>Coffee with a colleague.</strong> Not because you have time to kill — because relationships and cross-team learning is now part of the job, not what gets cut.
+          </div>
+        </div>
+        <div class="event">
+          <div class="time">1:00 PM</div>
+          <div class="what">
+            <strong>Rowan posts a heads-up.</strong> "Demo env health flag: one Power Automate flow timed out in the last regression run — using fallback. Demo is safe."
+            <div class="annotate good">You knew before the customer did</div>
+          </div>
+        </div>
+        <div class="event">
+          <div class="time">2:00 PM</div>
+          <div class="what">
+            <strong>Customer meeting.</strong> You're prepared, focused, and the demo is solid. You can be present in the conversation because the assembly was done for you.
+            <div class="annotate good">Total prep: ~30 min · for the same 60-min meeting</div>
+          </div>
+        </div>
+        <div class="event">
+          <div class="time">3:30 PM</div>
+          <div class="what">
+            <strong>Post-meeting auto-debrief.</strong> Open Command Center, dictate 90-second voice memo: "Customer asked about X, said yes to Y, follow-up by Friday." Jonas writes the follow-up email draft. Aria logs the outcome. Maya schedules the follow-up.
+            <div class="annotate good">5 min · nothing falls through the cracks</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- SUMMARY METRICS -->
+  <section class="summary">
+    <h2>What the reinvention is worth</h2>
+    <div class="metric-grid">
+      <div class="metric">
+        <div class="metric-num">−4.5h</div>
+        <div class="metric-label">Prep time saved per customer meeting</div>
+      </div>
+      <div class="metric">
+        <div class="metric-num">+40%</div>
+        <div class="metric-label">More time for actual customer conversation</div>
+      </div>
+      <div class="metric">
+        <div class="metric-num">5×</div>
+        <div class="metric-label">Demo assets reused across the SE team</div>
+      </div>
+      <div class="metric">
+        <div class="metric-num">&lt;1 wk</div>
+        <div class="metric-label">New SE time to productivity (vs. months)</div>
+      </div>
+    </div>
+  </section>
+
+  <p class="narrative">
+    <strong>This isn't science fiction.</strong> Every SE in this story exists today as a persona in the Digital SE Team.
+    Every dashboard surface exists in the Command Center. The reinvention is a deployment away — and the template is on GitHub.
+  </p>
+
+  <div class="cta">
+    <a href="https://github.com/billwhalenmsft/se-os">View SE OS on GitHub →</a>
+  </div>
+
+  <footer>
+    SE OS — The SE Operating System · Built by Bill Whalen and the Digital SE Team · <a href="https://github.com/billwhalenmsft/se-os">github.com/billwhalenmsft/se-os</a>
+  </footer>
+
+</div>
+</body>
+</html>

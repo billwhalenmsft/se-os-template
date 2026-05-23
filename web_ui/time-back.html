@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Time-Back Report · SE OS</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg-elev: #131927;
+    --bg-elev2: #1a2235;
+    --border: #2a3550;
+    --text: #e8edf5;
+    --text-dim: #94a3b8;
+    --text-muted: #64748b;
+    --accent: #5b8def;
+    --accent-2: #8b5cf6;
+    --good: #10b981;
+    --warn: #f59e0b;
+    --bad: #ef4444;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .page { max-width: 1200px; margin: 0 auto; padding: 40px 28px 80px; }
+  header { margin-bottom: 32px; }
+  .eyebrow {
+    display: inline-block;
+    padding: 4px 12px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: white;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  h1 { font-size: 36px; margin: 0 0 8px; font-weight: 700; }
+  .sub { color: var(--text-dim); font-size: 16px; }
+
+  .hero {
+    background: linear-gradient(135deg, rgba(91,141,239,0.12), rgba(139,92,246,0.12));
+    border: 1px solid rgba(91,141,239,0.25);
+    border-radius: 16px;
+    padding: 40px;
+    margin-bottom: 32px;
+    text-align: center;
+  }
+  .hero-num {
+    font-size: 96px;
+    font-weight: 800;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-label { color: var(--text-dim); margin-top: 12px; font-size: 17px; }
+  .hero-sub { color: var(--text-muted); font-size: 13px; margin-top: 4px; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .card {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .card-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.1px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .card-num { font-size: 32px; font-weight: 700; color: var(--text); line-height: 1.1; }
+  .card-num .small { font-size: 16px; color: var(--text-dim); font-weight: 500; }
+  .card-trend { margin-top: 6px; font-size: 12px; color: var(--good); font-weight: 600; }
+  .card-trend.warn { color: var(--warn); }
+  .card-trend.bad { color: var(--bad); }
+
+  .section { margin-top: 40px; }
+  .section h2 { font-size: 22px; margin: 0 0 16px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-elev);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  th, td {
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  th {
+    background: var(--bg-elev2);
+    font-weight: 600;
+    color: var(--text-dim);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+  tr:last-child td { border-bottom: none; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .bar-track {
+    flex: 1;
+    height: 8px;
+    background: var(--bg-elev2);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  }
+  .bar-fill.good { background: linear-gradient(90deg, #10b981, #34d399); }
+
+  .target-row { display: grid; grid-template-columns: 200px 1fr 80px; gap: 12px; align-items: center; margin: 12px 0; }
+  .target-label { color: var(--text-dim); font-size: 14px; }
+  .target-val { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  .methodology {
+    margin-top: 40px;
+    padding: 24px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text-dim);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .methodology h3 { color: var(--text); margin-top: 0; font-size: 16px; }
+  .methodology code {
+    background: var(--bg-elev2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+
+  footer {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  .skeleton { color: var(--text-muted); font-style: italic; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <span class="eyebrow">SE OS · The Measurable Promise</span>
+    <h1>Time-Back Report</h1>
+    <div class="sub" id="sub-line">Loading…</div>
+  </header>
+
+  <div class="hero">
+    <div class="hero-num" id="hero-num">—</div>
+    <div class="hero-label">Hours returned to the customer this week</div>
+    <div class="hero-sub" id="hero-sub">vs. pre-SE OS baseline</div>
+  </div>
+
+  <div class="grid" id="metric-cards"></div>
+
+  <div class="section">
+    <h2>Weekly trend</h2>
+    <table id="weekly-table">
+      <thead>
+        <tr>
+          <th>Week</th>
+          <th class="num">Prep hrs</th>
+          <th class="num">Demo build hrs</th>
+          <th class="num">Context hrs</th>
+          <th class="num">Follow-up hrs</th>
+          <th class="num">Total overhead</th>
+          <th class="num">Hours saved</th>
+        </tr>
+      </thead>
+      <tbody id="weekly-tbody"></tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>Progress against Manifesto targets</h2>
+    <div id="targets"></div>
+  </div>
+
+  <div class="methodology">
+    <h3>How this is measured</h3>
+    <p>
+      The Time-Back Metric is the reinvention's measurable promise. It tracks hours returned
+      from <em>SE overhead</em> (prep, asset assembly, context-gathering, follow-up admin)
+      back to <em>customer conversation time</em>.
+    </p>
+    <p>
+      Data source: <code>web_ui/time-back-data.json</code> — updated weekly by Aria (Strategy
+      neighborhood). Baseline is established during the first 2 weeks of SE OS adoption by
+      asking the SE to honestly log their pre-SE OS time allocation.
+    </p>
+    <p>
+      <strong>What "counts" as time saved:</strong> only hours the SE would have otherwise
+      spent on overhead work (prep, assembly, hunting context). Hours spent on better customer
+      conversation, deeper technical work, or building reusable assets are <em>reinvested</em>,
+      not "saved."
+    </p>
+    <p>
+      <strong>Goal:</strong> If the system is working, you should see weekly hours saved trend
+      upward and stabilize at ~20+ hrs/week within 60 days. If it stays flat, that's a signal
+      the SE is not actually leaning on the Digital SE Team — and Maya should investigate why.
+    </p>
+  </div>
+
+  <footer>
+    SE OS · Time-Back Report · See <a href="https://github.com/billwhalenmsft/se-os/blob/main/MANIFESTO.md">the Manifesto</a> for the measurable promise · <a href="index.html">Back to Command Center</a>
+  </footer>
+</div>
+
+<script>
+(async function () {
+  let data;
+  try {
+    const r = await fetch('./time-back-data.json');
+    data = await r.json();
+  } catch (e) {
+    document.getElementById('sub-line').textContent = 'Could not load time-back-data.json — make sure you are serving the page (not opening file://).';
+    return;
+  }
+
+  const latest = data.weekly_snapshots[data.weekly_snapshots.length - 1];
+  const rolling = data.rolling_averages;
+
+  document.getElementById('sub-line').innerHTML =
+    `<strong>${data.se.name}</strong> · ${data.se.practice_area} · Adopted ${data.se.adoption_date}`;
+
+  document.getElementById('hero-num').textContent = '+' + latest.hours_saved_vs_baseline + 'h';
+  document.getElementById('hero-sub').textContent =
+    `Week of ${latest.week_of} · vs ${data.baseline.total_baseline_hrs}h baseline`;
+
+  // metric cards
+  const cards = [
+    {label: 'Customer meetings (this week)', val: latest.customer_meetings_count, suffix: ''},
+    {label: 'Demos shipped to library', val: latest.demos_shipped_to_library, suffix: ''},
+    {label: 'Agent assists used', val: latest.agent_assists_used, suffix: ''},
+    {label: 'Total overhead time', val: latest.total_hrs, suffix: 'h'},
+    {label: 'Rolling avg hours saved', val: rolling.avg_weekly_hours_saved, suffix: 'h/wk'},
+    {label: '% time returned to customer', val: rolling.pct_time_returned_to_customer, suffix: '%'},
+  ];
+  document.getElementById('metric-cards').innerHTML = cards.map(c => `
+    <div class="card">
+      <div class="card-label">${c.label}</div>
+      <div class="card-num">${c.val}<span class="small">${c.suffix}</span></div>
+    </div>
+  `).join('');
+
+  // weekly table
+  document.getElementById('weekly-tbody').innerHTML = data.weekly_snapshots.map(w => `
+    <tr>
+      <td>${w.week_of}</td>
+      <td class="num">${w.customer_meeting_prep_hrs}</td>
+      <td class="num">${w.demo_asset_assembly_hrs}</td>
+      <td class="num">${w.context_gathering_hrs}</td>
+      <td class="num">${w.post_meeting_followup_hrs}</td>
+      <td class="num"><strong>${w.total_hrs}</strong></td>
+      <td class="num" style="color: var(--good); font-weight:600">+${w.hours_saved_vs_baseline}h</td>
+    </tr>
+  `).join('');
+
+  // targets
+  const t = data.targets;
+  const baseline = data.baseline;
+  const prepReductionActualPct = Math.round(((baseline.customer_meeting_prep_hrs_per_week - latest.customer_meeting_prep_hrs) / baseline.customer_meeting_prep_hrs_per_week) * 100);
+  const targets = [
+    {label: 'Prep time reduction', actual: prepReductionActualPct, target: t.prep_time_reduction_pct, unit: '%'},
+    {label: '% time returned to customer', actual: rolling.pct_time_returned_to_customer, target: t.customer_time_increase_pct, unit: '%'},
+    {label: 'Demo asset reuse multiplier', actual: data.team_aggregate.cross_se_asset_reuses || 0, target: t.demo_asset_reuse_multiplier, unit: '×'},
+  ];
+  document.getElementById('targets').innerHTML = targets.map(t => {
+    const pct = Math.min(100, Math.round((t.actual / t.target) * 100));
+    return `
+      <div class="target-row">
+        <div class="target-label">${t.label}</div>
+        <div class="bar"><div class="bar-track"><div class="bar-fill ${pct >= 80 ? 'good' : ''}" style="width: ${pct}%"></div></div></div>
+        <div class="target-val">${t.actual}${t.unit} / ${t.target}${t.unit}</div>
+      </div>
+    `;
+  }).join('');
+})();
+</script>
+</body>
+</html>
