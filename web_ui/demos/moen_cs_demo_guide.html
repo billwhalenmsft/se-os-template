@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moen CS on D365 — SE Demo Guide</title>
+<style>
+/* ───────── CSS Variables ───────── */
+:root {
+  --moen-blue: #0066b2;
+  --moen-blue-dark: #003e6f;
+  --moen-accent: #ed8b00;
+  --hero1: #c0392b;
+  --hero2: #16a085;
+  --hero3: #8e44ad;
+  --bg: #f5f6fa;
+  --panel-bg: #1e1e2e;
+  --panel-text: #e0e0e0;
+  --nav-bg: #ffffff;
+  --border: #dde1e6;
+  --text: #222;
+  --text-muted: #666;
+  --say-bg: #fff8e1;
+  --say-border: #ed8b00;
+  --show-bg: #e3f2fd;
+  --show-border: #1976d2;
+  --roi-bg: #e8f5e9;
+  --roi-border: #388e3c;
+  --frontier-bg: #f3e5f5;
+  --frontier-border: #7b1fa2;
+  --radius: 8px;
+}
+
+/* ───────── Reset & Base ───────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+/* ───────── Header ───────── */
+.header {
+  background: linear-gradient(135deg, var(--moen-blue-dark), var(--moen-blue));
+  color: #fff;
+  padding: 20px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(0,0,0,.25);
+}
+.header-left h1 { font-size: 22px; font-weight: 700; }
+.header-left .subtitle { font-size: 13px; opacity: .85; margin-top: 2px; }
+.meta-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.chip {
+  background: rgba(255,255,255,.18);
+  border-radius: 12px;
+  padding: 3px 10px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.btn-print {
+  background: var(--moen-accent);
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.btn-print:hover { opacity: .85; }
+
+/* ───────── 3-Column Layout ───────── */
+/* Panels are position:fixed so they never lose their stick.
+   Center content gets left/right margin to avoid overlap. */
+.layout {
+  min-height: calc(100vh - 80px);
+}
+.layout.nav-collapsed .left-nav { transform: translateX(-100%); }
+.layout.cheat-collapsed .right-panel { transform: translateX(100%); }
+.layout.nav-collapsed .center { margin-left: 0; }
+.layout.cheat-collapsed .center { margin-right: 0; }
+
+/* ───────── Left Nav ───────── */
+.left-nav {
+  position: fixed;
+  top: 80px;
+  left: 0;
+  width: 280px;
+  height: calc(100vh - 80px);
+  background: var(--nav-bg);
+  border-right: 1px solid var(--border);
+  padding: 16px 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 50;
+  transition: transform .3s;
+  transition: width .3s, padding .3s;
+}
+.layout.nav-collapsed .left-nav { transform: translateX(-280px); }
+
+.nav-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px 12px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+.nav-header span { font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: .5px; color: var(--text-muted); }
+.pin-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px 6px;
+  color: var(--text-muted);
+}
+.pin-btn:hover { background: #eee; }
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  text-decoration: none;
+  color: var(--text);
+  font-size: 13px;
+  border-left: 3px solid transparent;
+  transition: background .15s, border-color .15s;
+  cursor: pointer;
+}
+.nav-link:hover { background: #f0f4f8; }
+.nav-link.active { background: #e8f0fe; border-left-color: var(--moen-blue); font-weight: 600; }
+.nav-link .num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.nav-link.active .num { background: var(--moen-blue); color: #fff; }
+.nav-link[data-hero="1"] .num { background: var(--hero1); color: #fff; }
+.nav-link[data-hero="2"] .num { background: var(--hero2); color: #fff; }
+.nav-link[data-hero="3"] .num { background: var(--hero3); color: #fff; }
+
+/* ───────── Center Content ───────── */
+.center {
+  margin-left: 280px;
+  margin-right: 300px;
+  padding: 32px 40px 80px;
+  max-width: 960px;
+  transition: margin .3s;
+}
+
+.section { margin-bottom: 48px; scroll-margin-top: 100px; }
+.section h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section h2 .badge {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 600;
+}
+.section h3 { font-size: 17px; margin: 20px 0 10px; font-weight: 600; }
+.section p, .section li { margin-bottom: 8px; }
+.section ul, .section ol { padding-left: 24px; }
+
+/* Hero arc banners */
+.arc-banner {
+  padding: 14px 20px;
+  border-radius: var(--radius);
+  color: #fff;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.arc-banner.hero1 { background: var(--hero1); }
+.arc-banner.hero2 { background: var(--hero2); }
+.arc-banner.hero3 { background: var(--hero3); }
+.arc-banner .arc-title { font-size: 18px; font-weight: 700; }
+.arc-banner .arc-time { opacity: .8; font-size: 13px; }
+
+/* ───────── Callout Blocks ───────── */
+.say, .show, .roi, .frontier {
+  padding: 14px 18px;
+  border-radius: var(--radius);
+  margin: 12px 0;
+  border-left: 4px solid;
+  position: relative;
+}
+.say { background: var(--say-bg); border-color: var(--say-border); }
+.say::before { content: "🎤 "; }
+.say em { font-style: italic; }
+
+.show { background: var(--show-bg); border-color: var(--show-border); }
+.show::before { content: "👀 "; }
+
+.roi { background: var(--roi-bg); border-color: var(--roi-border); }
+.roi::before { content: "💰 "; }
+.roi .src { display: block; font-size: 12px; color: #555; margin-top: 6px; font-style: italic; }
+
+.frontier { background: var(--frontier-bg); border-color: var(--frontier-border); }
+.frontier::before { content: "🚀 "; }
+
+/* Click steps */
+.click-steps { counter-reset: step; margin: 16px 0; }
+.click {
+  display: flex;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px dashed var(--border);
+  counter-increment: step;
+}
+.click:last-child { border-bottom: none; }
+.click::before {
+  content: counter(step);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--moen-blue);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.click .step-body { flex: 1; }
+.click .step-body strong { color: var(--moen-blue-dark); }
+
+/* Tables */
+table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+th, td { padding: 8px 12px; text-align: left; border: 1px solid var(--border); }
+th { background: var(--moen-blue); color: #fff; font-weight: 600; font-size: 13px; }
+tr:nth-child(even) { background: #f9fafb; }
+td.green { color: #2e7d32; font-weight: 600; }
+td.guid { font-family: Consolas, monospace; font-size: 12px; color: #888; }
+
+/* Grid cards */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin: 16px 0; }
+.card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+.card h4 { font-size: 15px; margin-bottom: 6px; }
+.card .card-icon { font-size: 24px; margin-bottom: 8px; }
+
+/* Tab cards (pre-load) */
+.tab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin: 16px 0; }
+.tab-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.tab-card .tab-num {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--moen-blue);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.tab-card .tab-label { font-size: 13px; flex: 1; }
+.tab-card .btn-open {
+  background: var(--moen-blue);
+  color: #fff;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.tab-card .btn-open:hover { background: var(--moen-blue-dark); }
+
+/* Warning callout */
+.callout {
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  margin: 12px 0;
+  border-left: 4px solid;
+  font-size: 14px;
+}
+.callout.warn { background: #fff3e0; border-color: #f57c00; }
+.callout.danger { background: #fce4ec; border-color: #c62828; }
+.callout.info { background: #e3f2fd; border-color: #1565c0; }
+.callout.good { background: #e8f5e9; border-color: #2e7d32; }
+
+/* ───────── Right Cheat Sheet ───────── */
+.right-panel {
+  position: fixed;
+  top: 80px;
+  right: 0;
+  width: 300px;
+  height: calc(100vh - 80px);
+  background: var(--panel-bg);
+  color: var(--panel-text);
+  padding: 16px;
+  overflow-y: auto;
+  border-left: 1px solid #333;
+  z-index: 50;
+  transition: transform .3s;
+}
+.layout.cheat-collapsed .right-panel { transform: translateX(300px); }
+
+.cheat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #444;
+}
+.cheat-header span { font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: .5px; color: #aaa; }
+
+.cheat-section { display: none; }
+.cheat-section.active { display: block; }
+
+.cheat-card {
+  background: #2a2a3e;
+  border-radius: var(--radius);
+  padding: 12px;
+  margin-bottom: 12px;
+}
+.cheat-card h4 { font-size: 13px; color: var(--moen-accent); margin-bottom: 6px; }
+.cheat-card p, .cheat-card li { font-size: 12px; color: #ccc; margin-bottom: 4px; }
+.cheat-card .val { color: #fff; font-weight: 600; }
+.cheat-card .guid-chip {
+  font-family: Consolas, monospace;
+  font-size: 11px;
+  color: #888;
+  background: #1a1a2a;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.deep-link-bar { display: flex; flex-direction: column; gap: 6px; }
+.dl-btn {
+  display: block;
+  background: #3a3a50;
+  color: #e0e0e0;
+  padding: 8px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 12px;
+  transition: background .15s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dl-btn:hover { background: var(--moen-blue); color: #fff; }
+.dl-btn .dl-icon { font-size: 16px; }
+
+/* ───────── Toggle Buttons (floating) ───────── */
+.toggle-nav, .toggle-cheat {
+  position: fixed;
+  z-index: 101;
+  background: var(--moen-blue);
+  color: #fff;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,.3);
+}
+.toggle-nav { left: 8px; top: 90px; }
+.toggle-cheat { right: 308px; top: 90px; }
+.layout.cheat-collapsed .toggle-cheat { right: 8px; }
+.layout.nav-collapsed .toggle-nav { left: 8px; }
+
+/* ───────── Print ───────── */
+@media print {
+  .header { position: static; }
+  .layout { display: block; }
+  .left-nav, .right-panel, .toggle-nav, .toggle-cheat, .btn-print { display: none !important; }
+  .center { margin-left: 0 !important; margin-right: 0 !important; max-width: 100%; padding: 16px; }
+  .section { page-break-inside: avoid; }
+  .arc-banner { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  body { font-size: 12px; }
+  table { font-size: 11px; }
+  th { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+}
+
+/* ── Copy button ── */
+.copyable { position: relative; }
+.copyable .copy-btn {
+  position: absolute; top: 6px; right: 6px;
+  background: var(--moen-blue); color: #fff;
+  border: none; border-radius: 4px; padding: 4px 10px;
+  font-size: 0.8em; cursor: pointer; opacity: 0.8;
+  transition: opacity 0.2s, background 0.2s;
+  z-index: 2;
+}
+.copyable .copy-btn:hover { opacity: 1; }
+.copyable .copy-btn.copied { background: #27ae60; }
+@media print { .copyable .copy-btn { display: none; } }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<div class="header">
+  <div class="header-left">
+    <h1>Moen CS on D365 — SE Demo Guide</h1>
+    <div class="subtitle">The Gospel · Three hero arcs · 120 min · Deerfield IL</div>
+    <div class="meta-chips">
+      <span class="chip">⏱ 120 min</span>
+      <span class="chip">📍 Deerfield IL</span>
+      <span class="chip">👤 Janet Gedwill</span>
+      <span class="chip">📧 Email + 📞 Phone + 💬 Chat</span>
+      <span class="chip">🏢 Master CE Mfg (orgecbce8ef)</span>
+    </div>
+  </div>
+  <button class="btn-print" onclick="window.print()">🖨 Print / PDF</button>
+</div>
+
+<!-- Toggle buttons -->
+<button class="toggle-nav" id="toggleNav" title="Toggle Nav">☰</button>
+<button class="toggle-cheat" id="toggleCheat" title="Toggle Context">◧</button>
+
+<!-- ═══════════ 3-COLUMN LAYOUT ═══════════ -->
+<div class="layout" id="layout">
+
+<!-- ───── LEFT NAV ───── -->
+<nav class="left-nav" id="leftNav">
+  <div class="nav-header">
+    <span>Sections</span>
+    <button class="pin-btn" id="pinNav" title="Collapse nav">◁</button>
+  </div>
+  <a class="nav-link active" data-target="provision"><span class="num">1</span> Provision</a>
+  <a class="nav-link" data-target="orient"><span class="num">2</span> Orient</a>
+  <a class="nav-link" data-target="frontier"><span class="num">3</span> Frontier Firm</a>
+  <a class="nav-link" data-target="preload"><span class="num">4</span> Pre-load Tabs</a>
+  <a class="nav-link" data-target="welcome"><span class="num">5</span> Welcome (0:00)</a>
+  <a class="nav-link" data-target="stateofunion"><span class="num">6</span> CS Workspace + Routing (0:05)</a>
+  <a class="nav-link" data-target="hero1" data-hero="1"><span class="num">7</span> ⭐ Ferguson B2B (0:15)</a>
+  <a class="nav-link" data-target="hero2" data-hero="2"><span class="num">8</span> ⭐ Linda BBB (0:35)</a>
+  <a class="nav-link" data-target="hero3" data-hero="3"><span class="num">9</span> ⭐ Marie Portal→Bot→Agent (0:55)</a>
+  <a class="nav-link" data-target="supporting"><span class="num">10</span> Supporting (1:15)</a>
+  <a class="nav-link" data-target="roadmap"><span class="num">11</span> Roadmap (1:40)</a>
+  <a class="nav-link" data-target="close"><span class="num">12</span> Close + ROI (1:55)</a>
+  <a class="nav-link" data-target="askmatrix"><span class="num">13</span> 17-Ask Matrix</a>
+  <a class="nav-link" data-target="fallbacks"><span class="num">14</span> Fallbacks</a>
+</nav>
+
+<!-- ───── CENTER CONTENT ───── -->
+<main class="center">
+
+<!-- ══ 1. PROVISION ══ -->
+<div class="section" id="provision" data-cheat-section="default">
+  <h2>1 &nbsp; Provision <span class="badge" style="background:var(--moen-blue)">Pre-demo</span></h2>
+  <p>The D365 demo environment <strong>Master CE Mfg (orgecbce8ef)</strong> has been seeded with <strong>84 records</strong> across all entity types needed for the Moen CS demo.</p>
+
+  <table>
+    <tr><th>Entity</th><th>Count</th><th>Key Records</th></tr>
+    <tr><td>Accounts</td><td>5</td><td>Lowe's, Home Depot, Ferguson (primary), Winsupply, Plomería Aguilar</td></tr>
+    <tr><td>Households</td><td>5</td><td>Johnson, Tremblay, Chen, Patel, Williams</td></tr>
+    <tr><td>Contacts</td><td>12+</td><td>Mike Brannigan (Ferguson), Derek Lawson (Ferguson), Linda Johnson, Marie Tremblay, Sarah Mitchell, James Patel…</td></tr>
+    <tr><td>Products</td><td>6</td><td>Cartridge 1255, Adler Kitchen, Banbury Bath, Genta Shower, Flo Monitor, U by Moen</td></tr>
+    <tr><td>Queues</td><td>14</td><td>Moen-Warranty-US-EN, Moen-Warranty-CA-FR, Moen-Escalation…</td></tr>
+    <tr><td>KB Articles</td><td>20</td><td>Faucet cartridge replacement, Limited Lifetime Warranty…</td></tr>
+    <tr><td>Assets</td><td>8</td><td>MOEN-LJ-2024-44120, MOEN-MT-2024-77821, FERG-B247-DISP-82006, FERG-B247-ADL-87480…</td></tr>
+    <tr><td>Entitlements</td><td>4</td><td>Lowe's Strategic, Home Depot Strategic, Ferguson Strategic (1h SLA), Ferguson Legacy</td></tr>
+    <tr><td>Cases</td><td>12</td><td>Ferguson damaged shipment (phone), Ferguson web chat, Ferguson RMA, BBB (Linda), Warranty (Marie), FBM order…</td></tr>
+    <tr><td>Orders</td><td>5</td><td>Ferguson FBM-22871, Ferguson FBM-23104, auto-generated from claims…</td></tr>
+    <tr><td>Activities</td><td>10</td><td>Emails, phone calls, notes across hero cases</td></tr>
+    <tr><td>Notes</td><td>~22</td><td>Timeline annotations on cases and contacts</td></tr>
+  </table>
+
+  <div class="callout info">
+    <strong>Re-provision command:</strong><br>
+    <code>python d365/scripts/00-Setup.ps1 -Customer fortunebrands</code><br>
+    or from RAPP: <code>D365DemoPrep → action="provision_data", customer="fortunebrands"</code>
+  </div>
+</div>
+
+<!-- ══ 2. ORIENT ══ -->
+<div class="section" id="orient" data-cheat-section="default">
+  <h2>2 &nbsp; Orient <span class="badge" style="background:var(--text-muted)">Storyline</span></h2>
+
+  <div class="say"><em>"Today Moen CS is email + NICE CXone with no real CRM — agents toggle between six browser tabs just to answer a homeowner question about their faucet warranty."</em></div>
+
+  <h3>Three Hero Arcs</h3>
+  <table>
+    <tr><th style="width:40px">#</th><th>Hero</th><th>Persona</th><th>Theme</th><th>Time</th></tr>
+    <tr><td style="background:var(--hero1);color:#fff;text-align:center;font-weight:700">1</td><td>Ferguson B2B</td><td>Strategic distributor — damaged shipment claim</td><td><strong>LEAD:</strong> Account + Entitlement + Orders + C360 + Service Toolkit</td><td>0:15–0:35</td></tr>
+    <tr><td style="background:var(--hero2);color:#fff;text-align:center;font-weight:700">2</td><td>Linda Johnson</td><td>Consumer BBB escalation</td><td>Email channel + Copilot draft + hot-word routing</td><td>0:35–0:55</td></tr>
+    <tr><td style="background:var(--hero3);color:#fff;text-align:center;font-weight:700">3</td><td>Marie Tremblay</td><td>French-Canadian warranty (portal chat)</td><td>Portal → Bot self-service → Agent handoff + translation + Intent Agent</td><td>0:55–1:15</td></tr>
+  </table>
+
+  <h3>3 Supporting Proof-Points</h3>
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">�</div><h4>Derek Lawson Web Chat</h4><p>Ferguson B2B contact uses web chat portal — demonstrates authenticated chat with account context.</p></div>
+    <div class="card"><div class="card-icon">🤖</div><h4>Bot Deflection (James)</h4><p>PVA bot handles "where's my order" autonomously, reduces live agent volume.</p></div>
+    <div class="card"><div class="card-icon">⚡</div><h4>Agent Quality Eval</h4><p>Supervisor dashboard with Copilot sentiment scoring on resolved cases.</p></div>
+  </div>
+</div>
+
+<!-- ══ 3. FRONTIER FIRM ══ -->
+<div class="section" id="frontier" data-cheat-section="default">
+  <h2>3 &nbsp; Frontier Firm <span class="badge" style="background:var(--frontier-border)">Narrative</span></h2>
+
+  <div class="frontier"><em>"A Frontier Firm doesn't just digitize old processes — it uses AI to reimagine every customer touchpoint from first call to warranty claim."</em></div>
+
+  <table>
+    <tr><th>Pillar</th><th>Frontier Firm Principle</th><th>Demo Moment</th></tr>
+    <tr><td>🤝 B2B Precision</td><td>Channel partners get SLA-driven, entitlement-tracked service</td><td>Hero 1: Ferguson phone screenpop + 1h SLA + C360</td></tr>
+    <tr><td>🛡 Unified Service</td><td>Single pane of glass — no toggle tax</td><td>Hero 2: Linda's BBB email → escalation → Copilot draft</td></tr>
+    <tr><td>🌍 Intelligent Deflection</td><td>Portal → bot → agent with zero repeat and real-time translation</td><td>Hero 3: Marie's French chat → bot self-service → agent handoff + Intent Agent</td></tr>
+  </table>
+
+  <div class="callout warn">
+    <strong>Anti-narrative warnings:</strong> Do NOT position this as "replacing NICE CXone." Frame as "D365 becomes the single source of truth that sits behind any telephony." Don't mention Salesforce comparison unprompted.
+  </div>
+</div>
+
+<!-- ══ 4. PRE-LOAD TABS ══ -->
+<div class="section" id="preload" data-cheat-section="default">
+  <h2>4 &nbsp; Pre-load Tabs <span class="badge" style="background:var(--moen-blue)">Setup</span></h2>
+  <p>Open these 11 tabs before the demo starts. Each link opens the record in D365 Service Hub.</p>
+
+  <div class="tab-grid">
+    <div class="tab-card"><span class="tab-num">1</span><span class="tab-label">CS Workspace Home</span><a class="btn-open" href="https://orgecbce8ef.crm.dynamics.com/main.aspx?appid=7a2fe39b-b651-ef11-a317-0022482a41a0" target="_blank">Open</a></div>
+    <div class="tab-card"><span class="tab-num">2</span><span class="tab-label">Linda's BBB Case</span><a class="btn-open" href="https://orgecbce8ef.crm.dynamics.com/main.aspx?etn=incident&id=4833e4be-7a42-f111-88b5-7ced8dceb26a&pagetype=entityrecord" target="_blank">Open</a></div>
+    <div class="tab-card"><span class="tab-num">3</span><span class="tab-label">Linda Contact</span><a class="btn-open" href="https://orgecbce8ef.crm.dynamics.com/main.aspx?etn=contact&id=a413fc9f-7a42-f111-88b5-7ced8dceb26a&pagetype=entityrecord" target="_blank">Open</a></div>
+    <div class="tab-card"><span class="tab-num">4</span><span class="tab-label">Marie's Case</span><a class="btn-open" href="https://orgecbce8ef.crm.dynamics.com/main.aspx?etn=incident&id=d632e4be-7a42-f111-88b5-7ced8dceb26a&pagetype=entityrecord" target="_blank">Open</a></div>
+    <div class="tab-card"><span class="tab-num">5</span><span class="tab-label">Ferguson Claim Case</span><a class="btn-open" href="https://orgecbce8ef.crm.dynamics.com/main.aspx?etn=incident&pagetype=entitylist&viewid=00000000-0000-0000-0000-000000000000&viewType=1039" target="_blank">Open ⚠️</a></div>
+    <div class="tab-card"><span class="tab-num">6</span><span class="tab-label">Ferguson Account</span><a class="btn-open" href="https://orgecbce8ef.crm.dynamics.com/main.aspx?etn=account&id=aeedbe8d-7a42-f111-88b5-7ced8dceb26a&pagetype=entityrecord" target="_blank">Open</a></div>
+    <div class="tab-card"><span class="tab-num">7</span><span class="tab-label">Mike Brannigan Contact</span><a class="btn-open" href="https://orgecbce8ef.crm.dynamics.com/main.aspx?etn=contact&pagetype=entitylist" target="_blank">Open ⚠️</a></div>
+    <div class="tab-card"><span class="tab-num">8</span><span class="tab-label">Sarah Contact</span><a class="btn-open" href="https://orgecbce8ef.crm.dynamics.com/main.aspx?etn=contact&id=c2edbe8d-7a42-f111-88b5-7ced8dceb26a&pagetype=entityrecord" target="_blank">Open</a></div>
+    <div class="tab-card"><span class="tab-num">9</span><span class="tab-label">James's Case</span><a class="btn-open" href="https://orgecbce8ef.crm.dynamics.com/main.aspx?etn=incident&id=2c33e4be-7a42-f111-88b5-7ced8dceb26a&pagetype=entityrecord" target="_blank">Open</a></div>
+    <div class="tab-card"><span class="tab-num">10</span><span class="tab-label">Escalation Queue</span><a class="btn-open" href="https://orgecbce8ef.crm.dynamics.com/main.aspx?etn=queue&id=47590fa6-7a42-f111-88b5-7ced8dceb26a&pagetype=entityrecord" target="_blank">Open</a></div>
+    <div class="tab-card"><span class="tab-num">11</span><span class="tab-label">CS Workspace Dashboard</span><a class="btn-open" href="https://orgecbce8ef.crm.dynamics.com/main.aspx?appid=7a2fe39b-b651-ef11-a317-0022482a41a0&pagetype=dashboard" target="_blank">Open</a></div>
+  </div>
+</div>
+
+<!-- ══ 5. WELCOME ══ -->
+<div class="section" id="welcome" data-cheat-section="default">
+  <h2>5 &nbsp; Welcome <span class="badge" style="background:var(--moen-blue)">0:00–0:05</span></h2>
+
+  <div class="say"><em>"Janet, thank you for making time — we're excited to show you what modern service looks like when it's built on a single, unified platform."</em></div>
+
+  <p>Quick introductions around the room. Keep it under 90 seconds.</p>
+
+  <div class="say"><em>"Here's our plan for the next two hours: first I'll orient you to the Customer Service Workspace — the agent desktop — and show how email, phone, and web chat all flow through one system with skills-based routing. Then we'll walk three real customer scenarios — a homeowner escalation, a French-Canadian warranty claim, and a B2B partner issue — and close with Copilot AI and the roadmap."</em></div>
+
+  <div class="show">Open <strong>CS Workspace Home</strong> (Tab 1). Let it load in the background while you talk — you'll walk through it in the next section.</div>
+</div>
+
+<!-- ══ 6. STATE OF UNION ══ -->
+<div class="section" id="stateofunion" data-cheat-section="default">
+  <h2>6 &nbsp; CS Workspace + Channels + Routing <span class="badge" style="background:var(--moen-blue)">0:05–0:20</span></h2>
+
+  <h3>CS Workspace Orientation (3 min)</h3>
+  <div class="say"><em>"Before we dive into scenarios, let me orient you to where a Moen agent lives every day. This is Customer Service Workspace — not a portal, not a tab in Teams. It's a purpose-built agent desktop."</em></div>
+
+  <div class="click-steps">
+    <div class="click"><div class="step-body"><strong>Open CS Workspace Home</strong> (Tab 1). Walk through the layout:
+      <ul>
+        <li><strong>Multi-session tabs</strong> — an agent can have 5 cases open at once, each in its own tab. No more lost context when switching.</li>
+        <li><strong>Productivity pane</strong> (right side) — agent scripts, knowledge search, Copilot, Smart assist. Always visible.</li>
+        <li><strong>Inbox</strong> — unified view of all assigned work items across channels (email, chat, voice). "This is the agent's queue — not Outlook."</li>
+        <li><strong>Agent Home dashboard</strong> — KPIs, SLA timers, queue depth at a glance.</li>
+      </ul>
+    </div></div>
+  </div>
+
+  <h3>Three channels — email, phone, web chat (3 min)</h3>
+  <div class="say"><em>"Janet, you said Moen runs on email + NICE CXone today. Here's how all three channels come together in one system."</em></div>
+
+  <div class="click-steps">
+    <div class="click"><div class="step-body"><strong>Email channel:</strong> "When an email arrives at the Moen CS mailbox, D365 auto-creates a case and routes it. The agent sees it in their Inbox and opens it as a session tab. They can reply inline — no Outlook needed." <em>Point at Linda's BBB email in the case timeline — that's a real inbound email they can Reply to.</em></div></div>
+    <div class="click"><div class="step-body"><strong>Phone channel (CXone CIF):</strong> "When a call comes in via NICE CXone, the Channel Integration Framework pops a screen with the caller's case history + account context. The agent accepts, and a new session tab opens with the case pre-loaded." <em>We'll demo this LIVE in Hero 1 — Bill calls from +1 (651) 226-3398, screenpop matches Mike Brannigan → Ferguson account → damaged shipment case.</em></div></div>
+    <div class="click"><div class="step-body"><strong>Web chat:</strong> "A customer starts a chat on moen.com. It hits a Copilot Studio bot first. If the bot can resolve it (like James Patel's Flo Wi-Fi issue), it does — zero human touch. If not, it transfers to a live agent with the full conversation history." <em>Reference Marie's chat scenario and James Patel's bot-resolved case.</em></div></div>
+  </div>
+
+  <h3>Routing — one workstream, many rule types (4 min)</h3>
+  <div class="say"><em>"This is the part Janet asked about specifically — how do we get the right case to the right agent? Let me show you one workstream that has all the routing options mixed together."</em></div>
+
+  <div class="click-steps">
+    <div class="click"><div class="step-body"><strong>Open the Case workstream:</strong> Navigate to <kbd>Customer Service admin center</kbd> → <kbd>Workstreams</kbd> → click <strong>"Case workstream"</strong>. <em>"This is the single routing workstream that all Moen cases flow through. Inside it, we have classification rules, route-to-queue rules, and assignment rules — stacked. Let me walk you through each."</em></div></div>
+
+    <div class="click"><div class="step-body"><strong>Classification rules (intent detection):</strong> Click the <kbd>Route to queues</kbd> tab. Show the rule set. <em>"Rule 1 evaluates the case subject tree — if the subject is 'Complaint / Escalation', it sets priority to High. Rule 2 checks for hot-words in the description (BBB, lawsuit, recall). Rule 3 detects language from the case origin and tags it. These fire in sequence on every new case — the output is a classified, prioritized, language-tagged work item."</em>
+      <div class="show">Point at the rule conditions editor. Show how each rule is an IF/THEN: IF subject = 'Complaint' THEN set priority = 1 AND add skill 'De-escalation'.</div>
+    </div></div>
+
+    <div class="click"><div class="step-body"><strong>Route-to-queue rules (tier + customer + language mixed):</strong> Stay on the same tab, scroll to the queue assignment rules. Walk through how different rule TYPES coexist in one workstream:
+      <table>
+        <thead><tr><th>Rule type</th><th>Example</th><th>Routes to</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Customer-based</strong></td><td>IF account = "Ferguson" OR "Lowe's" OR "Home Depot"</td><td>→ Moen-Orders-Strategic-US</td></tr>
+          <tr><td><strong>Tier-based</strong></td><td>IF account category = Preferred (tier 1-2)</td><td>→ Moen-Claims-US (with 4h SLA)</td></tr>
+          <tr><td><strong>Language-based</strong></td><td>IF language = French</td><td>→ Moen-Warranty-CA-FR or Moen-Tech-FR</td></tr>
+          <tr><td><strong>Intent-based</strong></td><td>IF subject = "Warranty Claim"</td><td>→ Moen-Warranty-US-EN</td></tr>
+          <tr><td><strong>Hot-word escalation</strong></td><td>IF description contains "BBB" or "lawsuit"</td><td>→ Moen-Escalation-US (push, not pick)</td></tr>
+          <tr><td><strong>Default / fallback</strong></td><td>No other rule matches</td><td>→ Moen-General-US-EN</td></tr>
+        </tbody>
+      </table>
+      <em>"These aren't separate workstreams — they're all rules inside ONE workstream, evaluated top to bottom. First match wins. That's why Linda's BBB email went to Escalation, not General."</em>
+    </div></div>
+
+    <div class="click"><div class="step-body"><strong>Skill-based assignment:</strong> Click the <kbd>Assignment rules</kbd> section. <em>"Once the case is in a queue, assignment rules match it to the best agent based on skills. We created 10 Moen-specific skills — let me show them."</em>
+      <br>Navigate to <kbd>User attributes</kbd> → <kbd>Skills</kbd>. Show the Moen skills:
+      <ul>
+        <li>Product skills: <em>Faucet and Bath, Shower Systems, Kitchen, Smart Water Flo, Smart Faucet U by Moen</em></li>
+        <li>Process skills: <em>Warranty Specialist, B2B Claims</em></li>
+        <li>Language skills: <em>French FR, Spanish ES</em></li>
+        <li>Escalation skill: <em>De-escalation</em></li>
+      </ul>
+      <em>"When Marie's French warranty case hits the Moen-Warranty-CA-FR queue, the assignment rule looks for an agent with BOTH 'Warranty Specialist' AND 'French FR' skills. That's a two-skill match — the routing engine finds the best-fit agent automatically."</em>
+    </div></div>
+
+    <div class="click"><div class="step-body"><strong>Push vs Pick:</strong> <em>"One more thing — you can set each queue as push or pick. For your escalation queue, we'd recommend push — you don't want a BBB complaint sitting unclaimed. For general inquiries, pick gives agents more control over their workload."</em></div></div>
+  </div>
+
+  <div class="show"><strong>Key demo beat:</strong> The room should walk away understanding that <em>one workstream</em> can mix customer rules, tier rules, language rules, intent rules, hot-word rules, AND skill-based assignment — all evaluated in sequence. They don't need 14 separate workstreams for 14 queues.</div>
+
+  <div class="roi"><strong>ROI — Routing:</strong> Skills-based routing eliminates the "wrong agent" problem. Industry benchmark: 15-20% of cases are misrouted in skill-less systems. At 70 reps × ~50 cases/day, that's 500-700 misroutes/week eliminated. Each misroute costs ~$12 in handle time + customer frustration → <strong>~$300K-$400K/year in reduced rework</strong>.</div>
+
+  <h3>Pivot to stories</h3>
+  <div class="say"><em>"Now you've seen the workspace, the channels, and the routing. Let's see it all come together — starting with your biggest distributor. Ferguson's regional purchasing manager just called about a damaged shipment. Let me take the call live."</em></div>
+</div>
+
+<!-- ══ 7. HERO 1 — FERGUSON B2B (PHONE CALL + SCREENPOP — richest case form) ══ -->
+<div class="section" id="hero1" data-cheat-section="hero3">
+  <div class="arc-banner hero1">
+    <span class="arc-title">⭐ Hero 1 — Ferguson B2B: Phone Screenpop + Account + Entitlement + C360 </span>
+    <span class="arc-time">0:15–0:35 · 20 min</span>
+  </div>
+
+  <h3>Contrast Moment</h3>
+  <div class="say"><em>"Now let's talk about the other side of Moen's business — your channel partners. When Linda the homeowner files a complaint, your SLA is 48 hours. But when Ferguson calls about a damaged shipment of 47 cartridges, the expectation is 1 hour. Today, those two scenarios look the same in your phone system. In D365, they look completely different — and I'm going to show you by making the call live."</em></div>
+
+  <div class="show"><strong>Side-by-side comparison:</strong>
+    <table>
+      <tr><th>Dimension</th><th>Linda (Homeowner)</th><th>Ferguson (B2B Partner)</th></tr>
+      <tr><td>SLA</td><td>48 hours</td><td class="green"><strong>1 hour</strong></td></tr>
+      <tr><td>Entitlement</td><td>Standard Warranty</td><td class="green"><strong>Ferguson Strategic Distributor</strong></td></tr>
+      <tr><td>Queue</td><td>Moen-Escalation</td><td class="green"><strong>Moen-Claims-US (B2B priority)</strong></td></tr>
+      <tr><td>Copilot Context</td><td>Individual history</td><td class="green"><strong>Account-level + order history + C360</strong></td></tr>
+    </table>
+  </div>
+
+  <h3>Live Phone Call — Screenpop Demo</h3>
+  <div class="callout warn">
+    <strong>LIVE DEMO MOMENT:</strong> You will call from <strong>+1 (651) 226-3398</strong>. The system matches this ANI to <strong>Mike Brannigan</strong> (Ferguson Regional Purchasing Manager) → screenpop shows Ferguson account + open cases. Make sure your phone is ready.
+  </div>
+
+  <div class="click-steps">
+    <div class="click"><div class="step-body"><strong>Set the scene:</strong> <em>"I'm going to call in live — as Mike Brannigan, Ferguson's Regional Purchasing Manager. Watch what happens on the agent desktop when the phone rings."</em> Pick up your phone, dial the CS number. The CIF softphone panel rings in the Workspace.</div></div>
+
+    <div class="click"><div class="step-body"><strong>Accept the call on the agent desktop</strong> — The CIF screenpop fires: shows <em>Caller: Mike Brannigan</em>, <em>Account: Ferguson Enterprises - Newport News</em>, <em>Open Cases: 4</em>. A new session tab opens with the case pre-loaded. <em>"The agent didn't search for anything. The phone number matched Mike Brannigan's contact record, which is linked to the Ferguson account. The screenpop pulled the account, entitlement, open cases, and recent orders — all before the agent says hello."</em></div></div>
+
+    <div class="click"><div class="step-body"><strong>Walk the case form</strong> — Point out the case header: <em>Account: Ferguson Enterprises - Newport News</em>, <em>Contact: Mike Brannigan</em>, <em>Priority: Normal</em>, <em>Tier Level: Tier 1</em>, <em>Case Type: Problem</em>, <em>Subject: Claims / Damage</em>. "Every field populated automatically by routing. The agent didn't type any of this."</div></div>
+
+    <div class="click"><div class="step-body"><strong>Show Customer Details panel (right side)</strong> — Point out: <em>Account: Ferguson Enterprises - Newport News</em>, <em>Contact: Mike Brannigan, Regional Purchasing Manager</em>, <em>Phone: +1 (651) 226-3398</em>, <em>Address: 12500 Jefferson Ave, Newport News, VA</em>. "This is a B2B account — the contact, their role, phone, email all flow in from the account record. Compare this to a consumer case where that panel is thinner."</div></div>
+
+    <div class="click"><div class="step-body"><strong>Show the Description</strong> — Scroll to Description field: <em>"Receiving inspection at our DC just opened the inbound shipment and a significant portion of MOEN-1255 arrived damaged — cartons collapsed, units corroded."</em> "The agent captured this from the call. In production, voice transcription would auto-populate this."</div></div>
+
+    <div class="click"><div class="step-body"><strong>Show linked Entitlement</strong> — Point out the Entitlement field: <em>Moen Strategic Distributor — Ferguson</em>. "This is a support contract. It sets the SLA (1-hour first response), tracks case count (9,800 remaining of 10,000/yr), and determines the service level. The agent didn't select this — routing matched it based on the account."</div></div>
+
+    <div class="click"><div class="step-body"><strong>Show linked Product</strong> — Point out Product field: <em>Moen 1255 Single Handle Cartridge Replacement Kit (MOEN-1255)</em>. "Product is linked at case creation — drives the KB suggestions, warranty lookup, and parts catalog."</div></div>
+
+    <div class="click"><div class="step-body"><strong>Show SLA Timer</strong> — Point out the SLA Timer widget: <em>First Response By: counting down from 1 hour</em>. "SLA is live and ticking. If this goes yellow or red, the supervisor gets an alert. The consumer version of this timer would show 48 hours. Ferguson gets 1 hour because of their strategic distributor entitlement."</div></div>
+
+    <div class="click"><div class="step-body"><strong>Show Timeline</strong> — Scroll to Timeline. Point out: phone call activity (the call you just made), triage classification note, case notes. "Full audit trail. Every touch point on this case is captured — phone, email, note, Copilot action."</div></div>
+
+    <div class="click"><div class="step-body"><strong>Show Service Toolkit — Orders Panel</strong> — Click the Service Toolkit icon (right side). Show the linked orders (FBM-22871, FBM-23104). "The agent can see Ferguson's recent POs, line items, quantities, and ship dates without leaving the case. No ERP login needed. This panel only shows when the case is linked to an account with orders."</div></div>
+
+    <div class="click"><div class="step-body"><strong>Open Customer 360 tab</strong> — Click the <kbd>C360</kbd> tab at the top of the case form. Show the account-level 360 view: all 4 Ferguson cases, 2 entitlements (current + legacy), orders, 2 contacts (Mike Brannigan + Derek Lawson), recent activities. "This is the account health dashboard — it ONLY works on account-based cases, not consumer contacts. That's why we lead with B2B. Ferguson is Moen's largest distributor — $8.2M annual volume — and this one screen tells the agent everything about the relationship."</div></div>
+
+    <div class="click"><div class="step-body"><strong>Open Copilot side panel</strong> — Click the Copilot icon (✨) in the productivity pane.</div></div>
+
+    <div class="click"><div class="step-body"><strong>Copilot case summary</strong> — Click the Case Summary card. Copilot reads the case, entitlement, order, account history. "The summary includes the entitlement terms and the PO reference — that's B2B-grade context."</div></div>
+
+    <div class="click"><div class="step-body"><strong>Copilot claim draft</strong> — Type in the Copilot panel:
+      <div class="copyable" style="background:#f0f4ff;border:2px solid var(--hero1);border-radius:8px;padding:12px;margin:8px 0;font-family:monospace">
+        <code style="font-size:1.1em">Draft a claim response referencing the original PO and our entitlement terms.</code>
+      </div>
+      Copilot generates a professional B2B email. "Review, tweak, send. 4 minutes instead of 45."</div></div>
+
+    <div class="click"><div class="step-body"><strong>Entitlement counter</strong> — Navigate to the Entitlement record from the case. Show remaining terms: 9,800 of 10,000 cases used, renewal date 2027-12-31. "Both Ferguson's account manager and Moen see the same number. Zero spreadsheet reconciliation."</div></div>
+  </div>
+
+  <h3>Money Line</h3>
+  <div class="say"><em>"Janet, that Ferguson call just went from ring to claim response in under 6 minutes — with screenpop, SLA tracking, entitlement enforcement, and order context all built in. Today, your B2B team spends 3 days on this because they're toggling between CXone, email, and an ERP spreadsheet."</em></div>
+
+  <div class="roi"><strong>~40% faster claim cycle.</strong> B2B claim cycle reduced from 3 days to same-day. At 5,000 B2B claims/yr, the revenue protection from faster resolution + entitlement accuracy = ~$120K/yr. Add account retention value = significant but hard to quantify.<span class="src">Source: Forrester TEI; Moen B2B volume from Janet Gedwill discovery.</span></div>
+
+  <div class="frontier"><em>"A Frontier Firm doesn't treat channel partners like bigger homeowners — it gives them a fundamentally different, SLA-driven service experience with real-time screenpop context."</em></div>
+</div>
+<!-- ══ 8. HERO 2 — LINDA BBB ══ -->
+<div class="section" id="hero2" data-cheat-section="hero1">
+  <div class="arc-banner hero2">
+    <span class="arc-title">⭐ Hero 2 — Linda Johnson: Email Channel + Hot-Word Escalation</span>
+    <span class="arc-time">0:35–0:55 · 20 min</span>
+  </div>
+
+  <h3>Setup — the emotional hook</h3>
+  <div class="say"><em>"Now let's see the consumer side. Linda Johnson in Austin bought a Moen Banbury faucet from Home Depot. It leaked. We replaced it under warranty. Now the replacement is leaking — fourth contact. She emailed yesterday threatening to file with the BBB. In your world today, that email is sitting in a shared Outlook inbox. Nobody owns it."</em></div>
+
+  <h3>Email channel + escalation routing (what makes this arc unique)</h3>
+  <div class="click-steps">
+    <div class="click"><div class="step-body"><strong>Open Linda's BBB Case</strong> — Click the deep-link. Contrast with the Ferguson case you just showed: <em>Priority: High</em> (vs Normal on Ferguson), <em>Tier Level: Tier 4</em> (vs Tier 1), <em>Queue: Moen-Escalation-US</em> (not the general queue). <em>"Same routing workstream, different rules fired. The hot-word 'BBB' in her email pushed this to escalation with High priority — even though she's a Tier 4 consumer."</em></div></div>
+
+    <div class="click"><div class="step-body"><strong>Show the inbound email in the Timeline</strong> — Find the email: <em>"URGENT: Fourth faucet failure — filing BBB complaint tomorrow"</em>. Click to expand it. Read the key demands: overnight replacement, supervisor callback, damage reimbursement. <em>"This is a real email activity in D365 — not a note, not a forwarded thread. The customer sent it, it created the case, and the agent can Reply right here."</em></div></div>
+
+    <div class="click"><div class="step-body"><strong>Click Reply on the email</strong> — Show the Reply draft pane inside the case. <em>"The agent responds from the Moen CS mailbox — not their personal Outlook. CC, BCC, attachments, all logged on the case timeline. No lost emails. No 'who replied to this?' confusion."</em> <strong>Don't send — just show the form.</strong></div></div>
+
+    <div class="click"><div class="step-body"><strong>Show the supervisor alert note</strong> — In the Timeline, point out the "Supervisor alert" annotation: <em>"PRIORITY ESCALATION FIRED. Routed to Moen-Escalation-US — NOT Tier 1. Supervisor notified."</em> "This fired automatically when the hot-word matched. The supervisor already knows about this case before the agent opens it."</div></div>
+
+    <div class="click"><div class="step-body"><strong>Contrast: consumer vs B2B data picture</strong> — <em>"Notice the Customer Details panel is thinner here — Linda is a Contact, not an Account. There's no C360 tab, no orders panel, no entitlement. That's intentional: consumers have a lighter data footprint. The email channel and Copilot are what shine here — not the account-level features you saw on Ferguson."</em>
+      <div class="frontier"><em>"Future state: we're designing a Consumer 360 / Household 360 view — a single page that shows all contacts in the household, every product they've registered, warranty history, case history, and CSAT across all their interactions. Think of it as the account-level C360 but for B2C relationships. That's on the roadmap."</em></div>
+    </div></div>
+  </div>
+
+  <h3>Money Line</h3>
+  <div class="say"><em>"Linda's case went from email inbox to owned, prioritized, escalated, and reply-ready in under 2 minutes. No human triaged it. No one had to forward it. The system knew it was urgent before the agent opened it."</em></div>
+
+  <div class="roi"><strong>~$240K/yr AHT reduction.</strong> Copilot summary + draft email saves ~10 min per escalation case. At 15,000 escalation cases/yr × $24/hr fully-loaded agent cost = $60K direct labor savings. Add supervisor review time reduction + rework avoidance = ~$240K annually.<span class="src">Source: Forrester TEI for D365 Customer Service, 2024; internal Moen volume estimates from Janet Gedwill discovery call.</span></div>
+
+  <div class="frontier"><em>"This is the Frontier Firm pattern: the AI triaged, classified, and escalated. The human's job was empathy + authority — the two things AI can't do."</em></div>
+</div>
+
+<!-- ══ 9. HERO 3 — MARIE FR: PORTAL → BOT → AGENT HANDOFF ══ -->
+<div class="section" id="hero3" data-cheat-section="hero2">
+  <div class="arc-banner hero3">
+    <span class="arc-title">⭐ Hero 3 — Marie Tremblay: Portal Chat → Bot Self-Service → Agent Handoff</span>
+    <span class="arc-time">0:55–1:15 · 20 min</span>
+  </div>
+
+  <h3>Setup — the multi-language "wow"</h3>
+  <div class="say"><em>"Now let me show you the full customer journey — from self-service to live agent — and why you don't need a team of bilingual reps. Marie Tremblay is a homeowner in Québec. She has a leaking Moen faucet and she wants service in French. She goes to your customer portal and starts a chat."</em></div>
+
+  <div class="callout warn">
+    <strong>DEMO SEQUENCE:</strong> This hero has three acts:
+    <ol style="margin:8px 0 0 16px">
+      <li><strong>Portal → Bot (French self-service)</strong> — Marie chats in French, bot responds in French</li>
+      <li><strong>Bot → Agent handoff</strong> — bot can't fully resolve, escalates with full context</li>
+      <li><strong>Agent desktop</strong> — you see everything translated to English + Intent Agent + Case Mgmt Agent + KB</li>
+    </ol>
+  </div>
+
+  <h3>Act 1: Portal Chat — Bot Self-Service in French</h3>
+  <div class="callout info">
+    <strong>📋 COPY-PASTE SCRIPT:</strong> Open the portal chat widget. Copy each "YOU TYPE" message exactly and paste it. Wait for the bot response before sending the next one.
+  </div>
+
+  <div class="click-steps">
+    <div class="click"><div class="step-body"><strong>Step 1: Open the portal chat</strong> — Open the customer self-service portal. Click the chat widget (bottom-right). The bot greets you. <em>"This is what Marie sees — a branded Moen customer portal with a chat widget."</em></div></div>
+
+    <div class="click"><div class="step-body"><strong>Step 2: Describe the problem in French</strong>
+      <div class="copyable" style="background:#f0f4ff;border:2px solid var(--hero3);border-radius:8px;padding:12px;margin:8px 0;font-family:monospace">
+        <strong>YOU TYPE:</strong><br>
+        <code style="font-size:1.1em">Bonjour, mon robinet Moen fuit à la base. C'est le modèle Genta Posi-Temp dans ma salle de bain. Numéro de série MOEN-MT-2024-77821.</code>
+      </div>
+      <div style="background:#f5f5f5;padding:8px;border-radius:4px;margin:4px 0;font-size:0.9em">
+        <strong>🇬🇧 Translation:</strong> "Hello, my Moen faucet is leaking at the base. It's the Genta Posi-Temp model in my bathroom. Serial number MOEN-MT-2024-77821."
+      </div>
+      <em>Wait for bot response. The bot should confirm the serial and check warranty status.</em>
+    </div></div>
+
+    <div class="click"><div class="step-body"><strong>Step 3: Bot asks about troubleshooting — say you tried it</strong>
+      <div class="copyable" style="background:#f0f4ff;border:2px solid var(--hero3);border-radius:8px;padding:12px;margin:8px 0;font-family:monospace">
+        <strong>YOU TYPE:</strong><br>
+        <code style="font-size:1.1em">J'ai déjà essayé de resserrer la base et de vérifier le joint. La fuite continue. Je voudrais parler à quelqu'un.</code>
+      </div>
+      <div style="background:#f5f5f5;padding:8px;border-radius:4px;margin:4px 0;font-size:0.9em">
+        <strong>🇬🇧 Translation:</strong> "I already tried tightening the base and checking the seal. The leak continues. I would like to speak with someone."
+      </div>
+      <em>This triggers the escalation to a live agent. Tell the room:</em> <em>"Marie tried self-service — the bot walked her through troubleshooting, confirmed her warranty. But she needs a human. Watch what happens."</em>
+    </div></div>
+  </div>
+
+  <h3>Act 2: Bot → Agent Handoff</h3>
+  <div class="click-steps">
+    <div class="click"><div class="step-body"><strong>Step 4: Watch the handoff</strong> — The bot responds:
+      <div style="background:#fff8f0;padding:8px;border-radius:4px;margin:4px 0;font-size:0.9em">
+        <strong>🤖 Bot says (French):</strong> <em>"Je vous transfère à un agent. Un moment s'il vous plaît."</em><br>
+        <strong>🇬🇧 Translation:</strong> "I'm transferring you to an agent. One moment please."
+      </div>
+      <strong>NOW switch to the agent desktop</strong> (CS Workspace). A new conversation appears in the Inbox/session. Accept it. <em>"Zero repeat. The agent gets everything the bot gathered — serial number, warranty status, troubleshooting steps attempted."</em>
+    </div></div>
+  </div>
+
+  <h3>Act 3: Agent Desktop — The Power Tools</h3>
+  <div class="say"><em>"Now switch to the agent's screen. This is where it gets interesting."</em></div>
+
+  <div class="click-steps">
+    <div class="click"><div class="step-body"><strong>Real-time translation</strong> — Point out the conversation panel. Marie's French messages appear with <strong>English translations underneath</strong>. Toggle "Show original" to see the raw French. <em>"The agent doesn't speak French. Doesn't matter. Real-time translation handles both directions — Marie sees French, the agent sees English. The agent types in English, Marie gets French."</em>
+      <div class="callout info" style="margin:8px 0">
+        <strong>Key visual:</strong> Each message shows the translated text with a small 🌐 icon and "Show original" link. Point this out explicitly.
+      </div>
+    </div></div>
+
+    <div class="click"><div class="step-body"><strong>Intent Agent detection</strong> — Point out the <strong>Intent Agent card</strong> in the productivity pane (right side). It shows: <em>Detected Intent: Warranty Claim</em>, confidence score, and recommended next actions. <em>"The system didn't just translate — it understood the INTENT. This is a warranty claim on a leaking faucet. The Intent Agent surfaced that automatically with recommended actions."</em></div></div>
+
+    <div class="click"><div class="step-body"><strong>Case Management Agent</strong> — Show how the case was auto-created from the chat with all fields pre-populated: <em>Contact: Marie Tremblay</em>, <em>Product: Moen TS22002 Genta Posi-Temp</em>, <em>Asset: MOEN-MT-2024-77821</em>, <em>Queue: Moen-Warranty-CA-FR</em>, <em>Language: French (Canada)</em>. <em>"The Case Management Agent created this case from the conversation. Contact, product, asset, queue — all set. The agent didn't fill in a single field."</em></div></div>
+
+    <div class="click"><div class="step-body"><strong>KB suggestions (in English)</strong> — Open Knowledge Search. The suggested articles are in English for the agent: <em>"Warranty escalation rules — commercial vs consumer"</em>, <em>"When to authorize a goodwill replacement"</em>. <em>"The customer gets French. The agent gets English. The KB serves both — that's the multi-language architecture."</em></div></div>
+
+    <div class="click"><div class="step-body"><strong>Copilot draft response</strong> — Click Copilot and type:
+      <div class="copyable" style="background:#f0f4ff;border:2px solid var(--hero3);border-radius:8px;padding:12px;margin:8px 0;font-family:monospace">
+        <code style="font-size:1.1em">Draft a warranty replacement approval for this customer.</code>
+      </div>
+      Copilot generates a professional response referencing the serial number, warranty status, and next steps. The agent reviews, approves, sends. <em>"From French chat to warranty approval in under 4 minutes. No bilingual agent needed. No callback. No language barrier."</em></div></div>
+  </div>
+
+  <h3>Money Line</h3>
+  <div class="say"><em>"That entire journey — portal self-service in French, bot deflection, seamless handoff, real-time translation, intent detection, auto-case creation, and Copilot-drafted response — happened without a single bilingual agent on staff. Today, that's a 48-hour callback to find someone who speaks French."</em></div>
+
+  <div class="roi"><strong>~$150K/yr deflection + translation savings.</strong> At 30% bot deflection rate on 20,000 Canadian warranty cases/yr, that's 6,000 cases handled without a live agent. Real-time translation eliminates the bilingual staffing premium (~$15K/agent/yr × 5 agents). At $12/case avg cost = $72K deflection + $75K translation savings.<span class="src">Source: Microsoft Copilot Studio deflection benchmarks; Moen Canada volume from discovery.</span></div>
+
+  <div class="frontier"><em>"A Frontier Firm meets the customer in their language, on their channel, on their timeline — not the other way around. The bot, the translation, the intent detection, the case creation — it's all one connected system."</em></div>
+</div>
+
+
+<!-- ══ 10. SUPPORTING ══ -->
+<div class="section" id="supporting" data-cheat-section="default">
+  <h2>10 &nbsp; Supporting Capabilities <span class="badge" style="background:var(--moen-blue)">1:15–1:40</span></h2>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">📞</div>
+      <h4>Ferguson FBM — Phone Channel</h4>
+      <p>Open Tab 7 (Ferguson case). Show the phone activity record with call duration, notes, and <strong>Service Toolkit order panel</strong> visible during the call. The agent looked up order <em>PO-FG-2024-8891</em> live while on the phone with the Ferguson rep.</p>
+      <div class="say" style="margin-top:8px"><em>"This is what a phone call looks like inside D365 — the agent never leaves the screen."</em></div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">👩‍👩‍👧</div>
+      <h4>Sarah — Multi-Brand Household</h4>
+      <p>Open Tab 8 (Sarah contact). Show the Household view: Sarah's household has Moen, Delta, and Brizo products across 3 addresses. D365 surfaces the full household context regardless of which brand the case originated from.</p>
+      <div class="say" style="margin-top:8px"><em>"Fortune Brands has multiple plumbing brands — D365 gives agents the household-level view across all of them."</em></div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">🤖</div>
+      <h4>James — Bot Deflection</h4>
+      <p>Open Tab 9 (James case). Show the bot transcript in the Timeline: James asked <em>"Where is my order?"</em> The PVA bot looked up the order, provided tracking info, and James never needed a live agent. Case auto-resolved.</p>
+      <div class="say" style="margin-top:8px"><em>"That's a zero-touch resolution. The bot handled it end-to-end."</em></div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">📊</div>
+      <h4>Quality Evaluation</h4>
+      <p>Navigate to the <strong>Supervisor Dashboard</strong>. Show the Agent Quality panel: resolved cases with Copilot-generated sentiment scores, average handle time trends, CSAT predictions. "Supervisors don't listen to random calls — AI surfaces the ones that need attention."</p>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">🧩</div>
+      <h4>Agent Experience Layer</h4>
+      <p>Show the <strong>Agent Desktop</strong> layout: unified inbox, presence indicator, session management (multiple cases open in tabs), smart assist panel with KB suggestions. "This is the agent's cockpit — designed to reduce cognitive load."</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 11. ROADMAP ══ -->
+<div class="section" id="roadmap" data-cheat-section="default">
+  <h2>11 &nbsp; Roadmap <span class="badge" style="background:var(--moen-blue)">1:40–1:55</span></h2>
+
+  <table>
+    <tr><th>Initiative</th><th>Wave</th><th>Description</th></tr>
+    <tr><td><strong>Click-by-Click Awareness</strong></td><td>Wave 1 (6 mo)</td><td>Record every agent action, surface coaching insights — "You spent 4 minutes on this step; top agents spend 1." Copilot-driven, no supervisor overhead.</td></tr>
+    <tr><td><strong>Native Email Triage</strong></td><td>Wave 1 (6 mo)</td><td>Inbound emails auto-classified by Copilot: intent, sentiment, priority, product. Cases created and routed before an agent touches them.</td></tr>
+    <tr><td><strong>HofR / Emtek Precedent</strong></td><td>Wave 2 (12 mo)</td><td>House of Rohl and Emtek brands onboard to the same D365 instance. Shared knowledge base, shared Copilot models, brand-specific routing rules.</td></tr>
+  </table>
+
+  <div class="callout danger">
+    <strong>Do NOT show or discuss:</strong> CI/marketing workloads, F&amp;O/supply chain, Sales Hub, or any Dynamics module outside Customer Service. Stay in the CS lane.
+  </div>
+</div>
+
+<!-- ══ 12. CLOSE + ROI ══ -->
+<div class="section" id="close" data-cheat-section="default">
+  <h2>12 &nbsp; Close + ROI <span class="badge" style="background:#2e7d32">1:55–2:00</span></h2>
+
+  <h3>Cumulative ROI Summary</h3>
+  <table>
+    <tr><th>Value Lever</th><th>Driver</th><th>Est. Annual Impact</th></tr>
+    <tr><td>AHT Reduction (Escalations)</td><td>Copilot summarization + draft, single-pane</td><td class="green">$240K</td></tr>
+    <tr><td>Bot Deflection (CA Warranty)</td><td>PVA French bot + auto-triage</td><td class="green">$150K</td></tr>
+    <tr><td>B2B Claim Acceleration</td><td>Entitlement + SLA + order context</td><td class="green">$120K</td></tr>
+    <tr><td>Supervisor Efficiency</td><td>AI quality eval, sentiment scoring</td><td class="green">$50K</td></tr>
+    <tr><td>Agent Onboarding</td><td>Smart assist + KB suggestions reduce ramp</td><td class="green">$40K</td></tr>
+    <tr><td>Rework / Repeat Contact</td><td>Full context = right answer first time</td><td class="green">$30K</td></tr>
+    <tr style="font-weight:700;background:#e8f5e9"><td colspan="2"><strong>TOTAL (Conservative)</strong></td><td class="green" style="font-size:16px"><strong>$400K – $630K</strong></td></tr>
+  </table>
+  <p style="font-size:12px;color:#666;margin-top:4px">Sources: Forrester TEI for D365 Customer Service (2024), Microsoft internal benchmarks, Moen volume estimates from discovery sessions with Janet Gedwill.</p>
+
+  <div class="frontier"><em>"Janet, a Frontier Firm doesn't just save money on service — it turns service into a competitive advantage. Moen's brand promise is 'Buy it for looks. Buy it for life.' D365 makes that promise operationally real."</em></div>
+
+  <h3>Three Asks</h3>
+  <ol>
+    <li><strong>Technical Deep-Dive</strong> — Schedule a 90-min session with Moen IT to walk through integration architecture (NICE CXone + D365 + Copilot).</li>
+    <li><strong>Pilot Scope</strong> — Define a 60-day pilot: one queue (e.g., Moen-Warranty-US-EN), 10 agents, measurable KPIs (AHT, CSAT, deflection rate).</li>
+    <li><strong>Executive Alignment</strong> — Briefing for Moen SVP of Service to align on Frontier Firm vision and budget cycle.</li>
+  </ol>
+</div>
+
+<!-- ══ 13. 17-ASK MATRIX ══ -->
+<div class="section" id="askmatrix" data-cheat-section="default">
+  <h2>13 &nbsp; Andrew's 17-Ask Matrix</h2>
+  <p>Mapping every ask from Andrew's requirements list to the hero arcs and supporting demos.</p>
+
+  <table>
+    <tr><th>#</th><th>Ask</th><th>Covered In</th><th>Status</th></tr>
+    <tr><td>1</td><td>Unified agent desktop</td><td>All heroes + Agent Experience card</td><td>✅</td></tr>
+    <tr><td>2</td><td>Case routing by priority/channel/language</td><td>Hero 1 (BBB routing), Hero 2 (FR queue)</td><td>✅</td></tr>
+    <tr><td>3</td><td>SLA enforcement</td><td>Hero 1 (1h Ferguson SLA)</td><td>✅</td></tr>
+    <tr><td>4</td><td>Entitlement management</td><td>Hero 1 (Ferguson Strategic Distributor)</td><td>✅</td></tr>
+    <tr><td>5</td><td>Knowledge base (multi-language)</td><td>Hero 2 (French KB)</td><td>✅</td></tr>
+    <tr><td>6</td><td>AI summarization</td><td>Hero 1 (Copilot case summary)</td><td>✅</td></tr>
+    <tr><td>7</td><td>AI-drafted responses</td><td>Hero 1 (email draft), Hero 3 (claim draft)</td><td>✅</td></tr>
+    <tr><td>8</td><td>Asset/warranty tracking</td><td>Hero 1 + Hero 2 (asset lookup)</td><td>✅</td></tr>
+    <tr><td>9</td><td>Bot deflection</td><td>Hero 2 (bot handoff), James supporting</td><td>✅</td></tr>
+    <tr><td>10</td><td>Phone channel integration</td><td>Ferguson FBM supporting card</td><td>✅</td></tr>
+    <tr><td>11</td><td>Order lookup during service</td><td>Hero 3 (Service Toolkit), Ferguson phone</td><td>✅</td></tr>
+    <tr><td>12</td><td>Multi-brand / household view</td><td>Sarah supporting card</td><td>✅</td></tr>
+    <tr><td>13</td><td>Supervisor quality monitoring</td><td>Quality Eval supporting card</td><td>✅</td></tr>
+    <tr><td>14</td><td>BBB/escalation handling</td><td>Hero 1 (entire arc)</td><td>✅</td></tr>
+    <tr><td>15</td><td>B2B partner differentiation</td><td>Hero 3 (contrast moment)</td><td>✅</td></tr>
+    <tr><td>16</td><td>Email triage automation</td><td>Roadmap (Wave 1)</td><td>🔜</td></tr>
+    <tr><td>17</td><td>Multi-brand expansion (HofR, Emtek)</td><td>Roadmap (Wave 2)</td><td>🔜</td></tr>
+  </table>
+</div>
+
+<!-- ══ 14. FALLBACKS ══ -->
+<div class="section" id="fallbacks" data-cheat-section="default">
+  <h2>14 &nbsp; Fallbacks</h2>
+  <p>When something breaks live, switch to these alternatives.</p>
+
+  <table>
+    <tr><th>What Breaks</th><th>Switch To</th><th>Recovery Talk Track</th></tr>
+    <tr><td>Copilot doesn't respond</td><td>Pre-generated summary in case notes</td><td><em>"Let me show you what the AI generated earlier — [read from notes]. In production this is instant, but the demo environment occasionally throttles."</em></td></tr>
+    <tr><td>SLA timer not visible</td><td>Show entitlement record directly</td><td><em>"The SLA timer renders in the form header — let me show you the entitlement record where the terms are defined."</em></td></tr>
+    <tr><td>Knowledge search returns no results</td><td>Show KB article directly via Sitemap</td><td><em>"The search index occasionally needs a refresh in demo orgs — let me navigate directly to the article."</em></td></tr>
+    <tr><td>Bot transcript not in timeline</td><td>Describe the flow verbally</td><td><em>"In production, you'd see the full bot transcript here. The bot gathered [X, Y, Z] and handed off with all context."</em></td></tr>
+    <tr><td>Service Toolkit panel empty</td><td>Show order record directly</td><td><em>"The Service Toolkit connects to your order system — let me show you the order record while the panel loads."</em></td></tr>
+    <tr><td>French KB not loading</td><td>Show English equivalent + explain localization</td><td><em>"The French version mirrors this English article. D365 Knowledge supports full multi-language publishing."</em></td></tr>
+    <tr><td>Entire D365 org is slow/down</td><td>Switch to screenshots deck (backup PPT)</td><td><em>"Let me switch to our prepared walkthrough — same content, captured from a production-grade environment."</em></td></tr>
+  </table>
+</div>
+
+</main>
+
+<!-- ───── RIGHT CHEAT SHEET ───── -->
+<aside class="right-panel" id="rightPanel">
+  <div class="cheat-header">
+    <span>Context</span>
+    <button class="pin-btn" id="pinCheat" title="Collapse panel">▷</button>
+  </div>
+
+  <!-- DEFAULT CHEAT -->
+  <div class="cheat-section active" id="cheat-default">
+    <div class="cheat-card">
+      <h4>🏢 Environment</h4>
+      <p>Org: <span class="val">Master CE Mfg</span></p>
+      <p>URL: <span class="guid-chip">orgecbce8ef.crm.dynamics.com</span></p>
+      <p>App: <span class="val">Service Hub</span></p>
+      <p>84 seeded records across 11 entity types</p>
+    </div>
+    <div class="cheat-card">
+      <h4>🔗 Quick Links</h4>
+      <div class="deep-link-bar">
+        <a class="dl-btn" href="https://orgecbce8ef.crm.dynamics.com/main.aspx?appid=7a2fe39b-b651-ef11-a317-0022482a41a0" target="_blank"><span class="dl-icon">🏠</span> CS Workspace Home</a>
+        <a class="dl-btn" href="https://orgecbce8ef.crm.dynamics.com/main.aspx?etn=incident&id=4833e4be-7a42-f111-88b5-7ced8dceb26a&pagetype=entityrecord" target="_blank"><span class="dl-icon">🔴</span> Linda BBB Case</a>
+        <a class="dl-btn" href="https://orgecbce8ef.crm.dynamics.com/main.aspx?etn=contact&id=a413fc9f-7a42-f111-88b5-7ced8dceb26a&pagetype=entityrecord" target="_blank"><span class="dl-icon">👤</span> Linda Contact</a>
+        <a class="dl-btn" href="https://orgecbce8ef.crm.dynamics.com/main.aspx?etn=incident&id=d632e4be-7a42-f111-88b5-7ced8dceb26a&pagetype=entityrecord" target="_blank"><span class="dl-icon">🟢</span> Marie Case</a>
+        <a class="dl-btn" href="https://orgecbce8ef.crm.dynamics.com/main.aspx?etn=account&id=aeedbe8d-7a42-f111-88b5-7ced8dceb26a&pagetype=entityrecord" target="_blank"><span class="dl-icon">🟣</span> Ferguson Case</a>
+        <a class="dl-btn" href="https://orgecbce8ef.crm.dynamics.com/main.aspx?etn=account&id=aeedbe8d-7a42-f111-88b5-7ced8dceb26a&pagetype=entityrecord" target="_blank"><span class="dl-icon">🏪</span> Ferguson Account</a>
+        <a class="dl-btn" href="https://orgecbce8ef.crm.dynamics.com/main.aspx?etn=incident&id=07b34270-7b42-f111-88b5-6045bda80a72&pagetype=entityrecord" target="_blank"><span class="dl-icon">📞</span> Ferguson Case</a>
+        <a class="dl-btn" href="https://orgecbce8ef.crm.dynamics.com/main.aspx?etn=contact&id=c2edbe8d-7a42-f111-88b5-7ced8dceb26a&pagetype=entityrecord" target="_blank"><span class="dl-icon">👩</span> Sarah Contact</a>
+        <a class="dl-btn" href="https://orgecbce8ef.crm.dynamics.com/main.aspx?etn=incident&id=2c33e4be-7a42-f111-88b5-7ced8dceb26a&pagetype=entityrecord" target="_blank"><span class="dl-icon">🤖</span> James Case</a>
+        <a class="dl-btn" href="https://orgecbce8ef.crm.dynamics.com/main.aspx?etn=queue&id=47590fa6-7a42-f111-88b5-7ced8dceb26a&pagetype=entityrecord" target="_blank"><span class="dl-icon">📋</span> Escalation Queue</a>
+        <a class="dl-btn" href="https://orgecbce8ef.crm.dynamics.com/main.aspx?appid=7a2fe39b-b651-ef11-a317-0022482a41a0&pagetype=dashboard" target="_blank"><span class="dl-icon">📊</span> CS Workspace Dashboard</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- HERO 1 CHEAT -->
+  <div class="cheat-section" id="cheat-hero1">
+    <div class="cheat-card" style="border-left:3px solid var(--hero1)">
+      <h4>🔴 Hero 1 — Linda Johnson</h4>
+      <p>Role: <span class="val">Homeowner (BBB Escalation)</span></p>
+      <p>Email: <span class="val">linda.johnson@email.com</span></p>
+      <p>Phone: <span class="val">(847) 555-0142</span></p>
+      <p>Household: <span class="val">Johnson Household</span></p>
+      <p>Preferred Contact: <span class="val">Email</span></p>
+    </div>
+    <div class="cheat-card">
+      <h4>📋 BBB Case</h4>
+      <p>Case ID: <span class="guid-chip">4833e4be-7a42-f111-88b5-7ced8dceb26a</span></p>
+      <p>Priority: <span class="val" style="color:#c0392b">High</span></p>
+      <p>Origin: <span class="val">BBB</span></p>
+      <p>Queue: <span class="val">Moen-Escalation</span></p>
+      <p>SLA: <span class="val">24 hours</span></p>
+      <p>Subject: Faucet handle failure — 3rd occurrence</p>
+    </div>
+    <div class="cheat-card">
+      <h4>🔧 Asset</h4>
+      <p>Serial: <span class="val">MOEN-LJ-2024-44120-REPL</span></p>
+      <p>Product: <span class="val">Arbor Pull-Down Faucet</span></p>
+      <p>Warranty: <span class="val" style="color:#2e7d32">Active</span></p>
+    </div>
+    <div class="cheat-card">
+      <h4>📝 Timeline Notes (3)</h4>
+      <p>1. BBB intake — complaint received</p>
+      <p>2. First agent response — parts ordered</p>
+      <p>3. Escalation — 3rd failure, customer demanding replacement</p>
+    </div>
+    <div class="deep-link-bar" style="margin-top:8px">
+      <a class="dl-btn" href="https://orgecbce8ef.crm.dynamics.com/main.aspx?etn=incident&id=4833e4be-7a42-f111-88b5-7ced8dceb26a&pagetype=entityrecord" target="_blank"><span class="dl-icon">📋</span> Open BBB Case</a>
+      <a class="dl-btn" href="https://orgecbce8ef.crm.dynamics.com/main.aspx?etn=contact&id=a413fc9f-7a42-f111-88b5-7ced8dceb26a&pagetype=entityrecord" target="_blank"><span class="dl-icon">👤</span> Open Linda Contact</a>
+      <a class="dl-btn" href="https://orgecbce8ef.crm.dynamics.com/main.aspx?etn=queue&id=47590fa6-7a42-f111-88b5-7ced8dceb26a&pagetype=entityrecord" target="_blank"><span class="dl-icon">📋</span> Escalation Queue</a>
+    </div>
+  </div>
+
+  <!-- HERO 2 CHEAT -->
+  <div class="cheat-section" id="cheat-hero2">
+    <div class="cheat-card" style="border-left:3px solid var(--hero2)">
+      <h4>🟢 Hero 2 — Marie Tremblay</h4>
+      <p>Role: <span class="val">Homeowner (Québec, FR)</span></p>
+      <p>Email: <span class="val">marie.tremblay@email.ca</span></p>
+      <p>Phone: <span class="val">(514) 555-0198</span></p>
+      <p>Language: <span class="val">French (Canada)</span></p>
+    </div>
+    <div class="cheat-card">
+      <h4>📋 Warranty Case</h4>
+      <p>Case ID: <span class="guid-chip">d632e4be-7a42-f111-88b5-7ced8dceb26a</span></p>
+      <p>Priority: <span class="val">Normal</span></p>
+      <p>Queue: <span class="val">Moen-Warranty-CA-FR</span></p>
+      <p>Subject: Fuite robinet Align — 14 mois</p>
+    </div>
+    <div class="cheat-card">
+      <h4>🔧 Asset</h4>
+      <p>Serial: <span class="val">MOEN-MT-2024-77821</span></p>
+      <p>Product: <span class="val">Align Widespread Faucet</span></p>
+      <p>Warranty: <span class="val" style="color:#2e7d32">Active</span></p>
+      <p>Installed: 14 months ago</p>
+    </div>
+    <div class="cheat-card">
+      <h4>📖 French KB Article</h4>
+      <p>Title: <span class="val">Remplacement de la cartouche — Robinet Align</span></p>
+      <p>Search term:</p>
+      <div class="copyable" style="background:#f0f4ff;border-radius:4px;padding:6px 10px;margin:4px 0;font-family:monospace">
+        <code>fuite robinet</code>
+      </div>
+    </div>
+    <div class="cheat-card">
+      <h4>💬 Chat Script (copy-paste)</h4>
+      <div class="copyable" style="background:#f0f4ff;border-radius:4px;padding:6px 10px;margin:4px 0;font-family:monospace;font-size:0.85em">
+        <code>Bonjour, mon robinet Moen fuit à la base. C'est le modèle Genta Posi-Temp dans ma salle de bain. Numéro de série MOEN-MT-2024-77821.</code>
+      </div>
+      <div class="copyable" style="background:#f0f4ff;border-radius:4px;padding:6px 10px;margin:4px 0;font-family:monospace;font-size:0.85em">
+        <code>J'ai déjà essayé de resserrer la base et de vérifier le joint. La fuite continue. Je voudrais parler à quelqu'un.</code>
+      </div>
+    </div>
+    <div class="deep-link-bar" style="margin-top:8px">
+      <a class="dl-btn" href="https://orgecbce8ef.crm.dynamics.com/main.aspx?etn=incident&id=d632e4be-7a42-f111-88b5-7ced8dceb26a&pagetype=entityrecord" target="_blank"><span class="dl-icon">📋</span> Open Marie's Case</a>
+    </div>
+  </div>
+
+  <!-- HERO 1 (FERGUSON) CHEAT -->
+  <div class="cheat-section" id="cheat-hero3">
+    <div class="cheat-card" style="border-left:3px solid var(--hero1)">
+      <h4>🟣 Hero 1 — Ferguson B2B</h4>
+      <p>Account: <span class="val">Ferguson Enterprises - Newport News</span></p>
+      <p>Entitlement: <span class="val">Ferguson Strategic Distributor (1h SLA)</span></p>
+      <p>SLA: <span class="val" style="color:var(--hero1)">1 hour</span></p>
+      <p>Phone Contact: <span class="val">Mike Brannigan (+1 651-226-3398)</span></p>
+      <p>Chat Contact: <span class="val">Derek Lawson (dlawson@ferguson.example)</span></p>
+    </div>
+    <div class="cheat-card">
+      <h4>📋 Ferguson Damaged Shipment Case</h4>
+      <p>Case: <span class="val">CAS-19908-B5F9L8</span></p>
+      <p>Case ID: <span class="guid-chip">f5fee6b8-7a42-f111-88b5-7ced8dceb26a</span></p>
+      <p>Product: <span class="val">Moen 1255 Cartridge Replacement Kit</span></p>
+      <p>Contact: <span class="val">Mike Brannigan (phone screenpop)</span></p>
+    </div>
+    <div class="cheat-card">
+      <h4>🏪 Ferguson Account</h4>
+      <p>Account ID: <span class="guid-chip">aeedbe8d-7a42-f111-88b5-7ced8dceb26a</span></p>
+      <p>Annual Volume: <span class="val">$8.2M</span></p>
+      <p>Entitlement: <span class="val">9,800 of 10,000 cases remaining</span></p>
+    </div>
+    <div class="cheat-card">
+      <h4>📦 Ferguson Orders</h4>
+      <p>FBM-22871: <span class="val">120× Adler + 200× Cartridge + 48× Banbury = $22K</span></p>
+      <p>FBM-23104: <span class="val">12× Banbury (DEFECTIVE RMA) = $1.4K</span></p>
+    </div>
+    <div class="cheat-card">
+      <h4>📞 Ferguson FBM Order Case</h4>
+      <p>Case: <span class="val">CAS-19916-V2V3V3</span></p>
+      <p>Case ID: <span class="guid-chip">07b34270-7b42-f111-88b5-6045bda80a72</span></p>
+      <p>Contact: <span class="val">Derek Lawson (order status inquiry)</span></p>
+    </div>
+    <div class="deep-link-bar" style="margin-top:8px">
+      <a class="dl-btn" href="https://orgecbce8ef.crm.dynamics.com/main.aspx?etn=incident&id=f5fee6b8-7a42-f111-88b5-7ced8dceb26a&pagetype=entityrecord" target="_blank"><span class="dl-icon">📋</span> Damaged Shipment Case</a>
+      <a class="dl-btn" href="https://orgecbce8ef.crm.dynamics.com/main.aspx?etn=account&id=aeedbe8d-7a42-f111-88b5-7ced8dceb26a&pagetype=entityrecord" target="_blank"><span class="dl-icon">🏪</span> Ferguson Account</a>
+      <a class="dl-btn" href="https://orgecbce8ef.crm.dynamics.com/main.aspx?etn=incident&id=07b34270-7b42-f111-88b5-6045bda80a72&pagetype=entityrecord" target="_blank"><span class="dl-icon">📞</span> FBM Order Case</a>
+    </div>
+  </div>
+
+</aside>
+
+</div><!-- /layout -->
+
+<!-- ═══════════ JAVASCRIPT ═══════════ -->
+<script>
+(function(){
+  'use strict';
+
+  /* ── Security: rel="noopener noreferrer" on all target="_blank" links ── */
+  document.querySelectorAll('a[target="_blank"]').forEach(function(a){
+    a.setAttribute('rel','noopener noreferrer');
+  });
+
+  /* ── D365 deep-link rewrite: ALWAYS use Customer Service Workspace app ── */
+  var CS_WORKSPACE_APPID = '7a2fe39b-b651-ef11-a317-0022482a41a0';
+  var ORG_BASE = 'https://orgecbce8ef.crm.dynamics.com/main.aspx';
+  document.querySelectorAll('a[href*="orgecbce8ef.crm.dynamics.com"]').forEach(function(a){
+    var href = a.getAttribute('href');
+    // Strip any existing appid param
+    href = href.replace(/[?&]appid=[^&]*/g, '');
+    // Ensure the URL starts with our base
+    if (href.indexOf(ORG_BASE) === 0) {
+      var params = href.substring(ORG_BASE.length);
+      // Rebuild with appid first
+      if (params.charAt(0) === '?') params = '&' + params.substring(1);
+      a.setAttribute('href', ORG_BASE + '?appid=' + CS_WORKSPACE_APPID + params);
+    }
+  });
+
+  /* ── Elements ── */
+  var layout    = document.getElementById('layout');
+  var navLinks  = document.querySelectorAll('.nav-link');
+  var sections  = document.querySelectorAll('.section');
+  var cheatSections = document.querySelectorAll('.cheat-section');
+
+  /* ── Nav click → smooth scroll ── */
+  navLinks.forEach(function(link){
+    link.addEventListener('click', function(e){
+      e.preventDefault();
+      var target = document.getElementById(link.getAttribute('data-target'));
+      if(target) target.scrollIntoView({ behavior:'smooth', block:'start' });
+    });
+  });
+
+  /* ── Scroll spy ── */
+  var ticking = false;
+  window.addEventListener('scroll', function(){
+    if(!ticking){
+      window.requestAnimationFrame(function(){
+        updateScrollSpy();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+
+  function updateScrollSpy(){
+    var scrollPos = window.scrollY + 120;
+    var activeId = '';
+    sections.forEach(function(sec){
+      if(sec.offsetTop <= scrollPos){
+        activeId = sec.id;
+      }
+    });
+    navLinks.forEach(function(link){
+      if(link.getAttribute('data-target') === activeId){
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
+    /* Update cheat sheet */
+    var activeSection = activeId ? document.getElementById(activeId) : null;
+    var cheatKey = (activeSection && activeSection.getAttribute('data-cheat-section')) || 'default';
+    cheatSections.forEach(function(cs){
+      if(cs.id === 'cheat-' + cheatKey){
+        cs.classList.add('active');
+      } else {
+        cs.classList.remove('active');
+      }
+    });
+  }
+
+  /* ── Toggle nav ── */
+  document.getElementById('toggleNav').addEventListener('click', function(){
+    layout.classList.toggle('nav-collapsed');
+  });
+  document.getElementById('pinNav').addEventListener('click', function(){
+    layout.classList.toggle('nav-collapsed');
+  });
+
+  /* ── Toggle cheat sheet ── */
+  document.getElementById('toggleCheat').addEventListener('click', function(){
+    layout.classList.toggle('cheat-collapsed');
+  });
+  document.getElementById('pinCheat').addEventListener('click', function(){
+    layout.classList.toggle('cheat-collapsed');
+  });
+
+  /* ── Initial scroll spy ── */
+  updateScrollSpy();
+
+  /* ── Copy buttons ── */
+  document.querySelectorAll('.copyable').forEach(function(block) {
+    var btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '📋 Copy';
+    btn.addEventListener('click', function() {
+      var code = block.querySelector('code');
+      var text = code ? code.textContent : block.textContent;
+      navigator.clipboard.writeText(text.trim()).then(function() {
+        btn.textContent = '✅ Copied!';
+        btn.classList.add('copied');
+        setTimeout(function() { btn.textContent = '📋 Copy'; btn.classList.remove('copied'); }, 2000);
+      });
+    });
+    block.appendChild(btn);
+  });
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ascend SAP Procurement Agent — Demo Guide</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --sap-blue: #0070f2; --sap-dark: #003d7a; --sap-light: #e8f2fd;
+    --ms-blue: #0078d4; --ms-dark: #002050;
+    --green: #107c10; --orange: #d83b01; --yellow: #ffd700;
+    --bg: #f5f7fa; --card: #ffffff; --text: #1a1a2e; --muted: #555;
+    --border: #dde2ea; --radius: 10px; --shadow: 0 2px 12px rgba(0,0,0,.08);
+  }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; font-size: 15px; }
+  .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+  /* Sidebar */
+  .sidebar { background: var(--ms-dark); color: white; padding: 24px 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+  .sidebar-logo { padding: 0 20px 24px; border-bottom: 1px solid rgba(255,255,255,.1); margin-bottom: 16px; }
+  .logo-title { font-size: 1rem; font-weight: 700; }
+  .logo-sub { font-size: 0.75rem; opacity: .7; margin-top: 2px; }
+  .nav-section { font-size: 0.68rem; text-transform: uppercase; letter-spacing: .1em; opacity: .5; padding: 12px 20px 4px; }
+  .nav-link { display: flex; align-items: center; gap: 8px; padding: 8px 20px; color: rgba(255,255,255,.8); text-decoration: none; font-size: 0.85rem; border-left: 3px solid transparent; transition: all .15s; }
+  .nav-link:hover, .nav-link.active { background: rgba(255,255,255,.1); color: white; border-left-color: var(--ms-blue); }
+  /* Main */
+  .main { padding: 40px 48px; max-width: 960px; }
+  h1 { font-size: 2rem; color: var(--ms-dark); margin-bottom: 6px; }
+  h2 { font-size: 1.3rem; color: var(--sap-dark); margin: 32px 0 12px; border-bottom: 2px solid var(--sap-light); padding-bottom: 6px; }
+  h3 { font-size: 1rem; color: var(--ms-dark); margin: 20px 0 8px; }
+  p { color: var(--muted); margin-bottom: 12px; }
+  /* Cards */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin: 16px 0; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); }
+  .card-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 6px; }
+  .card-body { font-size: 0.83rem; color: var(--muted); }
+  /* Table */
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin: 12px 0 20px; }
+  th { background: var(--sap-light); color: var(--sap-dark); font-weight: 700; padding: 10px 14px; text-align: left; border-bottom: 2px solid var(--sap-blue); }
+  td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:hover td { background: #fafbfd; }
+  .mono { font-family: monospace; font-size: 0.85em; color: var(--sap-blue); }
+  /* Badges */
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+  .badge-pending { background: #fff8e6; border: 1px solid #f5c342; color: #7a4b00; }
+  .badge-approved { background: #e6f4ea; border: 1px solid #34a853; color: #185c26; }
+  .badge-rejected { background: #fde7e9; border: 1px solid #e53935; color: #7b0000; }
+  .badge-cancelled { background: #f5f5f5; border: 1px solid #999; color: #444; }
+  /* Chat demo */
+  .chat { background: #f8f9fc; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin: 12px 0 20px; }
+  .chat-header { background: linear-gradient(90deg, var(--ms-blue), var(--sap-blue)); color: white; padding: 10px 16px; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .chat-body { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+  .msg { display: flex; gap: 8px; max-width: 85%; }
+  .msg.user { flex-direction: row-reverse; align-self: flex-end; }
+  .bubble { border-radius: 14px; padding: 9px 13px; font-size: 0.86rem; line-height: 1.5; }
+  .msg.user .bubble { background: var(--ms-blue); color: white; border-bottom-right-radius: 4px; }
+  .msg.bot .bubble { background: white; border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+  .av { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; align-self: flex-end; }
+  .msg.bot .av { background: var(--sap-light); color: var(--sap-blue); }
+  .msg.user .av { background: var(--ms-blue); color: white; }
+  /* Alert */
+  .alert { border-radius: var(--radius); padding: 14px 16px; margin: 12px 0; font-size: 0.88rem; }
+  .alert-info { background: #e8f4fd; border: 1px solid var(--ms-blue); color: var(--ms-dark); }
+  .alert-warn { background: #fff8e6; border: 1px solid #f5c342; color: #7a4b00; }
+  .alert-success { background: #e6f4ea; border: 1px solid #34a853; color: #185c26; }
+  /* Steps */
+  .steps { list-style: none; counter-reset: step; }
+  .steps li { counter-increment: step; display: flex; gap: 14px; margin-bottom: 16px; }
+  .steps li::before { content: counter(step); width: 28px; height: 28px; border-radius: 50%; background: var(--ms-blue); color: white; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .step-text { font-size: 0.9rem; color: var(--text); }
+  code { font-family: monospace; background: #f0f2f5; padding: 2px 6px; border-radius: 4px; font-size: 0.87em; color: #c7254e; }
+  /* Pill row */
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+  .pill { background: var(--sap-light); color: var(--sap-dark); border-radius: 20px; padding: 4px 12px; font-size: 0.8rem; font-weight: 600; }
+  .section { margin-bottom: 48px; }
+  /* Storyline extras */
+  .scene-banner { background: linear-gradient(135deg, var(--ms-dark) 0%, var(--sap-dark) 100%); color: white; border-radius: var(--radius); padding: 20px 24px; margin-bottom: 24px; }
+  .scene-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: .1em; opacity: .7; margin-bottom: 4px; }
+  .scene-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; }
+  .scene-desc { font-size: 0.88rem; opacity: .85; line-height: 1.5; }
+  .persona { display: flex; align-items: center; gap: 14px; background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 18px; margin: 16px 0; box-shadow: var(--shadow); }
+  .persona-av { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--ms-blue), var(--sap-blue)); color: white; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .persona-name { font-weight: 700; font-size: 0.95rem; }
+  .persona-role { font-size: 0.82rem; color: var(--muted); }
+  .narrator { font-style: italic; color: var(--muted); font-size: 0.88rem; background: #fafbfd; border-left: 3px solid var(--sap-blue); padding: 10px 14px; border-radius: 0 6px 6px 0; margin: 10px 0 16px; }
+  .say-this { background: #e8f4fd; border: 1px solid var(--ms-blue); border-radius: var(--radius); padding: 12px 16px; margin: 10px 0; font-size: 0.88rem; }
+  .say-this strong { color: var(--ms-dark); display: block; margin-bottom: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: .05em; }
+  .say-this em { font-style: normal; color: var(--text); }
+  .outcome { background: #e6f4ea; border: 1px solid #34a853; border-radius: var(--radius); padding: 12px 16px; margin: 10px 0; font-size: 0.88rem; color: #0d4a1d; }
+  .sequence-row { display: flex; align-items: flex-start; gap: 0; margin: 24px 0; position: relative; }
+  .sequence-row::before { content: ''; position: absolute; left: 16px; top: 32px; bottom: 0; width: 2px; background: var(--border); }
+  .seq-dot { width: 34px; height: 34px; border-radius: 50%; background: var(--ms-blue); color: white; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; z-index: 1; margin-right: 16px; margin-top: 2px; }
+  .seq-content { flex: 1; padding-bottom: 20px; }
+  .seq-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; }
+  .seq-body { font-size: 0.87rem; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-title">🏭 Ascend Procurement</div>
+    <div class="logo-sub">SAP ECC 6.0 · Copilot Studio</div>
+  </div>
+  <div class="nav-section">Setup</div>
+  <a class="nav-link active" href="#overview">🗺️ Overview</a>
+  <a class="nav-link" href="#data">🗄️ Demo Data</a>
+  <a class="nav-link" href="#m365">📱 M365 Copilot Setup</a>
+  <div class="nav-section">The Story</div>
+  <a class="nav-link" href="#story-intro">📖 The Scenario</a>
+  <a class="nav-link" href="#scene1">Scene 1: Morning Review</a>
+  <a class="nav-link" href="#scene2">Scene 2: Check Status</a>
+  <a class="nav-link" href="#scene3">Scene 3: Urgent Approval</a>
+  <a class="nav-link" href="#scene4">Scene 4: New PR Needed</a>
+  <a class="nav-link" href="#scene5">Scene 5: Cancel & Replace</a>
+  <a class="nav-link" href="#scene6">Scene 6: Send Reminder</a>
+  <div class="nav-section">Reference</div>
+  <a class="nav-link" href="#talking-points">🎤 Talking Points</a>
+  <a class="nav-link" href="#troubleshoot">🩺 Troubleshooting</a>
+</nav>
+
+<div class="main">
+
+<!-- OVERVIEW -->
+<div class="section" id="overview">
+  <h1>🏭 Ascend SAP Procurement Agent</h1>
+  <p>A native Microsoft 365 Copilot agent that lets procurement managers and approvers interact with SAP ECC 6.0 purchase requisitions using plain English — no SAP GUI, no portal login, no ticket queue.</p>
+  <div class="pills">
+    <span class="pill">🤖 Copilot Studio</span>
+    <span class="pill">⚡ Power Automate</span>
+    <span class="pill">🗃️ Dataverse (SAP EBAN emulation)</span>
+    <span class="pill">💬 Microsoft 365 Copilot</span>
+    <span class="pill">💬 Microsoft Teams</span>
+  </div>
+
+  <h2>8 Capabilities</h2>
+  <table>
+    <tr><th>Capability</th><th>Example phrases</th></tr>
+    <tr><td>📋 List My PRs</td><td>"Show me all my purchase requisitions"</td></tr>
+    <tr><td>🔍 Check PR Status</td><td>"What's the status of PR 10012345?"</td></tr>
+    <tr><td>⏳ Pending Approvals</td><td>"Show me PRs waiting for my approval"</td></tr>
+    <tr><td>✅ Approve / Reject</td><td>"Approve PR 10012345" · "Reject PR 10012345"</td></tr>
+    <tr><td>🏢 Vendor Lookup</td><td>"Look up vendor Microsoft" · "Find vendor Dell"</td></tr>
+    <tr><td>📄 Create a PR</td><td>"I need to create a PR for software licenses"</td></tr>
+    <tr><td>🚫 Cancel / Edit</td><td>"Cancel PR 10012280"</td></tr>
+    <tr><td>📧 Send Reminder</td><td>"Send a reminder for PR 10012345"</td></tr>
+  </table>
+</div>
+
+<!-- DEMO DATA -->
+<div class="section" id="data">
+  <h2>🗄️ Demo Data</h2>
+  <p>All data lives in Dataverse (<span class="mono">ascend_sappurchaserequisitions</span>). These are the exact records used in the story below.</p>
+  <table>
+    <tr><th>PR Number</th><th>Description</th><th>Vendor</th><th>Amount</th><th>Status</th></tr>
+    <tr><td class="mono">10012345</td><td>Microsoft 365 E5 - Annual</td><td>Microsoft Licensing LLC</td><td>$24,000</td><td><span class="badge badge-pending">🟡 Pending</span></td></tr>
+    <tr><td class="mono">10012310</td><td>Dell Laptops x10</td><td>Dell Technologies Inc</td><td>$15,000</td><td><span class="badge badge-approved">✅ Approved</span></td></tr>
+    <tr><td class="mono">10012290</td><td>AWS Cloud Services</td><td>Amazon Web Services Inc</td><td>$36,000</td><td><span class="badge badge-rejected">❌ Rejected</span></td></tr>
+    <tr><td class="mono">10012280</td><td>Accenture Advisory Q1</td><td>Accenture LLP</td><td>$45,000</td><td><span class="badge badge-pending">🟡 Pending</span></td></tr>
+  </table>
+  <div class="alert alert-warn">⚠️ Approve/Cancel actions permanently change status in Dataverse. Reset demo data before repeating a full run-through.</div>
+</div>
+
+<!-- M365 SETUP -->
+<div class="section" id="m365">
+  <h2>📱 M365 Copilot Setup</h2>
+  <ol class="steps">
+    <li><div class="step-text">In <strong>Copilot Studio</strong> → Settings → Channels → enable <strong>Microsoft 365</strong> channel, then click <strong>Publish</strong></div></li>
+    <li><div class="step-text">Go to <a href="https://m365.cloud.microsoft/chat">m365.cloud.microsoft/chat</a> → <strong>All agents</strong> → find <em>Ascend SAP Procurement Agent</em> → <strong>Add</strong></div></li>
+    <li><div class="step-text">Start a <strong>new conversation</strong> — 6 starter prompt chips appear above the message box</div></li>
+    <li><div class="step-text">If logo or "Created by Microsoft Solution Engineering" isn't showing: <strong>remove and re-add</strong> the agent (manifest cache takes ~30 min)</div></li>
+  </ol>
+</div>
+
+<!-- THE SCENARIO -->
+<div class="section" id="story-intro">
+  <div class="scene-banner">
+    <div class="scene-label">📖 Demo Scenario</div>
+    <div class="scene-title">End-of-Quarter Procurement Crunch at Ascend Manufacturing</div>
+    <div class="scene-desc">It's the last week of Q1. Sarah Chen, Senior Procurement Manager, needs to get a Microsoft 365 renewal through SAP before the license lapses — but her approver has been sitting on it for three days, a consulting engagement just got rejected, and a new hardware need just landed in her inbox. Follow Sarah's morning as she handles it all without leaving Microsoft 365 Copilot.</div>
+  </div>
+
+  <div class="persona">
+    <div class="persona-av">👩‍💼</div>
+    <div>
+      <div class="persona-name">Sarah Chen — Senior Procurement Manager</div>
+      <div class="persona-role">Ascend Manufacturing · Chicago, IL · SAP user since 2011</div>
+    </div>
+  </div>
+
+  <h3>Demo flow (6 scenes, ~8 minutes)</h3>
+  <div class="sequence-row">
+    <div class="seq-dot">1</div>
+    <div class="seq-content"><div class="seq-title">Morning Review</div><div class="seq-body">Sarah opens M365 Copilot and asks for her open PRs</div></div>
+  </div>
+  <div class="sequence-row">
+    <div class="seq-dot">2</div>
+    <div class="seq-content"><div class="seq-title">Check Status on the Renewal</div><div class="seq-body">She digs into the Microsoft 365 renewal — still pending, 3 days overdue</div></div>
+  </div>
+  <div class="sequence-row">
+    <div class="seq-dot">3</div>
+    <div class="seq-content"><div class="seq-title">Approve a Hardware PR (as approver)</div><div class="seq-body">Switch roles — her manager David reviews his pending approvals and clears the backlog</div></div>
+  </div>
+  <div class="sequence-row">
+    <div class="seq-dot">4</div>
+    <div class="seq-content"><div class="seq-title">New PR — One Message, Zero Questions</div><div class="seq-body">Sarah sends one prompt: "Create a PR for Microsoft for 1.4 million in Dynamics 365 licenses, cost center CC-1000" — agent extracts vendor, amount &amp; cost center, creates the $1.4M PR with zero follow-ups</div></div>
+  </div>
+  <div class="sequence-row">
+    <div class="seq-dot">5</div>
+    <div class="seq-content"><div class="seq-title">Cancel the Consulting Engagement</div><div class="seq-body">The Accenture engagement was rejected — Sarah cancels the PR to clean up SAP</div></div>
+  </div>
+  <div class="sequence-row" style="margin-bottom:0">
+    <div class="seq-dot">6</div>
+    <div class="seq-content"><div class="seq-title">Nudge the Approver</div><div class="seq-body">The Microsoft renewal is still sitting. Sarah sends a reminder — all without leaving Copilot</div></div>
+  </div>
+</div>
+
+<!-- SCENE 1 -->
+<div class="section" id="scene1">
+  <div class="scene-banner">
+    <div class="scene-label">Scene 1 · 8:02 AM</div>
+    <div class="scene-title">Sarah's Morning Review</div>
+    <div class="scene-desc">Sarah opens Microsoft 365 Copilot, selects the Ascend SAP Procurement Agent, and asks for her open requisitions to start the day.</div>
+  </div>
+
+  <div class="say-this"><strong>👩‍💼 You say (as Sarah)</strong><em>Show me all my purchase requisitions</em></div>
+
+  <div class="chat">
+    <div class="chat-header">🤖 Ascend SAP Procurement Agent · M365 Copilot</div>
+    <div class="chat-body">
+      <div class="msg user"><div class="av">👩</div><div class="bubble">Show me all my purchase requisitions</div></div>
+      <div class="msg bot"><div class="av">🤖</div><div class="bubble">
+        <strong>📋 Your Purchase Requisitions</strong><br>Found <strong>4</strong> PR(s) in SAP EBAN:<br><br>
+        🟡 <strong>PR 10012345</strong> — Microsoft 365 E5 - Annual | Microsoft Licensing LLC | $24,000 | Pending<br><br>
+        ✅ <strong>PR 10012310</strong> — Dell Laptops x10 | Dell Technologies Inc | $15,000 | Approved<br><br>
+        ❌ <strong>PR 10012290</strong> — AWS Cloud Services | Amazon Web Services Inc | $36,000 | Rejected<br><br>
+        🟡 <strong>PR 10012280</strong> — Accenture Advisory Q1 | Accenture LLP | $45,000 | Pending<br><br>
+        💡 Say "check PR status 10012345", "approve PR 10012345", or "cancel PR 10012345"
+      </div></div>
+    </div>
+  </div>
+
+  <div class="narrator">Sarah sees it immediately — the Microsoft 365 renewal (PR 10012345) has been sitting at Pending for days. The Accenture engagement was rejected. She needs to take action on both.</div>
+
+  <div class="say-this"><strong>🎤 Talking point</strong><em>"This is a live query to SAP EBAN — the same table SAP writes purchase requisitions to. In production, this would be a direct SAP ECC connector call. The formatting, the status badges, the next-step hints — all generated by the agent, rendered natively in M365 Copilot markdown."</em></div>
+</div>
+
+<!-- SCENE 2 -->
+<div class="section" id="scene2">
+  <div class="scene-banner">
+    <div class="scene-label">Scene 2 · 8:04 AM</div>
+    <div class="scene-title">The Renewal Has Been Waiting 3 Days</div>
+    <div class="scene-desc">Sarah wants details on the Microsoft renewal before deciding what to do.</div>
+  </div>
+
+  <div class="say-this"><strong>👩‍💼 You say</strong><em>What's the status of PR 10012345?</em></div>
+
+  <div class="chat">
+    <div class="chat-header">🤖 Ascend SAP Procurement Agent · M365 Copilot</div>
+    <div class="chat-body">
+      <div class="msg user"><div class="av">👩</div><div class="bubble">What's the status of PR 10012345?</div></div>
+      <div class="msg bot"><div class="av">🤖</div><div class="bubble">
+        <strong>🔍 PR Status — 10012345</strong><br><br>
+        Status: 🟡 Pending Approval<br>
+        Description: Microsoft 365 E5 - Annual<br>
+        Vendor: Microsoft Licensing LLC<br>
+        Total Value: $24,000 USD<br>
+        Requestor: jsmith<br>
+        Approver: John Smith<br><br>
+        💡 Say "approve PR 10012345", "reject PR 10012345", or "send reminder for PR 10012345"
+      </div></div>
+    </div>
+  </div>
+
+  <div class="narrator">The renewal needs David's sign-off. She'll send a reminder at the end — but first, she switches hats to play the role of approver to show the other side of the workflow.</div>
+
+  <div class="say-this"><strong>🎤 Talking point</strong><em>"Notice the agent is surfacing SAP BANFN, AFNAM, and FRGST release status — translated into plain language. No transaction code, no GUI, no context-switching."</em></div>
+</div>
+
+<!-- SCENE 3 -->
+<div class="section" id="scene3">
+  <div class="scene-banner">
+    <div class="scene-label">Scene 3 · 8:06 AM — Switch to Approver View</div>
+    <div class="scene-title">David Clears His Approval Queue</div>
+    <div class="scene-desc">Now playing as David Chen, VP Operations and Sarah's approver. He checks what's in his queue and approves the Dell laptops PR.</div>
+  </div>
+
+  <div class="say-this"><strong>👨‍💼 You say (as David)</strong><em>Show me PRs waiting for my approval</em></div>
+
+  <div class="chat">
+    <div class="chat-header">🤖 Ascend SAP Procurement Agent · M365 Copilot</div>
+    <div class="chat-body">
+      <div class="msg user"><div class="av">👨</div><div class="bubble">Show me PRs waiting for my approval</div></div>
+      <div class="msg bot"><div class="av">🤖</div><div class="bubble">
+        <strong>⏳ Pending Approvals — 1 Awaiting Action</strong><br><br>
+        🟡 <strong>PR 10012345</strong> — Microsoft 365 E5 - Annual<br>
+        Vendor: Microsoft Licensing LLC | $24,000 USD<br>
+        Requestor: jsmith<br><br>
+        💡 Say "approve PR 10012345" or "reject PR 10012345" to take action.
+      </div></div>
+    </div>
+  </div>
+
+  <div class="say-this"><strong>👨‍💼 You say</strong><em>Approve PR 10012345</em></div>
+
+  <div class="chat">
+    <div class="chat-header">🤖 Ascend SAP Procurement Agent · M365 Copilot</div>
+    <div class="chat-body">
+      <div class="msg user"><div class="av">👨</div><div class="bubble">Approve PR 10012345</div></div>
+      <div class="msg bot"><div class="av">🤖</div><div class="bubble">Any comments for the requestor? (type skip to skip)</div></div>
+      <div class="msg user"><div class="av">👨</div><div class="bubble">Approved — Q1 budget confirmed</div></div>
+      <div class="msg bot"><div class="av">🤖</div><div class="bubble">
+        <strong>✅ Decision Recorded — PR 10012345</strong><br><br>
+        Action: Approved<br>
+        New Status: ✅ Approved<br>
+        Comments: Approved — Q1 budget confirmed<br><br>
+        📌 SAP EBAN has been updated. The requestor will be notified.
+      </div></div>
+    </div>
+  </div>
+
+  <div class="narrator">In three messages, David just approved a $24,000 SAP purchase requisition — without opening SAP, without using a workflow portal, without switching apps.</div>
+
+  <div class="say-this"><strong>🎤 Talking point</strong><em>"That approval just wrote back to the ascend_sappurchaserequisitions Dataverse table — same as a BAPI_PO_CHANGE call in production SAP. The approver never left their flow in M365 Copilot."</em></div>
+  <div class="alert alert-warn">⚠️ PR 10012345 is now Approved in Dataverse. Reset before repeating this scene.</div>
+</div>
+
+<!-- SCENE 4 -->
+<div class="section" id="scene4">
+  <div class="scene-banner">
+    <div class="scene-label">Scene 4 · 8:10 AM — Back to Sarah</div>
+    <div class="scene-title">New Request Just Landed: One Message, One PR</div>
+    <div class="scene-desc">Ascend needs Dynamics 365 licenses renewed — $1.4M. Sarah puts everything in a single message: vendor, amount, and cost center. The agent extracts all three, confirms, and creates the PR without a single follow-up question.</div>
+  </div>
+
+  <div class="say-this"><strong>👩‍💼 You say (one prompt — all details included)</strong><em>Create a PR for Microsoft for 1.4 million in Dynamics 365 licenses, cost center CC-1000</em></div>
+
+  <div class="chat">
+    <div class="chat-header">🤖 Ascend SAP Procurement Agent · M365 Copilot</div>
+    <div class="chat-body">
+      <div class="msg user"><div class="av">👩</div><div class="bubble">Create a PR for Microsoft for 1.4 million in Dynamics 365 licenses, cost center CC-1000</div></div>
+      <div class="msg bot"><div class="av">🤖</div><div class="bubble">
+        ✅ Vendor confirmed: <strong>Microsoft Licensing LLC</strong> (V100001)<br>
+        📊 Cost center: <strong>CC-1000</strong> · 💰 Amount: <strong>$1,400,000 USD</strong> · 📦 Item: <strong>Dynamics 365 licenses</strong><br><br>
+        <em>All details extracted from your message — no follow-up needed.</em>
+      </div></div>
+      <div class="msg bot"><div class="av">🤖</div><div class="bubble">
+        <strong>📄 Purchase Requisition Created</strong><br><br>
+        <table style="font-size:0.85em;border-collapse:collapse;width:100%">
+          <tr><td style="padding:4px 8px;color:#555">PR Number</td><td style="padding:4px 8px"><strong>1002604232134</strong></td></tr>
+          <tr><td style="padding:4px 8px;color:#555">Status</td><td style="padding:4px 8px">🟡 Created — Pending Approval</td></tr>
+          <tr><td style="padding:4px 8px;color:#555">Description</td><td style="padding:4px 8px">Dynamics 365 licenses</td></tr>
+          <tr><td style="padding:4px 8px;color:#555">Vendor</td><td style="padding:4px 8px">Microsoft Licensing LLC (V100001)</td></tr>
+          <tr><td style="padding:4px 8px;color:#555">Total Value</td><td style="padding:4px 8px"><strong>$1,400,000 USD</strong></td></tr>
+          <tr><td style="padding:4px 8px;color:#555">Cost Center</td><td style="padding:4px 8px">CC-1000</td></tr>
+          <tr><td style="padding:4px 8px;color:#555">Approver</td><td style="padding:4px 8px">David Chen (VP Operations)</td></tr>
+        </table><br>
+        ✅ PR written to SAP EBAN. Routed to David Chen for approval.<br><br>
+        💡 Say <em>"check PR status 1002604232134"</em> or <em>"send reminder for PR 1002604232134"</em>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="narrator">One message. $1.4M Dynamics 365 license PR created in SAP — vendor looked up by name, amount parsed from natural language ("1.4 million"), cost center extracted, routed to approver. Zero follow-up questions.</div>
+
+  <div class="say-this"><strong>🎤 Talking point</strong><em>"Notice the agent handled '1.4 million' as a number, matched 'Microsoft' to the correct vendor ID in SAP Vendor Master, and pulled all three fields — vendor, amount, cost center — out of a single sentence. Most procurement systems require five form fields for what just happened in one chat message."</em></div>
+
+  <div class="alert alert-info">💡 <strong>Alt one-shot prompt:</strong> <em>"Create a PR for Acme Office Supplies for $5,000, cost center CC-1000"</em> — good for showing smaller ticket items. The $1.4M Microsoft prompt is more impactful for enterprise audiences.</div>
+</div>
+
+<!-- SCENE 5 -->
+<div class="section" id="scene5">
+  <div class="scene-banner">
+    <div class="scene-label">Scene 5 · 8:13 AM</div>
+    <div class="scene-title">Clean Up: Cancel the Rejected Consulting Engagement</div>
+    <div class="scene-desc">The Accenture advisory PR was rejected. Sarah needs to close it out in SAP to keep her queue clean.</div>
+  </div>
+
+  <div class="say-this"><strong>👩‍💼 You say</strong><em>Cancel PR 10012280</em></div>
+
+  <div class="chat">
+    <div class="chat-header">🤖 Ascend SAP Procurement Agent · M365 Copilot</div>
+    <div class="chat-body">
+      <div class="msg user"><div class="av">👩</div><div class="bubble">Cancel PR 10012280</div></div>
+      <div class="msg bot"><div class="av">🤖</div><div class="bubble">
+        <strong>🚫 PR 10012280 Cancelled</strong><br><br>
+        Action: Cancelled<br>
+        New Status: 🚫 Cancelled<br>
+        PR: Accenture Advisory Q1 · Accenture LLP · $45,000<br><br>
+        📌 SAP EBAN has been updated. The PR is now closed.
+      </div></div>
+    </div>
+  </div>
+
+  <div class="narrator">One message. $45,000 engagement closed in SAP. No portal, no email, no IT ticket.</div>
+</div>
+
+<!-- SCENE 6 -->
+<div class="section" id="scene6">
+  <div class="scene-banner">
+    <div class="scene-label">Scene 6 · 8:15 AM</div>
+    <div class="scene-title">The Renewal Still Needs a Nudge</div>
+    <div class="scene-desc">Before the demo was run, PR 10012345 was still pending. Sarah sends a reminder to the approver — directly from the Copilot chat.</div>
+  </div>
+
+  <div class="say-this"><strong>👩‍💼 You say</strong><em>Send a reminder for PR 10012345</em></div>
+
+  <div class="chat">
+    <div class="chat-header">🤖 Ascend SAP Procurement Agent · M365 Copilot</div>
+    <div class="chat-body">
+      <div class="msg user"><div class="av">👩</div><div class="bubble">Send a reminder for PR 10012345</div></div>
+      <div class="msg bot"><div class="av">🤖</div><div class="bubble">
+        <strong>📧 Reminder Sent — PR 10012345</strong><br><br>
+        PR: Microsoft 365 E5 - Annual · $24,000<br>
+        Approver notified: John Smith<br>
+        Status: Reminder logged in SAP<br><br>
+        📌 The approver has been nudged. Check back with "check PR status 10012345".
+      </div></div>
+    </div>
+  </div>
+
+  <div class="narrator">In 13 minutes, Sarah reviewed her full PR portfolio, triggered an approval, created a new requisition, cancelled a dead engagement, and sent a follow-up — all without opening SAP, a browser portal, or writing a single email.</div>
+
+  <div class="say-this"><strong>🎤 Closing line</strong><em>"What you just saw is 13 minutes of procurement work — in SAP — done entirely through natural language in Microsoft 365 Copilot. Same agent, same flows, same Dataverse tables — just swap the connector for a live SAP RFC and this goes to production. That's the RAPP pipeline."</em></div>
+  <div class="outcome">✅ <strong>Demo complete.</strong> 6 scenes · 8 agent interactions · 0 SAP screens opened.</div>
+</div>
+
+<!-- TALKING POINTS -->
+<div class="section" id="talking-points">
+  <h2>🎤 Key Talking Points</h2>
+
+  <h3>On architecture</h3>
+  <p>"This is Copilot Studio with 8 topics, each connected to a Power Automate flow, which queries Dataverse tables that mirror SAP EBAN, LFA1, and CSKS. In production you replace the Dataverse connector with SAP ECC — everything else stays."</p>
+
+  <h3>On AI vs. automation</h3>
+  <p>"There's no LLM making procurement decisions. The generative AI handles intent recognition — figuring out which of the 8 topics to call. The actual SAP reads and writes happen through deterministic Power Automate flows. This is safe for enterprise procurement."</p>
+
+  <h3>On the build time</h3>
+  <p>"8 topics, 6 flows, full Dataverse schema, demo data, M365 Copilot deployment — built in a single sprint using the RAPP pipeline. The same methodology applies to any SAP transaction or D365 workflow."</p>
+
+  <h3>On adoption</h3>
+  <p>"The agent meets users where they already are — Microsoft 365 Copilot. No training, no new logins, no app install. Procurement managers can start a PR from their morning Teams message."</p>
+</div>
+
+<!-- TROUBLESHOOTING -->
+<div class="section" id="troubleshoot">
+  <h2>🩺 Troubleshooting</h2>
+  <table>
+    <tr><th>Symptom</th><th>Fix</th></tr>
+    <tr><td>Bot says "I'm not sure how to help"</td><td>Use exact phrasing from starter prompts; include PR number</td></tr>
+    <tr><td>PR list comes back as run-on text</td><td>Flow was updated — republish bot in Copilot Studio</td></tr>
+    <tr><td>Logo / "Created by" not showing</td><td>Remove + re-add agent in M365 Copilot; wait 30 min after publish</td></tr>
+    <tr><td>Starter prompt chips not visible</td><td>Start a fresh New Conversation, then select agent from left rail</td></tr>
+    <tr><td>Approve doesn't update status</td><td>Check Power Automate run history for the Approve/Reject flow</td></tr>
+    <tr><td>Vendor not found</td><td>Use: Microsoft, Dell, Amazon, SAP, Accenture, or Acme</td></tr>
+  </table>
+  <h3>Useful Links</h3>
+  <ul style="margin-left:20px; font-size:0.9rem; color:var(--muted); line-height:2">
+    <li><a href="https://org6feab6b5.crm.dynamics.com">Dataverse Org</a></li>
+    <li><a href="https://copilotstudio.microsoft.com">Copilot Studio</a></li>
+    <li><a href="https://make.powerautomate.com">Power Automate (Modern Designer)</a></li>
+    <li><a href="https://m365.cloud.microsoft/chat">M365 Copilot</a></li>
+  </ul>
+</div>
+
+</div><!-- end main -->
+</div><!-- end layout -->
+<script>
+  document.querySelectorAll('.nav-link').forEach(l => {
+    l.addEventListener('click', () => {
+      document.querySelectorAll('.nav-link').forEach(x => x.classList.remove('active'));
+      l.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

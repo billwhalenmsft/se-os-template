@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ascend SAP Procurement — Copilot Studio Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet" />
+<script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+<style>
+  :root {
+    --ascend-navy: #0B2545;
+    --ascend-blue: #1B4F8C;
+    --ascend-accent: #00B4D8;
+    --ascend-bg: #F4F7FA;
+    --ascend-card: #FFFFFF;
+    --ascend-text: #1A2238;
+    --ascend-muted: #5A6478;
+    --ascend-border: #E1E7ED;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #F4F7FA 0%, #E1ECF7 100%);
+    color: var(--ascend-text);
+    min-height: 100vh;
+  }
+  .header {
+    background: linear-gradient(120deg, var(--ascend-navy), var(--ascend-blue));
+    color: #fff;
+    padding: 24px 40px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .logo {
+    width: 48px; height: 48px;
+    background: var(--ascend-accent);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 20px;
+  }
+  .header h1 { margin: 0; font-size: 22px; font-weight: 600; }
+  .header .subtitle { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+  .layout {
+    display: grid;
+    grid-template-columns: 320px 1fr 360px;
+    gap: 24px;
+    padding: 24px 40px;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+  .panel {
+    background: var(--ascend-card);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border: 1px solid var(--ascend-border);
+  }
+  .panel h2 {
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--ascend-muted);
+    margin: 0 0 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--ascend-border);
+  }
+  .scenario {
+    padding: 12px;
+    margin: 8px 0;
+    background: var(--ascend-bg);
+    border-radius: 8px;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+    font-size: 13px;
+  }
+  .scenario:hover {
+    border-left-color: var(--ascend-accent);
+    background: #EAF4FA;
+    transform: translateX(2px);
+  }
+  .scenario .num {
+    display: inline-block;
+    width: 22px; height: 22px;
+    background: var(--ascend-blue);
+    color: #fff;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 22px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-right: 8px;
+  }
+  .scenario .title {
+    font-weight: 600;
+    color: var(--ascend-navy);
+  }
+  .scenario .prompt {
+    margin-top: 4px;
+    color: var(--ascend-muted);
+    font-style: italic;
+    font-size: 12px;
+  }
+  .chat-container {
+    background: var(--ascend-card);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border: 1px solid var(--ascend-border);
+    height: calc(100vh - 180px);
+    min-height: 600px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .chat-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--ascend-border);
+    background: linear-gradient(90deg, #FAFCFE, #F4F7FA);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .chat-header .avatar {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--ascend-blue), var(--ascend-accent));
+    border-radius: 50%;
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+  }
+  .chat-header .info .name { font-weight: 600; color: var(--ascend-navy); }
+  .chat-header .info .status {
+    font-size: 11px; color: #2E7D32;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .chat-header .info .status::before {
+    content: ''; width: 6px; height: 6px;
+    background: #4CAF50; border-radius: 50%;
+  }
+  #webchat { flex: 1; }
+  .info-card {
+    background: var(--ascend-bg);
+    padding: 12px;
+    border-radius: 8px;
+    margin: 12px 0;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .info-card strong { color: var(--ascend-navy); }
+  .badge {
+    display: inline-block;
+    padding: 3px 8px;
+    background: var(--ascend-accent);
+    color: #fff;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-right: 4px;
+  }
+  .config-warn {
+    background: #FFF3CD;
+    color: #856404;
+    border: 1px solid #FFEEBA;
+    padding: 16px 20px;
+    margin: 16px 40px 0;
+    border-radius: 8px;
+    font-size: 13px;
+  }
+  .config-warn code {
+    background: rgba(0,0,0,0.06);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">A</div>
+  <div>
+    <h1>Ascend SAP Procurement Agent</h1>
+    <div class="subtitle">Conversational PR lifecycle • Copilot Studio + Power Automate + Dataverse (SAP ECC mirror)</div>
+  </div>
+</div>
+
+<div id="config-warning" class="config-warn">
+  <strong>⚙ Setup required:</strong> Set the <code>DIRECT_LINE_TOKEN_ENDPOINT</code> below.
+  In Copilot Studio: <strong>Channels → Custom website → Web Chat</strong> → copy the <code>token endpoint</code> URL and paste it into the <code>TOKEN_ENDPOINT</code> constant in this HTML's script.
+</div>
+
+<div class="layout">
+
+  <aside class="panel" id="scenarios">
+    <h2>Demo Scenarios</h2>
+
+    <div class="scenario" data-prompt="find vendor V-001">
+      <div><span class="num">1</span><span class="title">Vendor Lookup</span></div>
+      <div class="prompt">"find vendor V-001"</div>
+    </div>
+
+    <div class="scenario" data-prompt="list my PRs">
+      <div><span class="num">2</span><span class="title">My Purchase Requisitions</span></div>
+      <div class="prompt">"list my PRs"</div>
+    </div>
+
+    <div class="scenario" data-prompt="check status of PR PR-1001">
+      <div><span class="num">3</span><span class="title">PR Status</span></div>
+      <div class="prompt">"check status of PR PR-1001"</div>
+    </div>
+
+    <div class="scenario" data-prompt="show pending approvals">
+      <div><span class="num">4</span><span class="title">Pending Approvals</span></div>
+      <div class="prompt">"show pending approvals"</div>
+    </div>
+
+    <div class="scenario" data-prompt="create a PR">
+      <div><span class="num">5</span><span class="title">Create PR</span></div>
+      <div class="prompt">"create a PR" (multi-turn)</div>
+    </div>
+
+    <div class="scenario" data-prompt="approve PR PR-1001">
+      <div><span class="num">6</span><span class="title">Approve / Reject</span></div>
+      <div class="prompt">"approve PR PR-1001"</div>
+    </div>
+
+    <div class="scenario" data-prompt="cancel PR PR-1002">
+      <div><span class="num">7</span><span class="title">Cancel / Edit</span></div>
+      <div class="prompt">"cancel PR PR-1002"</div>
+    </div>
+
+    <div class="scenario" data-prompt="send reminder for PR PR-1001">
+      <div><span class="num">8</span><span class="title">Send Reminder</span></div>
+      <div class="prompt">"send reminder for PR PR-1001"</div>
+    </div>
+  </aside>
+
+  <main class="chat-container">
+    <div class="chat-header">
+      <div class="avatar">AS</div>
+      <div class="info">
+        <div class="name">Ascend Procurement Assistant</div>
+        <div class="status">Online · Generative orchestration · GPT-4.1</div>
+      </div>
+    </div>
+    <div id="webchat"></div>
+  </main>
+
+  <aside class="panel">
+    <h2>About this Demo</h2>
+    <div class="info-card">
+      <strong>Backend:</strong> Power Automate flows write to Dataverse tables that mirror SAP ECC schemas
+      (LFA1/LFB1/LFM1, EBAN/EBKN, EKKO/EKPO, BUS2105).
+    </div>
+    <div class="info-card">
+      <strong>Topics:</strong> 8 native Copilot Studio topics with generative orchestration —
+      not trigger phrases, the orchestrator routes based on intent.
+    </div>
+    <div class="info-card">
+      <strong>Surfaces:</strong>
+      <div style="margin-top:6px">
+        <span class="badge">Web Chat</span> (this page)
+        <span class="badge">Teams</span>
+        <span class="badge">M365 Copilot</span>
+      </div>
+      Same agent, different shell. M365 Copilot wraps it as a declarative agent.
+    </div>
+    <div class="info-card">
+      <strong>SAP integration path (production):</strong>
+      Replace Dataverse calls with SAP ERP connector or custom OData connector
+      against your S/4HANA endpoint. Topic + flow logic stays the same.
+    </div>
+  </aside>
+
+</div>
+
+<script>
+  // ============================================================
+  // CONFIG: paste your bot's Direct Line token endpoint here
+  // (Copilot Studio → Channels → Custom website → Web Chat → Token endpoint)
+  // ============================================================
+  const TOKEN_ENDPOINT = '';  // <-- e.g., 'https://....directline.botframework.com/.../tokens/generate'
+
+  (async function () {
+    const warnEl = document.getElementById('config-warning');
+
+    if (!TOKEN_ENDPOINT) {
+      console.warn('No TOKEN_ENDPOINT configured. Web Chat will not initialize.');
+      return;
+    }
+
+    warnEl.style.display = 'none';
+
+    try {
+      const res = await fetch(TOKEN_ENDPOINT, { method: 'GET' });
+      const { token } = await res.json();
+
+      const styleOptions = {
+        botAvatarInitials: 'AS',
+        userAvatarInitials: 'You',
+        botAvatarBackgroundColor: '#1B4F8C',
+        userAvatarBackgroundColor: '#0B2545',
+        accent: '#00B4D8',
+        primaryFont: "'Segoe UI', system-ui, sans-serif",
+        bubbleBackground: '#F4F7FA',
+        bubbleFromUserBackground: '#1B4F8C',
+        bubbleFromUserTextColor: '#FFFFFF',
+        bubbleBorderRadius: 12,
+        bubbleFromUserBorderRadius: 12,
+        bubbleMinHeight: 0,
+        bubbleMinWidth: 0,
+        rootHeight: '100%',
+        rootWidth: '100%',
+        backgroundColor: '#FFFFFF',
+        suggestedActionBorderColor: '#1B4F8C',
+        suggestedActionTextColor: '#1B4F8C',
+        suggestedActionBackgroundColor: 'transparent',
+        suggestedActionBorderRadius: 16,
+        suggestedActionLayout: 'flow'
+      };
+
+      const directLine = window.WebChat.createDirectLine({ token });
+      window.WebChat.renderWebChat(
+        { directLine, styleOptions, locale: 'en-US' },
+        document.getElementById('webchat')
+      );
+
+      // Wire up scenario tiles to send messages into the chat
+      document.querySelectorAll('.scenario').forEach((tile) => {
+        tile.addEventListener('click', () => {
+          const text = tile.getAttribute('data-prompt');
+          directLine.postActivity({
+            from: { id: 'user', name: 'Demo User' },
+            type: 'message',
+            text
+          }).subscribe();
+        });
+      });
+    } catch (err) {
+      console.error('Failed to initialize Web Chat:', err);
+      warnEl.innerHTML = '<strong>⚠ Web Chat failed to load:</strong> ' + err.message
+        + ' &mdash; verify the <code>TOKEN_ENDPOINT</code> is correct and the bot is published.';
+      warnEl.style.background = '#F8D7DA';
+      warnEl.style.color = '#721C24';
+      warnEl.style.borderColor = '#F5C6CB';
+    }
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,38 @@
+{
+  "_comment": "Copy this file to setup.config.json (gitignored) and fill in your SE details",
+  "se_name": "Your Name",
+  "se_alias": "youralias",
+  "practice_area": "Discrete Manufacturing",
+  "team_name": "Americas SE - [Your Practice]",
+  "deployment": {
+    "resource_group": "se-os-rg",
+    "location": "eastus",
+    "static_web_app_name": "se-os-[youralias]",
+    "function_app_name": "se-os-api-[youralias]",
+    "storage_account": "seos[youralias]"
+  },
+  "environments": {
+    "d365": {
+      "org_url": "https://[your-org].crm.dynamics.com",
+      "name": "My Demo Environment",
+      "type": "Customer Engagement"
+    },
+    "power_platform": {
+      "environment_url": "https://[your-env].crm.dynamics.com",
+      "name": "My PP Environment"
+    },
+    "azure": {
+      "subscription_id": "[your-subscription-id]",
+      "tenant_id": "[your-tenant-id]"
+    }
+  },
+  "integrations": {
+    "teams_channel": "https://teams.microsoft.com/...",
+    "loop_workspace": "https://loop.microsoft.com/...",
+    "sharepoint_site": "https://microsoft.sharepoint.com/..."
+  },
+  "auth": {
+    "github_client_id": "your-github-oauth-app-client-id",
+    "_note": "GitHub Client Secret goes to Azure SWA Application Settings as GITHUB_CLIENT_SECRET"
+  }
+}

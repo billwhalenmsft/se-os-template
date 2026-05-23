@@ -1,0 +1,1375 @@
+{
+  "version": "1.1",
+  "lastUpdated": "2026-05-22T15:48:01Z",
+  "meta": {
+    "title": "SE Resource Hub",
+    "description": "Unified catalog for Discrete Manufacturing SEs — agents, solutions, tools, resources, and onboarding.",
+    "maintainer": "Bill Whalen",
+    "submitUrl": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/issues/new?template=resource-submission.md&labels=resource-submission"
+  },
+  "environments": [],
+  "featured": [
+    {
+      "id": "feat-1",
+      "title": "RAPP Pipeline — Transcript to Agent",
+      "description": "Drop a discovery transcript and get a deployable Azure Function agent + demo + HTML tester in one step.",
+      "type": "guide",
+      "icon": "⚡",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen",
+      "tags": [
+        "rapp",
+        "quick-start",
+        "agent"
+      ],
+      "featured": true,
+      "curated": true
+    },
+    {
+      "id": "feat-2",
+      "title": "Mfg CoE Command Center",
+      "description": "The SE operations hub — backlog, outcomes, sprint board, activity feed, and AI chat in one M365-style shell.",
+      "type": "tool",
+      "icon": "🏭",
+      "url": "https://bots-in-blazers.fun",
+      "tags": [
+        "coe",
+        "command-center"
+      ],
+      "featured": true,
+      "curated": true
+    },
+    {
+      "id": "feat-3",
+      "title": "AI Studio for Dynamics 365",
+      "description": "Mauricio Oliveira's tool suite — connect your D365 org and get instant AI-powered utilities. Runs in the Resource Hub side panel.",
+      "type": "tool",
+      "icon": "🔬",
+      "url": "https://proud-dune-0959aad0f.3.azurestaticapps.net/",
+      "urlParam": "orgUrl",
+      "tags": [
+        "d365",
+        "ai",
+        "tools"
+      ],
+      "featured": true,
+      "curated": true,
+      "launchMode": "panel"
+    },
+    {
+      "id": "feat-4",
+      "title": "MCAPS IQ",
+      "description": "SE intelligence platform — account insights, SWOT, executive briefings, and strategic positioning for Manufacturing customers.",
+      "type": "tool",
+      "icon": "🧠",
+      "url": "https://github.com/microsoft/MCAPS-IQ",
+      "tags": [
+        "mcaps",
+        "intelligence",
+        "briefing"
+      ],
+      "featured": true,
+      "curated": true
+    }
+  ],
+  "agents": [
+    {
+      "id": "agent-rapp",
+      "title": "RAPP Pipeline Agent",
+      "description": "Full 14-step agent production pipeline. Actions: transcript_to_agent, auto_process, generate_report, quality gates QG1-QG6.",
+      "type": "agent",
+      "icon": "🤖",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/agents/rapp_agent.py",
+      "tags": [
+        "rapp",
+        "production",
+        "pipeline"
+      ],
+      "curated": true
+    },
+    {
+      "id": "agent-coe-pm",
+      "title": "CoE PM Agent",
+      "description": "Backlog management, sprint planning, prioritization, and weekly digest for the Mfg CoE.",
+      "type": "agent",
+      "icon": "🗂️",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/customers/mfg_coe/agents/mfg_coe_pm_agent.py",
+      "tags": [
+        "coe",
+        "pm",
+        "backlog"
+      ],
+      "curated": true
+    },
+    {
+      "id": "agent-coe-sme",
+      "title": "CoE SME Agent",
+      "description": "Generates SOPs, documents standard business processes, and defines agentic use cases for Discrete Manufacturing.",
+      "type": "agent",
+      "icon": "🏭",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/customers/mfg_coe/agents/mfg_coe_sme_agent.py",
+      "tags": [
+        "coe",
+        "sme",
+        "sop",
+        "process"
+      ],
+      "curated": true
+    },
+    {
+      "id": "agent-coe-dev",
+      "title": "CoE Developer Agent",
+      "description": "Scaffolds Azure Function agents, generates D365 configurations, creates RAPP artifacts, and performs code review.",
+      "type": "agent",
+      "icon": "🧑‍💻",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/customers/mfg_coe/agents/mfg_coe_developer_agent.py",
+      "tags": [
+        "coe",
+        "developer",
+        "code",
+        "d365"
+      ],
+      "curated": true
+    },
+    {
+      "id": "agent-coe-architect",
+      "title": "CoE Architect Agent",
+      "description": "Designs Microsoft stack solutions, evaluates patterns, creates architecture docs, and recommends optimal tech.",
+      "type": "agent",
+      "icon": "🏗️",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/customers/mfg_coe/agents/mfg_coe_architect_agent.py",
+      "tags": [
+        "coe",
+        "architect",
+        "design",
+        "microsoft"
+      ],
+      "curated": true
+    },
+    {
+      "id": "agent-d365-demo",
+      "title": "D365 Demo Prep Agent",
+      "description": "Provisions demo data, validates D365 org state, runs numbered PS scripts (1-25) for full demo environment setup.",
+      "type": "agent",
+      "icon": "🎬",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/agents/d365_demo_prep_agent.py",
+      "tags": [
+        "d365",
+        "demo",
+        "provisioning"
+      ],
+      "curated": true
+    },
+    {
+      "id": "agent-scripted-demo",
+      "title": "Scripted Demo Agent",
+      "description": "Drives interactive demos with pre-built walkthroughs. Supports multiple customer personas and demo scenarios.",
+      "type": "agent",
+      "icon": "🎭",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/agents/scripted_demo_agent.py",
+      "tags": [
+        "demo",
+        "walkthrough",
+        "persona"
+      ],
+      "curated": true
+    }
+  ],
+  "solutions": [
+    {
+      "id": "sol-cxai-data-generation",
+      "title": "CxAI Data Generation & Agent Enablement",
+      "description": "Instantly create customer-contextual D365 Sales + Customer Service environments and auto-configure AI agents in minutes, not days. Generates realistic data tailored to a specific customer (e.g. Walmart, Sandvik). Built by Poonam Thawani + Eric Boocock. Contact them for access + onboarding guide.",
+      "type": "solution",
+      "icon": "🧬",
+      "url": "https://engage.cloud.microsoft/main/threads/eyJfdHlwZSI6IlRocmVhZCIsImlkIjoiMzg0NzA4NzQ1MTA3MDQ2NCJ9",
+      "installUrl": null,
+      "tags": [
+        "d365",
+        "d365-cs",
+        "data-generation",
+        "demo-prep",
+        "agent-enablement",
+        "sales",
+        "internal"
+      ],
+      "author": "Poonam Thawani & Eric Boocock",
+      "access": "internal",
+      "access_note": "Internal Microsoft — contact Poonam Thawani or Eric Boocock for onboarding guide and solution download",
+      "status": "production",
+      "curated": true,
+      "community": true
+    },
+    {
+      "id": "sol-email-mgmt",
+      "title": "Email Management Solution (Draft)",
+      "description": "D365 Customer Service email automation — intelligent triage, auto-routing, and AI-draft replies. Supports embedded CS and standalone deployment.",
+      "type": "solution",
+      "icon": "📧",
+      "url": "#",
+      "installUrl": null,
+      "tags": [
+        "email",
+        "d365-cs",
+        "automation"
+      ],
+      "status": "in-progress",
+      "curated": true
+    },
+    {
+      "id": "sol-copilot-multi-agent",
+      "title": "Multi-Agent Copilot Solution",
+      "description": "Power Platform managed solution: Copilot Studio bot + Power Automate flows + Azure Function backend. One-click import to your D365 org.",
+      "type": "solution",
+      "icon": "🤖",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/raw/main/MSFTAIBASMultiAgentCopilot_1_0_0_2.zip",
+      "installUrl": null,
+      "tags": [
+        "copilot-studio",
+        "power-automate",
+        "d365"
+      ],
+      "version": "1.0.0.2",
+      "curated": true
+    }
+  ],
+  "demo_scripts": [
+    {
+      "id": "script-discrete-mfg",
+      "title": "Discrete Mfg AI Story — Master CE Mfg",
+      "description": "Full AI demo narrative for Discrete Manufacturing customers. Covers CS AI, Copilot Studio, and field service scenarios using Master CE Mfg environment.",
+      "type": "script",
+      "icon": "🎬",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/tree/main/demos",
+      "tags": [
+        "discrete",
+        "master-ce-mfg",
+        "demo"
+      ],
+      "curated": true
+    },
+    {
+      "id": "script-zurn",
+      "title": "Zurn Elkay — 7-Agent Demo",
+      "description": "Full Zurn Elkay multi-agent Copilot Studio demo — drains, drinking water, sinks, field service, and sustainability agents.",
+      "type": "script",
+      "icon": "🚰",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/tree/main/customers/zurnelkay",
+      "tags": [
+        "zurn",
+        "elkay",
+        "multi-agent",
+        "copilot-studio"
+      ],
+      "curated": true
+    },
+    {
+      "id": "script-navico-cs",
+      "title": "Navico — D365 CS Competitive Demo Script",
+      "description": "Customer Service competitive demo script for Navico. D365 vs legacy CRM scenarios, persona-based walk-through.",
+      "type": "script",
+      "icon": "🎬",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/customers/navico/d365/demo-assets/navico_demo_script.html",
+      "tags": [
+        "navico",
+        "d365",
+        "customer-service",
+        "competitive"
+      ],
+      "curated": true,
+      "category": "MFG COE"
+    },
+    {
+      "id": "guide-navico-exec",
+      "title": "Navico — D365 CS Demo Execution Guide",
+      "description": "Click-by-click execution guide for the Navico D365 Customer Service demo. Environment prep, personas, and troubleshooting.",
+      "type": "guide",
+      "icon": "📋",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/customers/navico/d365/demo-assets/navico_demo_execution_guide.html",
+      "tags": [
+        "navico",
+        "d365",
+        "execution-guide"
+      ],
+      "curated": true,
+      "category": "MFG COE"
+    },
+    {
+      "id": "guide-zurn-exec",
+      "title": "Zurn Elkay — Demo Execution Guide",
+      "description": "Click-by-click execution guide for the Zurn/Elkay 7-agent Copilot Studio demo. Covers drains, water, sinks, field service, and sustainability agents.",
+      "type": "guide",
+      "icon": "📋",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/customers/zurnelkay/d365/demo-assets/demo-execution-guide.html",
+      "tags": [
+        "zurn",
+        "elkay",
+        "multi-agent",
+        "d365",
+        "execution-guide"
+      ],
+      "curated": true,
+      "category": "MFG COE"
+    },
+    {
+      "id": "guide-zurn-cs",
+      "title": "Zurn Elkay — Copilot Studio Demo Guide",
+      "description": "Copilot Studio CI demo guide for Zurn Elkay. CI channel configuration, conversation flows, and escalation topics.",
+      "type": "guide",
+      "icon": "📋",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/customers/zurnelkay/docs/zurnelkay_copilot_studio_demo_guide.html",
+      "tags": [
+        "zurn",
+        "elkay",
+        "copilot-studio",
+        "CI"
+      ],
+      "curated": true,
+      "category": "MFG COE"
+    },
+    {
+      "id": "guide-otis-exec",
+      "title": "Otis EMEA CCaaS Demo — Execution Guide",
+      "description": "Demo execution guide for Otis EMEA Contact Center as a Service scenario. D365 CS, Nuance, and CCaaS integration.",
+      "type": "guide",
+      "icon": "📋",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/customers/otis/d365/demo-assets/otis_demo_execution_guide.html",
+      "tags": [
+        "otis",
+        "d365",
+        "ccaas",
+        "emea",
+        "execution-guide"
+      ],
+      "curated": true,
+      "category": "MFG COE"
+    },
+    {
+      "id": "script-otis-telephony",
+      "title": "Otis EMEA — Telephony Demo Script",
+      "description": "Telephony-focused demo script for Otis EMEA. IVR, voice routing, and agent-assist scenarios.",
+      "type": "script",
+      "icon": "🎬",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/customers/otis/d365/demo-assets/otis_telephony_demo_script.html",
+      "tags": [
+        "otis",
+        "telephony",
+        "ccaas",
+        "emea"
+      ],
+      "curated": true,
+      "category": "MFG COE"
+    },
+    {
+      "id": "guide-moen-cs",
+      "title": "Moen — D365 CS Demo Guide",
+      "description": "SE demo guide for Moen Customer Service on D365. Covers unified routing, AI case summary, and copilot features.",
+      "type": "guide",
+      "icon": "📋",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/customers/fortunebrands/docs/moen_cs_demo_guide.html",
+      "tags": [
+        "moen",
+        "fortune-brands",
+        "d365",
+        "customer-service"
+      ],
+      "curated": true,
+      "category": "MFG COE"
+    },
+    {
+      "id": "script-ascend-cs",
+      "title": "Ascend SAP Procurement — Copilot Studio Demo",
+      "description": "Copilot Studio demo for Ascend SAP purchase-request agent. End-to-end procurement automation walkthrough.",
+      "type": "script",
+      "icon": "🎬",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/customers/ascend/demos/ascend_copilot_studio_demo.html",
+      "tags": [
+        "ascend",
+        "sap",
+        "procurement",
+        "copilot-studio"
+      ],
+      "curated": true,
+      "category": "MFG COE"
+    },
+    {
+      "id": "guide-ascend-pr",
+      "title": "Ascend SAP Procurement Agent — Demo Guide",
+      "description": "Demo guide for Ascend's SAP PR agent. Covers agent setup, conversation flows, and SAP integration validation.",
+      "type": "guide",
+      "icon": "📋",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/customers/ascend/demos/ascend_pr_demo_guide.html",
+      "tags": [
+        "ascend",
+        "sap",
+        "procurement",
+        "copilot-studio",
+        "guide"
+      ],
+      "curated": true,
+      "category": "MFG COE"
+    },
+    {
+      "id": "script-carrier-triage",
+      "title": "Carrier — AI Case Triage Demo",
+      "description": "Presenter guide for Carrier AI case triage. AI-assisted routing, case prioritization, and field service handoff.",
+      "type": "script",
+      "icon": "🎬",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/customers/carrier/docs/carrier_case_triage_demo_presenter.html",
+      "tags": [
+        "carrier",
+        "d365",
+        "case-triage",
+        "AI"
+      ],
+      "curated": true,
+      "category": "MFG COE"
+    },
+    {
+      "id": "guide-carrier-inventory",
+      "title": "Carrier — Inventory Pooling Demo & Discovery",
+      "description": "Demo and discovery walk-through for Carrier's inventory pooling scenario. Multi-location optimization and agent assist.",
+      "type": "guide",
+      "icon": "📋",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/customers/carrier/inventory-pooling/demos/carrier_inventory_pooling_demo_guide.html",
+      "tags": [
+        "carrier",
+        "field-service",
+        "inventory",
+        "discovery"
+      ],
+      "curated": true,
+      "category": "MFG COE"
+    },
+    {
+      "id": "guide-hkp-v1",
+      "title": "HKP RMA Operations — v1 Demo Guide",
+      "description": "Customer-facing v1 demo guide for Ametek HKP RMA Operations. Returns management, AI insights, and claims workflow.",
+      "type": "guide",
+      "icon": "📋",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/customers/ametek/hkp_rma/docs/customer_v1_demo_guide.html",
+      "tags": [
+        "ametek",
+        "hkp",
+        "rma",
+        "field-service"
+      ],
+      "curated": true,
+      "category": "MFG COE"
+    },
+    {
+      "id": "guide-hkp-prep",
+      "title": "HKP RMA — Prep & Demo Delivery Guide",
+      "description": "Full prep and delivery guide for the HKP RMA demo. Covers environment setup, personas, scenarios, and objection handling.",
+      "type": "guide",
+      "icon": "📋",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/customers/ametek/hkp_rma/ui/hkp_rma_prep_and_demo_guide.html",
+      "tags": [
+        "ametek",
+        "hkp",
+        "rma",
+        "prep-guide"
+      ],
+      "curated": true,
+      "category": "MFG COE"
+    },
+    {
+      "id": "script-abcsupply",
+      "title": "ABC Supply Eagan — D365 CS + Field Service Demo",
+      "description": "Unified demo for ABC Supply's Eagan facility. D365 Customer Service + Field Service integration scenarios.",
+      "type": "script",
+      "icon": "🎬",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/customers/abcsupply/d365/demo-assets/abcsupply_demo_unified.html",
+      "tags": [
+        "abc-supply",
+        "d365",
+        "field-service",
+        "customer-service"
+      ],
+      "curated": true,
+      "category": "MFG COE"
+    },
+    {
+      "id": "guide-freightbot",
+      "title": "FreightBot — TE Connectivity Demo Guide",
+      "description": "Demo guide for TE Connectivity's FreightBot. Freight control tower, Copilot Studio agent, and logistics automation.",
+      "type": "guide",
+      "icon": "📋",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/customers/te_connectivity/demos/freightbot_demo_guide.html",
+      "tags": [
+        "te-connectivity",
+        "copilot-studio",
+        "logistics",
+        "freight"
+      ],
+      "curated": true,
+      "category": "MFG COE"
+    },
+    {
+      "id": "guide-sma4",
+      "title": "SMA4 Persona Workbench — Demo Execution Guide",
+      "description": "Demo execution guide for SMA4 Persona Workbench. Persona-based AI scenario builder and demo delivery guide.",
+      "type": "guide",
+      "icon": "📋",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/customers/sma4/demo-assets/sma4-demo-execution-guide.html",
+      "tags": [
+        "sma4",
+        "persona",
+        "demo-execution"
+      ],
+      "curated": true,
+      "category": "MFG COE"
+    },
+    {
+      "id": "script-vermeer",
+      "title": "Vermeer — Machine Walkaround AI Inspector",
+      "description": "Interactive demo for Vermeer AI-assisted machine walkaround inspection. Copilot Studio + D365 Field Service integration.",
+      "type": "script",
+      "icon": "🎬",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/customers/vermeer/docs/vermeer_walkaround_tester.html",
+      "tags": [
+        "vermeer",
+        "field-service",
+        "inspection",
+        "copilot-studio"
+      ],
+      "curated": true,
+      "category": "MFG COE"
+    },
+    {
+      "id": "guide-pella",
+      "title": "Pella — Building AI Agents on Microsoft",
+      "description": "Overview and demo guide for Pella's AI agents built on Microsoft stack. Agent architecture, use cases, and platform story.",
+      "type": "guide",
+      "icon": "📋",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/customers/pella/outputs/Pella_AI_Agents_Overview.html",
+      "tags": [
+        "pella",
+        "agents",
+        "ai",
+        "copilot-studio"
+      ],
+      "curated": true,
+      "category": "MFG COE"
+    },
+    {
+      "id": "script-erac",
+      "title": "GE ERAC — Reinsurance Cedent Workspace Demo",
+      "description": "Unified CRM + analytics demo for GE ERAC reinsurance. Cedent 360 card, portfolio analytics, and PRR dashboard.",
+      "type": "script",
+      "icon": "🎬",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/customers/ge_erac/dataverse/demo-assets/erac_demo_unified.html",
+      "tags": [
+        "ge",
+        "erac",
+        "reinsurance",
+        "d365",
+        "crm"
+      ],
+      "curated": true,
+      "category": "MFG COE"
+    },
+    {
+      "id": "script-subzero",
+      "title": "Sub-Zero — Copilot Studio Demo Guide",
+      "description": "Copilot Studio demo guide for Sub-Zero. Covers product knowledge, warranty, and service agent scenarios.",
+      "type": "script",
+      "icon": "🎬",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/demos/SubZero_CopilotStudio_Demo_Guide.html",
+      "tags": [
+        "sub-zero",
+        "copilot-studio",
+        "demo"
+      ],
+      "curated": true,
+      "category": "MFG COE"
+    },
+    {
+      "id": "script-copilot-demo",
+      "title": "Microsoft 365 Copilot — Demo Walkthrough",
+      "description": "General-purpose M365 Copilot demo walkthrough. Email, Teams, and document AI scenarios.",
+      "type": "script",
+      "icon": "🎬",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/copilot-demo.html",
+      "tags": [
+        "m365",
+        "copilot",
+        "teams",
+        "outlook"
+      ],
+      "curated": true,
+      "category": "All SE"
+    },
+    {
+      "id": "guide-pp-vscode",
+      "title": "Getting Started: VS Code, GHCP & Power Platform",
+      "description": "Quickstart guide for ABS SEs: VS Code + GitHub Copilot + Power Platform workflow. Setup, first agent, and RAPP pipeline intro.",
+      "type": "guide",
+      "icon": "📋",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/docs/power-platform-vscode-copilot-quickstart.html",
+      "tags": [
+        "vs-code",
+        "github-copilot",
+        "power-platform",
+        "quickstart",
+        "enablement"
+      ],
+      "curated": true,
+      "category": "All SE"
+    },
+    {
+      "id": "guide-ghcp-scale",
+      "title": "ABS SE × GHCP Scale Story",
+      "description": "Briefing doc: how ABS SEs scale 3-5x with GitHub Copilot, the no-cannibalization message, and the joint customer motion with GHCP team.",
+      "type": "guide",
+      "icon": "📋",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/docs/briefings/ABS_SE_GHCP_SCALE.html",
+      "tags": [
+        "github-copilot",
+        "scale",
+        "briefing",
+        "ghcp",
+        "enablement"
+      ],
+      "curated": true,
+      "category": "All SE"
+    }
+  ],
+  "tools": [
+    {
+      "id": "tool-agent-template-hub",
+      "title": "Agent Template Hub",
+      "description": "Microsoft-internal catalog of pre-built agent templates. Browse, copy, and deploy agent patterns across Copilot Studio, Azure, and Power Platform. Requires Microsoft SSO.",
+      "type": "tool",
+      "icon": "🗂️",
+      "url": "https://agenttemplatehub.azurewebsites.net/",
+      "tags": [
+        "agent",
+        "templates",
+        "internal",
+        "copilot-studio"
+      ],
+      "author": "Microsoft Internal",
+      "access": "internal",
+      "access_note": "Requires Microsoft Entra login",
+      "curated": true
+    },
+    {
+      "id": "tool-vigilant-adventure",
+      "title": "Vigilant Adventure (Internal — TBD)",
+      "description": "Shared by a colleague — exact purpose TBD. Hosted on a private GitHub Pages (Microsoft EMU). Investigate and update this entry once access is confirmed.",
+      "type": "tool",
+      "icon": "🔍",
+      "url": "https://vigilant-adventure-v9qpqwn.pages.github.io/",
+      "tags": [
+        "internal",
+        "in-progress"
+      ],
+      "access": "internal",
+      "access_note": "Requires Microsoft EMU GitHub SSO",
+      "status": "in-progress",
+      "curated": false,
+      "community": true
+    },
+    {
+      "id": "tool-ai-studio-d365",
+      "title": "AI Studio for Dynamics 365",
+      "description": "Connect your D365 org and get AI-powered analysis, insights, and utilities. Developed by Mauricio Oliveira.",
+      "type": "tool",
+      "icon": "🔬",
+      "url": "https://proud-dune-0959aad0f.3.azurestaticapps.net/",
+      "urlParam": "orgUrl",
+      "tags": [
+        "d365",
+        "ai",
+        "analysis"
+      ],
+      "author": "Mauricio Oliveira",
+      "launchMode": "panel",
+      "curated": true
+    },
+    {
+      "id": "tool-mcaps-iq",
+      "title": "MCAPS IQ",
+      "description": "Account intelligence — SWOT analysis, exec briefings, competitive positioning for Manufacturing accounts.",
+      "type": "tool",
+      "icon": "🧠",
+      "url": "https://github.com/microsoft/MCAPS-IQ",
+      "tags": [
+        "mcaps",
+        "intelligence",
+        "account"
+      ],
+      "curated": true
+    },
+    {
+      "id": "tool-rapp",
+      "title": "RAPP Pipeline",
+      "description": "Rapid AI Agent Production Pipeline — 14-step methodology, GitHub Actions automation, agent scaffolding.",
+      "type": "tool",
+      "icon": "⚡",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen",
+      "tags": [
+        "rapp",
+        "agent",
+        "pipeline"
+      ],
+      "curated": true
+    },
+    {
+      "id": "tool-copilot-studio",
+      "title": "Copilot Studio",
+      "description": "Build, test, and deploy Copilot Studio agents. Access your agents in the Microsoft Power Platform environment.",
+      "type": "tool",
+      "icon": "🤝",
+      "url": "https://copilotstudio.microsoft.com",
+      "tags": [
+        "copilot-studio",
+        "power-platform"
+      ],
+      "curated": true
+    },
+    {
+      "id": "tool-power-platform",
+      "title": "Power Platform Admin",
+      "description": "Manage Power Platform environments, solutions, connections, and deployments.",
+      "type": "tool",
+      "icon": "⚙️",
+      "url": "https://admin.powerplatform.microsoft.com",
+      "tags": [
+        "power-platform",
+        "admin"
+      ],
+      "curated": true
+    },
+    {
+      "id": "tool-appsource",
+      "title": "Microsoft AppSource",
+      "description": "Browse and install Dynamics 365 apps, Power Platform solutions, and partner offerings.",
+      "type": "tool",
+      "icon": "🛒",
+      "url": "https://appsource.microsoft.com/en-us/marketplace/apps?product=dynamics-365",
+      "tags": [
+        "appsource",
+        "install",
+        "marketplace"
+      ],
+      "curated": true
+    },
+    {
+      "id": "too-github-microsoft-powerplatform-actions-p",
+      "title": "GitHub - microsoft/powerplatform-actions: Power Platform GitHub Actions automate common build and deployment tasks relat",
+      "description": "Power Platform GitHub Actions automate common build and deployment tasks related to Power Platform. This includes synchronization of solution metadata (a.k.a. solutions) between development environments and source control, generating build artifacts, deploying to downstream environments, provisionin",
+      "type": "tool",
+      "icon": "🔧",
+      "url": "https://github.com/microsoft/powerplatform-actions",
+      "tags": [
+        "github",
+        "tool"
+      ],
+      "curated": true,
+      "cataloged_by": "borg",
+      "cataloged_at": "2026-05-06",
+      "notes": "Power Platform GitHub Actions"
+    },
+    {
+      "id": "too-instructions-here",
+      "title": "instructions here",
+      "description": "Extracted from GitHub - microsoft/powerplatform-actions: Power Platform Git — review and curate.",
+      "type": "tool",
+      "icon": "🔧",
+      "url": "https://docs.github.com/en/github/managing-large-files/installing-git-large-file-storage",
+      "tags": [
+        "github"
+      ],
+      "curated": false,
+      "cataloged_by": "borg",
+      "cataloged_at": "2026-05-06",
+      "needs_review": true
+    },
+    {
+      "id": "too-github-sparkbuild-and-deploy-intelligent",
+      "title": "GitHub SparkBuild and deploy intelligent apps",
+      "description": "Extracted from GitHub - microsoft/powerplatform-actions: Power Platform Git — review and curate.",
+      "type": "tool",
+      "icon": "🔧",
+      "url": "https://github.com/features/spark",
+      "tags": [
+        "github"
+      ],
+      "curated": false,
+      "cataloged_by": "borg",
+      "cataloged_at": "2026-05-06",
+      "needs_review": true
+    },
+    {
+      "id": "too-mcp-registrynewintegrate-external-tools",
+      "title": "MCP RegistryNewIntegrate external tools",
+      "description": "Extracted from GitHub - microsoft/powerplatform-actions: Power Platform Git — review and curate.",
+      "type": "tool",
+      "icon": "🔧",
+      "url": "https://github.com/mcp",
+      "tags": [
+        "github"
+      ],
+      "curated": false,
+      "cataloged_by": "borg",
+      "cataloged_at": "2026-05-06",
+      "needs_review": true
+    },
+    {
+      "id": "too-documentation",
+      "title": "Documentation",
+      "description": "Extracted from GitHub - microsoft/powerplatform-actions: Power Platform Git — review and curate.",
+      "type": "tool",
+      "icon": "🔧",
+      "url": "https://docs.github.com",
+      "tags": [
+        "github"
+      ],
+      "curated": false,
+      "cataloged_by": "borg",
+      "cataloged_at": "2026-05-06",
+      "needs_review": true
+    },
+    {
+      "id": "too-app-modernization",
+      "title": "App Modernization",
+      "description": "Extracted from GitHub - microsoft/powerplatform-actions: Power Platform Git — review and curate.",
+      "type": "tool",
+      "icon": "🔧",
+      "url": "https://github.com/solutions/use-case/app-modernization",
+      "tags": [
+        "github"
+      ],
+      "curated": false,
+      "cataloged_by": "borg",
+      "cataloged_at": "2026-05-06",
+      "needs_review": true
+    },
+    {
+      "id": "too-software-development",
+      "title": "Software Development",
+      "description": "Extracted from GitHub - microsoft/powerplatform-actions: Power Platform Git — review and curate.",
+      "type": "tool",
+      "icon": "🔧",
+      "url": "https://github.com/resources/articles",
+      "tags": [
+        "github"
+      ],
+      "curated": false,
+      "cataloged_by": "borg",
+      "cataloged_at": "2026-05-06",
+      "needs_review": true
+    },
+    {
+      "id": "too-events-webinars",
+      "title": "Events & webinars",
+      "description": "Extracted from GitHub - microsoft/powerplatform-actions: Power Platform Git — review and curate.",
+      "type": "tool",
+      "icon": "🔧",
+      "url": "https://github.com/resources/events",
+      "tags": [
+        "github"
+      ],
+      "curated": false,
+      "cataloged_by": "borg",
+      "cataloged_at": "2026-05-06",
+      "needs_review": true
+    },
+    {
+      "id": "too-ebooks-reports",
+      "title": "Ebooks & reports",
+      "description": "Extracted from GitHub - microsoft/powerplatform-actions: Power Platform Git — review and curate.",
+      "type": "tool",
+      "icon": "🔧",
+      "url": "https://github.com/resources/whitepapers",
+      "tags": [
+        "github"
+      ],
+      "curated": false,
+      "cataloged_by": "borg",
+      "cataloged_at": "2026-05-06",
+      "needs_review": true
+    },
+    {
+      "id": "too-view-all-resources",
+      "title": "View all resources",
+      "description": "Extracted from GitHub - microsoft/powerplatform-actions: Power Platform Git — review and curate.",
+      "type": "tool",
+      "icon": "🔧",
+      "url": "https://github.com/resources",
+      "tags": [
+        "github"
+      ],
+      "curated": false,
+      "cataloged_by": "borg",
+      "cataloged_at": "2026-05-06",
+      "needs_review": true
+    },
+    {
+      "id": "too-search-syntax-tips",
+      "title": "Search syntax tips",
+      "description": "Extracted from GitHub - microsoft/powerplatform-actions: Power Platform Git — review and curate.",
+      "type": "tool",
+      "icon": "🔧",
+      "url": "https://docs.github.com/search-github/github-code-search/understanding-github-code-search-syntax",
+      "tags": [
+        "github"
+      ],
+      "curated": false,
+      "cataloged_by": "borg",
+      "cataloged_at": "2026-05-06",
+      "needs_review": true
+    },
+    {
+      "id": "too-vs-code",
+      "title": "VS Code",
+      "description": "Extracted from GitHub - microsoft/powerplatform-actions: Power Platform Git — review and curate.",
+      "type": "tool",
+      "icon": "🔧",
+      "url": "https://code.visualstudio.com/Download",
+      "tags": [
+        "github"
+      ],
+      "curated": false,
+      "cataloged_by": "borg",
+      "cataloged_at": "2026-05-06",
+      "needs_review": true
+    },
+    {
+      "id": "too-cli-command-for-pac",
+      "title": "CLI command for pac",
+      "description": "Extracted from GitHub - microsoft/powerplatform-actions: Power Platform Git — review and curate.",
+      "type": "tool",
+      "icon": "🔧",
+      "url": "https://docs.microsoft.com/en-us/powerapps/developer/common-data-service/powerapps-cli#solution",
+      "tags": [
+        "github"
+      ],
+      "curated": false,
+      "cataloged_by": "borg",
+      "cataloged_at": "2026-05-06",
+      "needs_review": true
+    },
+    {
+      "id": "power-agents-blueprint",
+      "title": "Power Agents Blueprint",
+      "description": "Copilot CLI plugin (by Erol Atac) that turns a Power Platform solution ZIP or Copilot Studio agent into a self-contained interactive HTML architecture dashboard — ERD, flow timelines, component inventory, risk notes. Install: copilot plugin install promptclickrun/power-agents-blueprint.",
+      "type": "tool",
+      "icon": "📐",
+      "url": "https://promptclickrun.github.io/power-agents-blueprint/",
+      "tags": [
+        "copilot-cli",
+        "power-platform",
+        "copilot-studio",
+        "architecture",
+        "dashboards",
+        "demo-asset-gen"
+      ],
+      "curated": true,
+      "category": "AI-Powered Productivity"
+    },
+    {
+      "id": "secc-spin-up-wizard",
+      "title": "CoE Spin-Up Wizard",
+      "description": "scripts/spin-up-se-coe.ps1 — 10-question PowerShell wizard. Copies mfg_coe template, tokenizes branding/colors, resets inbox, writes COE_INFO.json. Run pwsh scripts/spin-up-se-coe.ps1.",
+      "type": "tool",
+      "icon": "🪄",
+      "url": "https://github.com/kody-w/CommunityRAPP/blob/main/scripts/spin-up-se-coe.ps1",
+      "tags": [
+        "wizard",
+        "onboarding",
+        "powershell",
+        "new-coe"
+      ],
+      "curated": true,
+      "category": "AI-Powered Productivity"
+    }
+  ],
+  "resources": [
+    {
+      "id": "res-agency-microsoft-playground",
+      "title": "agency-microsoft / playground (GitHub EMU)",
+      "description": "Microsoft-internal experimentation repo in the `agency-microsoft` GitHub EMU org. Likely an AI agents sandbox or early-stage tooling from the Microsoft agency/agent team. Requires Microsoft EMU GitHub SSO.",
+      "type": "resource",
+      "icon": "🧪",
+      "url": "https://github.com/agency-microsoft/playground",
+      "tags": [
+        "agent",
+        "github",
+        "internal",
+        "in-progress",
+        "experimental"
+      ],
+      "access": "internal",
+      "access_note": "Requires Microsoft EMU GitHub SSO",
+      "status": "in-progress",
+      "curated": false,
+      "community": true
+    },
+    {
+      "id": "res-field-hub",
+      "title": "SE Field Hub — Sales & Service SE Page",
+      "description": "Internal SE resource hub on SharePoint. Aligned by product area — D365 CS, Copilot Studio, Power Platform, Azure AI.",
+      "type": "resource",
+      "icon": "🏢",
+      "url": "https://microsoft.sharepoint.com/sites/ABSFieldHub/SitePages/Sales-%26-Service-Solution-Engineer.aspx",
+      "tags": [
+        "internal",
+        "sharepoint",
+        "se"
+      ],
+      "curated": true
+    },
+    {
+      "id": "res-seismic",
+      "title": "Seismic — Microsoft Sales Content",
+      "description": "Microsoft's content management system. Requires VPN / Microsoft SSO. Browse decks, one-pagers, and competitive intelligence.",
+      "type": "resource",
+      "icon": "📂",
+      "url": "https://microsoft.seismic.com",
+      "tags": [
+        "seismic",
+        "content",
+        "internal"
+      ],
+      "curated": true
+    },
+    {
+      "id": "res-d365-docs",
+      "title": "D365 Customer Service Docs",
+      "description": "Microsoft Learn documentation for Dynamics 365 Customer Service — setup, configuration, AI features.",
+      "type": "resource",
+      "icon": "📖",
+      "url": "https://learn.microsoft.com/en-us/dynamics365/customer-service/",
+      "tags": [
+        "d365",
+        "docs",
+        "learn"
+      ],
+      "curated": true
+    },
+    {
+      "id": "res-copilot-studio-docs",
+      "title": "Copilot Studio Docs",
+      "description": "Official Microsoft Learn docs for Copilot Studio — topics, actions, knowledge, AI features.",
+      "type": "resource",
+      "icon": "📖",
+      "url": "https://learn.microsoft.com/en-us/microsoft-copilot-studio/",
+      "tags": [
+        "copilot-studio",
+        "docs",
+        "learn"
+      ],
+      "curated": true
+    },
+    {
+      "id": "res-azure-ai",
+      "title": "Azure AI Foundry",
+      "description": "Azure AI model catalog, deployments, evaluations, and agent builder. Deploy Phi, GPT, and Mistral models.",
+      "type": "resource",
+      "icon": "☁️",
+      "url": "https://ai.azure.com",
+      "tags": [
+        "azure",
+        "ai",
+        "foundry"
+      ],
+      "curated": true
+    },
+    {
+      "id": "res-https-learn-microsoft-com-en-us-dynamics",
+      "title": "learn.microsoft.com",
+      "description": "D365 Customer Service learn docs",
+      "type": "resource",
+      "icon": "📖",
+      "url": "https://learn.microsoft.com/en-us/dynamics365/customerservice/",
+      "tags": [
+        "learn",
+        "resource"
+      ],
+      "curated": true,
+      "cataloged_by": "borg",
+      "cataloged_at": "2026-05-06",
+      "notes": "D365 Customer Service learn docs",
+      "auth_required": true,
+      "auth_note": "Could not fetch URL (may require authentication, VPN, or internal network)"
+    },
+    {
+      "id": "rapp-in-a-box",
+      "title": "RAPP in a Box — Adoption Guide",
+      "description": "3-tier adoption path (Consume / Local / Codespaces) for any Americas SE who wants to fork this pattern. Covers install, governance, anti-patterns, starter pack.",
+      "type": "guide",
+      "icon": "📦",
+      "url": "https://github.com/kody-w/CommunityRAPP/blob/main/docs/briefings/RAPP_IN_A_BOX.md",
+      "tags": [
+        "onboarding",
+        "adoption",
+        "americas",
+        "packaging"
+      ],
+      "curated": true,
+      "category": "Adoption"
+    },
+    {
+      "id": "se-onboarding-codespace",
+      "title": "SE Onboarding via GitHub Codespaces",
+      "description": "Zero-install, browser-only path. For SEs who don't want to fight Python venvs. 5-minute walkthrough to your first architecture dashboard.",
+      "type": "guide",
+      "icon": "☁️",
+      "url": "https://github.com/kody-w/CommunityRAPP/blob/main/docs/briefings/SE_ONBOARDING_CODESPACE.md",
+      "tags": [
+        "onboarding",
+        "codespaces",
+        "accessibility",
+        "no-install"
+      ],
+      "curated": true,
+      "category": "Adoption"
+    },
+    {
+      "id": "abs-ghcp-scale-briefing",
+      "title": "ABS SE × GHCP Scale Story (Exec Briefing)",
+      "description": "The talk-to-your-skip narrative — how low-code SEs scale 3-5x with GitHub Copilot without cannibalizing Azure or Power Platform motions. MD + HTML.",
+      "type": "guide",
+      "icon": "🎯",
+      "url": "https://github.com/kody-w/CommunityRAPP/blob/main/docs/briefings/ABS_SE_GHCP_SCALE.html",
+      "tags": [
+        "exec",
+        "leadership",
+        "ghcp",
+        "positioning"
+      ],
+      "curated": true,
+      "category": "Leadership Briefings"
+    },
+    {
+      "id": "secc-in-a-box",
+      "title": "SE Command Center in a Box",
+      "description": "Turnkey CoE — branded portal + resource hub + demo hub + Soul inbox + agent team. 10-min onboarding wizard. The 'experience' half of RAPP (the 'engine' half).",
+      "type": "guide",
+      "icon": "🎛️",
+      "url": "https://github.com/kody-w/CommunityRAPP/blob/main/docs/briefings/SE_COMMAND_CENTER_IN_A_BOX.md",
+      "tags": [
+        "turnkey",
+        "onboarding",
+        "americas",
+        "scale",
+        "leadership"
+      ],
+      "curated": true,
+      "category": "Adoption"
+    }
+  ],
+  "onboarding": [
+    {
+      "id": "onboard-quick-start",
+      "title": "SE Quick Start Guide",
+      "description": "Get up and running as a Discrete Manufacturing SE. Environment access, demo orgs, key contacts, and first week checklist.",
+      "type": "guide",
+      "icon": "🚀",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/QUICK_START.md",
+      "tags": [
+        "onboarding",
+        "quick-start",
+        "new-hire"
+      ],
+      "curated": true
+    },
+    {
+      "id": "onboard-rapp-guide",
+      "title": "RAPP Pipeline Guide",
+      "description": "Complete guide to the 14-step RAPP methodology — discovery, MVP, code gen, quality gates, deployment.",
+      "type": "guide",
+      "icon": "📋",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/docs/RAPP_PIPELINE_GUIDE.md",
+      "tags": [
+        "rapp",
+        "guide",
+        "pipeline"
+      ],
+      "curated": true
+    },
+    {
+      "id": "onboard-coe-charter",
+      "title": "Mfg CoE Charter",
+      "description": "The mission, operating principles, agent personas, and governance model for the Discrete Manufacturing CoE.",
+      "type": "guide",
+      "icon": "📜",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/customers/mfg_coe/COE_CHARTER.md",
+      "tags": [
+        "coe",
+        "charter",
+        "mission"
+      ],
+      "curated": true
+    },
+    {
+      "id": "onboard-d365-setup",
+      "title": "D365 Demo Environment Setup",
+      "description": "How to set up and configure your demo D365 environments. Covers Master CE Mfg and Mfg Gold Template.",
+      "type": "guide",
+      "icon": "🖥️",
+      "url": "https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/tree/main/d365",
+      "tags": [
+        "d365",
+        "demo",
+        "environment",
+        "setup"
+      ],
+      "curated": true
+    }
+  ],
+  "seismic": [
+    {
+      "id": "seismic-d365-cs",
+      "title": "D365 Customer Service — Seismic",
+      "description": "Decks, one-pagers, and competitive content for D365 Customer Service.",
+      "type": "seismic",
+      "icon": "📂",
+      "url": "https://microsoft.seismic.com",
+      "category": "D365 Customer Service",
+      "tags": [
+        "seismic",
+        "d365-cs"
+      ],
+      "curated": true
+    },
+    {
+      "id": "seismic-copilot-studio",
+      "title": "Copilot Studio — Seismic",
+      "description": "Sales materials, battle cards, and partner content for Copilot Studio.",
+      "type": "seismic",
+      "icon": "📂",
+      "url": "https://microsoft.seismic.com",
+      "category": "Copilot Studio",
+      "tags": [
+        "seismic",
+        "copilot-studio"
+      ],
+      "curated": true
+    },
+    {
+      "id": "seismic-power-platform",
+      "title": "Power Platform — Seismic",
+      "description": "Power Platform go-to-market, pricing, licensing, and competitive content.",
+      "type": "seismic",
+      "icon": "📂",
+      "url": "https://microsoft.seismic.com",
+      "category": "Power Platform",
+      "tags": [
+        "seismic",
+        "power-platform"
+      ],
+      "curated": true
+    }
+  ],
+  "corporate": [
+    {
+      "id": "corp-mauricio-aistudio",
+      "title": "Mauricio's AI Studio",
+      "description": "Cross-BU AI Studio toolset built by the Solution Engineering enablement community. A foundation many SE teams use to build customer-facing demos.",
+      "type": "tool",
+      "icon": "🛠️",
+      "url": "https://proud-dune-0959aad0f.3.azurestaticapps.net/",
+      "tier": "corporate",
+      "tags": [
+        "cross-bu",
+        "enablement",
+        "ai-studio"
+      ],
+      "curated": true
+    },
+    {
+      "id": "corp-seismic",
+      "title": "Seismic — Microsoft Sales Library",
+      "description": "Microsoft's official sales enablement library — pitch decks, customer proof points, competitive intel, product collateral.",
+      "type": "resource",
+      "icon": "📚",
+      "url": "https://microsoft.seismic.com/",
+      "tier": "corporate",
+      "tags": [
+        "cross-bu",
+        "sales",
+        "collateral",
+        "official"
+      ],
+      "curated": true
+    },
+    {
+      "id": "corp-viva-engage",
+      "title": "SE Communities on Viva Engage",
+      "description": "Connect with Microsoft Solution Engineers across all business units. Share patterns, ask questions, see what other SEs are demoing.",
+      "type": "resource",
+      "icon": "💬",
+      "url": "https://engage.cloud.microsoft/",
+      "tier": "corporate",
+      "tags": [
+        "cross-bu",
+        "community",
+        "viva-engage"
+      ],
+      "curated": true
+    },
+    {
+      "id": "corp-m365-copilot-showcase",
+      "title": "M365 Copilot SE Showcase",
+      "description": "See what M365 Copilot SEs are demoing — patterns, scenarios, and assets from the M365 SE practice. (Placeholder — link TBD)",
+      "type": "resource",
+      "icon": "��",
+      "url": "#",
+      "tier": "corporate",
+      "tags": [
+        "cross-bu",
+        "m365-copilot",
+        "showcase"
+      ],
+      "curated": true
+    },
+    {
+      "id": "corp-what-great-looks-like",
+      "title": "What Great Looks Like — SE Excellence",
+      "description": "Best-in-class SE demos and patterns curated by SE leadership. Storytelling, discovery, demo design, technical depth.",
+      "type": "resource",
+      "icon": "🌟",
+      "url": "#",
+      "tier": "corporate",
+      "tags": [
+        "cross-bu",
+        "excellence",
+        "best-practices"
+      ],
+      "curated": true
+    },
+    {
+      "id": "corp-ai-workplace",
+      "title": "AI Workplace Team Assets",
+      "description": "Internal AI productivity tooling, demos, and reference architectures from the AI Workplace team. (Placeholder — link TBD)",
+      "type": "resource",
+      "icon": "🤖",
+      "url": "#",
+      "tier": "corporate",
+      "tags": [
+        "cross-bu",
+        "ai-workplace",
+        "internal"
+      ],
+      "curated": true
+    },
+    {
+      "id": "corp-storytelling-101",
+      "title": "SE Storytelling 101",
+      "description": "Curated guides on customer storytelling, demo narratives, and discovery questions for SEs across all BUs.",
+      "type": "resource",
+      "icon": "📖",
+      "url": "#",
+      "tier": "corporate",
+      "tags": [
+        "cross-bu",
+        "learning",
+        "storytelling"
+      ],
+      "curated": true
+    }
+  ]
+}

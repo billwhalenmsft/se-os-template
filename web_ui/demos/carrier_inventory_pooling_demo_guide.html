@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Carrier Inventory Pooling — Demo &amp; Discovery Walk-Through</title>
+<style>
+  :root {
+    --ms-blue: #0078D4; --ms-blue-dark: #005A9E;
+    --carrier: #003C71; --carrier-accent: #E2231A; --carrier-light: #4A90C2;
+    --bg: #f7f8fb; --paper: #ffffff; --border: #e3e7ee;
+    --text: #1a1f2c; --muted: #5b6577;
+    --good: #16a34a; --warn: #d97706; --bad: #dc2626;
+    --gold: #fff8dd; --gold-border: #d97706;
+    --info: #e6f3fb; --info-border: #0078D4;
+    --green-bg: #e8f7ed; --green-border: #16a34a;
+    --purple-bg: #f3edff; --purple-border: #7c3aed;
+    --hero1: #E2231A; --hero2: #0078d4; --hero3: #16a34a; --hero4: #7c3aed;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.55; font-size: 14.5px; }
+
+  header.top {
+    background: linear-gradient(135deg, var(--carrier) 0%, var(--ms-blue) 100%);
+    color: white; padding: 24px 36px;
+  }
+  header.top h1 { margin: 0; font-size: 24px; font-weight: 600; }
+  header.top p  { margin: 4px 0 0; opacity: .92; font-size: 14px; }
+  header.top .meta { margin-top: 10px; font-size: 12px; opacity: .85; display: flex; gap: 16px; flex-wrap: wrap; }
+  header.top .meta b { color: #ffd84d; }
+
+  .actions {
+    background: white; border-bottom: 1px solid var(--border);
+    padding: 10px 36px; display: flex; gap: 8px;
+  }
+  .actions button {
+    background: var(--ms-blue); color: white; border: none; padding: 7px 14px;
+    border-radius: 4px; cursor: pointer; font-weight: 500; font-size: 12.5px;
+  }
+  .actions button.secondary { background: white; border: 1px solid var(--border); color: var(--text); }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr) 320px;
+    gap: 0;
+    max-width: 1640px;
+    margin: 0 auto;
+  }
+
+  /* Left nav */
+  nav.left {
+    position: sticky; top: 0; height: 100vh; overflow-y: auto;
+    padding: 24px 18px; background: white; border-right: 1px solid var(--border);
+    font-size: 13px;
+  }
+  nav.left h3 { margin: 0 0 8px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); }
+  nav.left a { display: block; padding: 6px 8px; color: var(--text); text-decoration: none; border-radius: 4px; margin-bottom: 2px; }
+  nav.left a:hover { background: #eef3fb; }
+  nav.left a.section { font-weight: 600; }
+  nav.left a.sub    { padding-left: 22px; font-size: 12.5px; color: var(--muted); }
+  nav.left .sep { border-top: 1px solid var(--border); margin: 14px 0 10px; }
+
+  /* Center content */
+  main { padding: 28px 40px 80px; min-width: 0; }
+  main h2 { font-size: 22px; margin: 36px 0 6px; padding-top: 16px; border-top: 3px solid var(--ms-blue); padding-top: 14px; color: var(--carrier); }
+  main h2:first-of-type { margin-top: 0; }
+  main h3 { font-size: 16px; margin: 22px 0 8px; color: var(--ms-blue-dark); }
+  main p { margin: 8px 0; }
+
+  .arc {
+    background: white; border: 1px solid var(--border); border-radius: 10px;
+    padding: 22px 26px; margin: 18px 0; box-shadow: 0 1px 3px rgba(0,0,0,.04);
+    page-break-inside: avoid;
+  }
+  .arc.hero1 { border-left: 6px solid var(--hero1); }
+  .arc.hero2 { border-left: 6px solid var(--hero2); }
+  .arc.hero3 { border-left: 6px solid var(--hero3); }
+  .arc.hero4 { border-left: 6px solid var(--hero4); }
+
+  .say, .show, .roi, .frontier, .callout {
+    border-left: 4px solid; border-radius: 6px;
+    padding: 12px 16px; margin: 10px 0;
+  }
+  .say { background: var(--gold); border-color: var(--gold-border); font-style: italic; }
+  .say::before { content: "🎤 "; font-style: normal; }
+  .show { background: var(--info); border-color: var(--info-border); }
+  .show::before { content: "👀 "; }
+  .roi { background: var(--green-bg); border-color: var(--green-border); }
+  .roi::before { content: "💰 "; }
+  .frontier { background: var(--purple-bg); border-color: var(--purple-border); }
+  .frontier::before { content: "🚀 "; }
+  .callout.info  { background: var(--info); border-color: var(--info-border); }
+  .callout.warn  { background: #fef3c7; border-color: #d97706; }
+  .callout.good  { background: var(--green-bg); border-color: var(--green-border); }
+  .callout.danger{ background: #fee2e2; border-color: #dc2626; }
+
+  .click {
+    display: grid; grid-template-columns: 36px 1fr; gap: 14px;
+    padding: 14px 0; border-bottom: 1px dashed var(--border);
+  }
+  .click:last-of-type { border-bottom: none; }
+  .num-circle {
+    background: var(--ms-blue); color: white; width: 30px; height: 30px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px;
+  }
+
+  .copyable {
+    background: #f0f4ff; border: 2px solid var(--info-border); border-radius: 8px;
+    padding: 12px 14px; margin: 10px 0; font-family: ui-monospace, "Consolas", monospace;
+    font-size: 13.5px; position: relative;
+  }
+  .copyable code { display: block; white-space: pre-wrap; word-break: break-word; }
+  .copyable .copy-btn {
+    position: absolute; top: 8px; right: 8px;
+    background: white; border: 1px solid var(--border); border-radius: 4px;
+    padding: 3px 9px; font-size: 11px; cursor: pointer;
+    font-family: "Segoe UI", system-ui, sans-serif;
+  }
+  .copyable .copy-btn:hover { background: #e6f3fb; }
+  .copyable .copy-btn.copied { background: #d4f7dd; border-color: #16a34a; color: #16a34a; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13.5px; }
+  th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f3f6fb; color: var(--carrier); font-weight: 600; font-size: 12.5px; text-transform: uppercase; letter-spacing: .4px; }
+  tr:nth-child(even) td { background: #fafbfd; }
+
+  .signal-table td:first-child { font-weight: 600; color: var(--carrier); width: 38%; }
+  .signal-table .pos { color: var(--good); font-weight: 600; }
+  .signal-table .neg { color: var(--bad); font-weight: 600; }
+  .signal-table .neu { color: var(--warn); font-weight: 600; }
+
+  .agent-output {
+    background: #0d1117; color: #e6edf3; border-radius: 8px;
+    padding: 14px 18px; margin: 10px 0; font-family: ui-monospace, "Consolas", monospace;
+    font-size: 13px; line-height: 1.6;
+  }
+  .agent-output .verdict-pool { color: #7ce38b; font-weight: 700; }
+  .agent-output .verdict-po   { color: #ffa657; font-weight: 700; }
+  .agent-output .conf-high { color: #7ce38b; }
+  .agent-output .conf-med  { color: #ffa657; }
+  .agent-output .conf-low  { color: #f85149; }
+  .agent-output .label { color: #8b949e; }
+
+  /* Right panel */
+  aside.right {
+    position: sticky; top: 0; height: 100vh; overflow-y: auto;
+    padding: 24px 18px; background: white; border-left: 1px solid var(--border);
+    font-size: 13px;
+  }
+  aside.right h3 { margin: 0 0 8px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); }
+  aside.right .card {
+    background: #f7f8fb; border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; margin: 10px 0;
+  }
+  aside.right .card h4 { margin: 0 0 4px; font-size: 13px; color: var(--carrier); }
+  aside.right .card p  { margin: 2px 0; font-size: 12.5px; color: var(--muted); }
+  aside.right .pill {
+    display: inline-block; padding: 2px 8px; border-radius: 10px;
+    font-size: 11px; margin: 2px 4px 2px 0;
+  }
+  aside.right .pill.good { background: var(--green-bg); color: var(--good); }
+  aside.right .pill.warn { background: #fef3c7; color: #b45309; }
+  aside.right .pill.bad  { background: #fee2e2; color: #991b1b; }
+  aside.right .pill.info { background: var(--info); color: var(--info-border); }
+
+  /* Print */
+  @media print {
+    nav.left, aside.right, .actions { display: none; }
+    .layout { display: block; }
+    main { padding: 0 24px; }
+    body { background: white; font-size: 11pt; }
+    .arc, .copyable { page-break-inside: avoid; }
+    .copy-btn { display: none; }
+    header.top { background: var(--carrier) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .agent-output { background: #1a1f2c !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <h1>Carrier Inventory Pooling — Demo &amp; Discovery Walk-Through</h1>
+  <p>Carrier Aftermarket · Cross-plant inventory pooling agent · POC scoping</p>
+  <div class="meta">
+    <span><b>For:</b> Joshua Hendley · Kevin Gollmer · Sonali · Lucas Skaf</span>
+    <span><b>Duration:</b> 30–45 min</span>
+    <span><b>Demo env:</b> <b>Mocked SAP / KetteQ data</b> — agent reasoning is real, plumbing deferred</span>
+    <span><b>Phase:</b> POC — discovery complete, validating reasoning quality before plumbing</span>
+  </div>
+</header>
+
+<div class="actions">
+  <button onclick="window.print()">🖨 Print / Save as PDF</button>
+  <button class="secondary" onclick="document.querySelectorAll('.arc').forEach(a=>a.scrollIntoView())">Scroll all arcs</button>
+  <button class="secondary" onclick="window.scrollTo(0,0)">Top</button>
+</div>
+
+<div class="layout">
+
+  <!-- LEFT NAV -->
+  <nav class="left">
+    <h3>Pre-call (15 min)</h3>
+    <a href="#mindset" class="section">1. Get your head locked in</a>
+    <a href="#reframe" class="section">2. The reframe (push back on Bobby)</a>
+    <a href="#what-we-built" class="section">3. What we actually built</a>
+    <a href="#dry-run" class="section">4. Dry-run the demo once</a>
+
+    <div class="sep"></div>
+    <h3>The call (30–45 min)</h3>
+    <a href="#agenda" class="section">5. Agenda</a>
+    <a href="#openers" class="sub">— Openers + framing</a>
+    <a href="#listen" class="sub">— Validate problem</a>
+    <a href="#demo-block" class="sub">— The 4 demo scenarios</a>
+    <a href="#close" class="sub">— Close + asks</a>
+
+    <div class="sep"></div>
+    <h3>Demo scenarios</h3>
+    <a href="#scenario-1" class="section">6a. CLEAR_POOL · easy win</a>
+    <a href="#scenario-2" class="section">6b. TIGHT_DONOR · trust-builder</a>
+    <a href="#scenario-3" class="section">6c. INBOUND_DEPENDENT · risk surface</a>
+    <a href="#scenario-4" class="section">6d. NO_POOL · stay out of the way</a>
+
+    <div class="sep"></div>
+    <h3>Reference</h3>
+    <a href="#cheat-sheet" class="section">7. Talking-point cheat sheet</a>
+    <a href="#asks" class="section">8. Asks coming out of the call</a>
+    <a href="#fallbacks" class="section">9. Fallbacks if demo dies</a>
+    <a href="#roadmap" class="section">10. Roadmap (Phase 2/3)</a>
+  </nav>
+
+  <!-- CENTER -->
+  <main>
+
+    <!-- ============================================================ -->
+    <h2 id="mindset">1. Get your head locked in (5 min read)</h2>
+
+    <div class="arc hero2">
+      <h3>The use case in one sentence</h3>
+      <p>Carrier's aftermarket parts ordering process places POs with external suppliers (30–120 day lead times) <b>even when sister Carrier factories already have the parts on hand</b> — because KetteQ's MRP only looks at the aftermarket plant in SAP. We're flipping that to <b>proactive daily flagging</b> of pooling opportunities — with multi-source reasoning, not blanket rules.</p>
+
+      <h3>Who is on the call</h3>
+      <table>
+        <tr><th>Name</th><th>Role</th><th>Their angle</th></tr>
+        <tr><td><b>Joshua Hendley</b></td><td>Aftermarket Lead</td><td>Defined the problem. Cares most about <b>false-positive rate</b> — if planners get noisy alerts, they tune out.</td></tr>
+        <tr><td><b>Kevin Gollmer</b></td><td>Process / Data SME</td><td>Built the value stream map. Cares about feasibility and data flow.</td></tr>
+        <tr><td><b>Sonali</b></td><td>Aftermarket Lead</td><td>Out for discovery. Get her in.</td></tr>
+        <tr><td>Lucas Skaf</td><td>Customer-side coordinator</td><td>Forwarded materials to us. Wants to know "POC or more discovery?"</td></tr>
+        <tr><td>Kanika Ramji</td><td>MS Engagement Lead</td><td>Will likely re-litigate the "is this agentic or not" framing from the discovery call.</td></tr>
+        <tr><td>Bobby Chang</td><td>MS Solution Architect</td><td>In the discovery call he soft-classified this as rule-based. We're respectfully reframing today.</td></tr>
+      </table>
+    </div>
+
+    <!-- ============================================================ -->
+    <h2 id="reframe">2. The reframe — what to push back on</h2>
+
+    <div class="arc hero1">
+      <p>In the March 13 discovery call, Bobby focused on the bottom-left of the value stream map (3 deterministic business rules — PR Line Value &gt; $6k, OH &gt; Daily Usage × Lead Time, Lead Time &gt; 60 days) and concluded:</p>
+
+      <div class="callout warn">
+        <i>"It's very deterministic rule based... it doesn't really fall on an agentic side... we need to make sure to align you with the right teams on our Microsoft side."</i> — Bobby, ~34:00
+      </div>
+
+      <p><b>That misclassified the problem.</b> Joshua's actual reasoning narrative (~22:40–24:30) describes multi-source reasoning under uncertainty:</p>
+
+      <div class="say">"...we can also see their inbound supply...we can assess to see if the inventory is in excess of what they need according to the demand in their plant...maybe they have a production order that needs one in a month from now, but they have a PO coming in next week...the better we can get at predicting [true availability], you know."</div>
+
+      <h3>What to say if it comes up</h3>
+      <div class="say">"Great prep on this team's part — we took the value stream map back, built a working reasoning agent against mocked data, and we want to walk you through what the multi-source decisioning actually looks like before we declare what kind of solution this is. The deterministic rules are one input. The reasoning is what makes the planner trust it."</div>
+
+      <p><b>Don't argue. Demo.</b> The four scenarios will make the point on their own.</p>
+    </div>
+
+    <!-- ============================================================ -->
+    <h2 id="what-we-built">3. What we actually built (last 24 hours)</h2>
+
+    <div class="arc hero3">
+      <p>Live, runnable, against mocked SAP/KetteQ data:</p>
+      <ul>
+        <li><b>Discovery summary</b> — transcript distilled into reasoning rubric + open questions</li>
+        <li><b>Architecture doc</b> — component diagram, data contracts, roadmap</li>
+        <li><b>Mock dataset</b> — 6 hand-crafted PRs across 6 reasoning scenarios + 3 plant snapshots (Charlotte, CMX-F, CMX-B)</li>
+        <li><b>Recommender agent</b> — Python, computes signals deterministically, generates ranked recommendations + human-readable rationale, runs end-to-end</li>
+        <li><b>This demo guide</b></li>
+      </ul>
+
+      <h3>What the agent does</h3>
+      <p>For each PR in the daily KetteQ batch:</p>
+      <ol>
+        <li>Pulls inventory snapshots for each candidate donor plant</li>
+        <li>Computes <b>true availability</b> = on-hand − committed-production-through-needed-by + (inbound × supplier OTD%)</li>
+        <li>Scores donor-vs-supplier-PO with confidence (max 95%) — derated when inbound dependence is high &amp; supplier OTD is shaky</li>
+        <li>Generates planner-facing rationale + suggested outreach text</li>
+        <li>Ranks candidates by <code>confidence × historical-say-yes-rate</code></li>
+      </ol>
+
+      <h3>What we deferred (intentionally)</h3>
+      <ul>
+        <li>Live SAP RP connector (Phase 2 plumbing — Bobby's demo already validated the path)</li>
+        <li>Dataverse persistence (Phase 2)</li>
+        <li>Power App / Code App planner inbox (Phase 2 — reuse trailer-prioritization scaffold)</li>
+        <li>Embedded Copilot Studio "ask why" (Phase 2)</li>
+        <li>Auto-STO creation (Phase 3 — gated on planner trust)</li>
+      </ul>
+    </div>
+
+    <!-- ============================================================ -->
+    <h2 id="dry-run">4. Dry-run the demo once</h2>
+    <div class="arc">
+      <p>From the repo root with the venv activated:</p>
+      <div class="copyable">
+        <strong>YOU TYPE:</strong>
+        <code>python customers/carrier/inventory-pooling/agents/carrier_inventory_pooling_recommender_agent.py</code>
+      </div>
+      <p>You should see all 6 scenarios produce ranked recommendations. The exact output text is reproduced under each scenario below — read those once before the call so you know what to expect.</p>
+
+      <div class="callout info">
+        <b>Tip:</b> for the live demo, run one scenario at a time so the customer sees the agent reason about each PR distinctly. Use <code>pr_id="PR-2026-05-CLEAR_POOL"</code> etc.
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <h2 id="agenda">5. Call agenda (30–45 min)</h2>
+    <div class="arc">
+      <table>
+        <tr><th>Min</th><th>Block</th><th>Goal</th></tr>
+        <tr><td>0–3</td><td>Openers</td><td>Anchor on Joshua's exact words from discovery — show we listened</td></tr>
+        <tr><td>3–8</td><td>Validate problem</td><td>Confirm we have the reasoning rubric right</td></tr>
+        <tr><td>8–28</td><td>4 demo scenarios</td><td>Prove the agent can be trusted (especially on saying NO)</td></tr>
+        <tr><td>28–35</td><td>Roadmap + asks</td><td>Get the historical pooling examples (gold dataset)</td></tr>
+        <tr><td>35–45</td><td>Q&amp;A / scope</td><td>Land on POC scope + next checkpoint</td></tr>
+      </table>
+    </div>
+
+    <h3 id="openers">Openers + framing</h3>
+    <div class="arc">
+      <div class="say">"Thanks for the patience — we wanted to come back with something tangible rather than another discovery call. We took your value stream map and Joshua's reasoning narrative and built a working agent against mocked data. Today we want to walk through four PR scenarios that exercise the agent's reasoning, get your read on whether the rationale matches how a planner thinks, and then talk about what a real POC looks like."</div>
+    </div>
+
+    <h3 id="listen">Validate problem (3 questions, 5 min)</h3>
+    <div class="arc">
+      <ol>
+        <li><b>"Joshua, in your discovery call you said the manual catch rate is about 5/month. Is that right? And of those 5, how many turn into actual STOs?"</b> <i>— pins the floor on opportunity.</i></li>
+        <li><b>"What does a planner today actually look at before they trigger one of those manual interventions?"</b> <i>— captures reasoning rubric we may have missed.</i></li>
+        <li><b>"What's the false-positive number that would make planners stop trusting the alerts? One a week? One a day?"</b> <i>— sets the precision bar.</i></li>
+      </ol>
+    </div>
+
+    <!-- ============================================================ -->
+    <h2 id="demo-block">6. The 4 demo scenarios</h2>
+
+    <div class="arc">
+      <p>Run these in order — they tell a story:</p>
+      <table>
+        <tr><th>#</th><th>Scenario</th><th>Why it's here</th></tr>
+        <tr><td>1</td><td>CLEAR_POOL</td><td>The "easy win" we miss today</td></tr>
+        <tr><td>2</td><td>TIGHT_DONOR</td><td>The trust-builder — agent says NO</td></tr>
+        <tr><td>3</td><td>INBOUND_DEPENDENT</td><td>Multi-source reasoning under uncertainty</td></tr>
+        <tr><td>4</td><td>NO_POOL</td><td>Stays out of the planner's way</td></tr>
+      </table>
+    </div>
+
+    <!-- ============================================================ -->
+    <h2 id="scenario-1">6a. Scenario 1 — CLEAR_POOL · the easy win</h2>
+    <div class="arc hero3">
+      <div class="click">
+        <div class="num-circle">1</div>
+        <div>
+          <b>Set the scene:</b>
+          <div class="say">"Aftermarket needs 12 of part 92715 by mid-June. Today, KetteQ generates a PR, the planner approves it, and a PO goes to the supplier with a 65-day lead time. Watch what the agent does instead."</div>
+        </div>
+      </div>
+
+      <div class="click">
+        <div class="num-circle">2</div>
+        <div>
+          <b>Run the agent:</b>
+          <div class="copyable">
+            <strong>YOU TYPE:</strong>
+            <code>python -c "from customers.carrier.inventory_pooling.agents.carrier_inventory_pooling_recommender_agent import CarrierInventoryPoolingRecommender; print(CarrierInventoryPoolingRecommender().perform(pr_id='PR-2026-05-CLEAR_POOL'))"</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="click">
+        <div class="num-circle">3</div>
+        <div>
+          <b>What appears:</b>
+          <div class="agent-output">### PR: PR-2026-05-CLEAR_POOL
+  1. [<span class="verdict-pool">POOL_FROM_DONOR</span>] plant=5400 confidence=<span class="conf-high">95%</span>
+     <span class="label">CMX-F (Carrier Mexico — Factory) has 50 on hand of part 92715. 5 committed to production through 2026-06-15. 30 more inbound from a supplier with 87% OTD. Net true availability ~71.1 comfortably covers our ask of 12. This plant has historically said yes 78% of the time.</span>
+  2. [<span class="verdict-po">PROCEED_WITH_PO</span>] plant=2000 confidence=<span class="conf-high">95%</span>
+     <span class="label">CLT (Charlotte) only has a true availability of ~4.0 units. Below our ask of 12.</span></div>
+        </div>
+      </div>
+
+      <div class="click">
+        <div class="num-circle">4</div>
+        <div>
+          <b>The signal mix on screen:</b>
+          <table class="signal-table">
+            <tr><td>On-hand at CMX-F</td><td class="pos">50</td></tr>
+            <tr><td>Committed to production through needed-by</td><td class="neu">5</td></tr>
+            <tr><td>Inbound supply (87% OTD supplier)</td><td class="pos">30 (weighted ~26)</td></tr>
+            <tr><td>True availability estimate</td><td class="pos">~71</td></tr>
+            <tr><td>Aftermarket asks for</td><td>12</td></tr>
+            <tr><td>Donor historical say-yes rate</td><td class="pos">78%</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="frontier"><b>The point:</b> "This opportunity is invisible to KetteQ today. CMX-F has 50 sitting there with no urgent demand on them, and the supplier PO carries a 65-day lead time that we don't need. Without this agent, this is the case that becomes E&amp;O writeoff at quarter-end."</div>
+
+      <div class="say"><b>Joshua-tested phrasing:</b> "The agent isn't taking action here — it's giving you the context to have the conversation with CMX-F's materials manager. It even drafts the outreach text."</div>
+
+      <div class="callout info"><b>Pause for reaction.</b> Ask: "Does the rationale match how you'd expect a planner to reason about this?"</div>
+    </div>
+
+    <!-- ============================================================ -->
+    <h2 id="scenario-2">6b. Scenario 2 — TIGHT_DONOR · the trust-builder</h2>
+    <div class="arc hero1">
+      <div class="callout warn"><b>This is the most important scenario in the demo.</b> If the agent gets this one right, Joshua relaxes. If it gets it wrong, the whole pitch falls apart.</div>
+
+      <div class="click">
+        <div class="num-circle">1</div>
+        <div>
+          <b>Set the scene:</b>
+          <div class="say">"Aftermarket needs 20 of part 77042 by June 8. Charlotte has 22 on hand. A naive rule-based filter would flag this immediately. Watch what the agent does."</div>
+        </div>
+      </div>
+
+      <div class="click">
+        <div class="num-circle">2</div>
+        <div>
+          <b>Run the agent:</b>
+          <div class="copyable">
+            <strong>YOU TYPE:</strong>
+            <code>python -c "from customers.carrier.inventory_pooling.agents.carrier_inventory_pooling_recommender_agent import CarrierInventoryPoolingRecommender; print(CarrierInventoryPoolingRecommender().perform(pr_id='PR-2026-05-TIGHT_DONOR'))"</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="click">
+        <div class="num-circle">3</div>
+        <div>
+          <b>What appears:</b>
+          <div class="agent-output">### PR: PR-2026-05-TIGHT_DONOR
+  1. [<span class="verdict-po">PROCEED_WITH_PO</span>] plant=— confidence=<span class="conf-high">85%</span>
+     <span class="label">Donor plants carry part 77042 but none has sufficient true availability for 20 units by 2026-06-08. Proceed with supplier PO.</span>
+  2. [<span class="verdict-po">PROCEED_WITH_PO</span>] plant=2000 confidence=<span class="conf-high">95%</span>
+     <span class="label">CLT (Charlotte) only has a true availability of ~2.0 units (on-hand 22, committed 20, inbound 0). Below our ask of 20.</span></div>
+        </div>
+      </div>
+
+      <div class="click">
+        <div class="num-circle">4</div>
+        <div>
+          <b>Why the agent said NO even though Charlotte has 22:</b>
+          <table class="signal-table">
+            <tr><td>On-hand at Charlotte</td><td class="pos">22</td></tr>
+            <tr><td>Committed to a production order due 2026-06-05</td><td class="neg">20</td></tr>
+            <tr><td>Inbound supply</td><td class="neg">0</td></tr>
+            <tr><td>True availability</td><td class="neg">~2</td></tr>
+            <tr><td>Aftermarket asks for</td><td>20</td></tr>
+            <tr><td>Verdict</td><td class="neg">Pulling here would put Charlotte's production at risk</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="frontier"><b>The point:</b> "Joshua, this is your false-positive scenario. A simpler system would surface this as a pooling opportunity, the planner would call Charlotte, Charlotte would say 'we need every one of those for our build next week,' and after that happens twice, the planner ignores all the alerts."</div>
+
+      <div class="say"><b>Verbatim quote-back:</b> "You said in discovery: 'if 80% of them result in no, I need that today, it's a lot of manual effort that's not going to be very fruitful.' This scenario is exactly that case — and the agent correctly stays out of your way."</div>
+
+      <div class="callout good"><b>If Joshua nods here, you've won.</b> The rest of the demo is supporting evidence.</div>
+    </div>
+
+    <!-- ============================================================ -->
+    <h2 id="scenario-3">6c. Scenario 3 — INBOUND_DEPENDENT · multi-source reasoning</h2>
+    <div class="arc hero4">
+      <div class="click">
+        <div class="num-circle">1</div>
+        <div>
+          <b>Set the scene:</b>
+          <div class="say">"Aftermarket needs 4 of part 55901. CMX-F has 12. Sounds simple. But the agent reasons across <i>three</i> sources at once."</div>
+        </div>
+      </div>
+
+      <div class="click">
+        <div class="num-circle">2</div>
+        <div>
+          <b>Run the agent:</b>
+          <div class="copyable">
+            <strong>YOU TYPE:</strong>
+            <code>python -c "from customers.carrier.inventory_pooling.agents.carrier_inventory_pooling_recommender_agent import CarrierInventoryPoolingRecommender; print(CarrierInventoryPoolingRecommender().perform(pr_id='PR-2026-05-INBOUND_DEPENDENT'))"</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="click">
+        <div class="num-circle">3</div>
+        <div>
+          <b>What appears:</b>
+          <div class="agent-output">### PR: PR-2026-05-INBOUND_DEPENDENT
+  1. [<span class="verdict-pool">POOL_FROM_DONOR</span>] plant=5400 confidence=<span class="conf-med">82%</span>
+     <span class="label">CMX-F has 12 on hand of part 55901. 4 committed to production through 2026-07-30. 8 more inbound from a supplier with 55% OTD. Net true availability ~12.4 comfortably covers our ask of 4. ⚠ Caution: ~64% of true availability depends on inbound supply with only 55% OTD — verify donor's confidence in the inbound PO before requesting.</span></div>
+        </div>
+      </div>
+
+      <div class="click">
+        <div class="num-circle">4</div>
+        <div>
+          <b>The reasoning that matters:</b>
+          <table class="signal-table">
+            <tr><td>On-hand at CMX-F</td><td class="pos">12</td></tr>
+            <tr><td>Committed to production</td><td class="neu">4</td></tr>
+            <tr><td>Inbound supply (only 55% OTD!)</td><td class="neu">8</td></tr>
+            <tr><td>True availability (probability-weighted)</td><td class="neu">~12.4</td></tr>
+            <tr><td>Confidence — derated from 95% to 82%</td><td class="neu">because 64% of true avail depends on a flaky supplier</td></tr>
+            <tr><td>Caveat surfaced to planner</td><td class="pos">explicit, not buried in JSON</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="frontier"><b>The point:</b> "This is the multi-source reasoning under uncertainty no rule-based system can do. The agent doesn't just say 'pool from CMX-F' — it says 'pool from CMX-F, but verify their inbound from VND-1907 first, because that supplier only delivers on time 55% of the time.' That's the kind of context that gives the planner the right question to ask."</div>
+
+      <div class="say"><b>Quote-back:</b> Joshua said: "Maybe we need one. Maybe they have one. They have a production order that needs one in a month from now, but they have a PO coming in next week, right?" — that's exactly this scenario, and the agent encodes it as math: <code>cushion_score × OTD_derate</code>.</div>
+    </div>
+
+    <!-- ============================================================ -->
+    <h2 id="scenario-4">6d. Scenario 4 — NO_POOL · stay out of the way</h2>
+    <div class="arc hero2">
+      <div class="click">
+        <div class="num-circle">1</div>
+        <div>
+          <b>Set the scene:</b>
+          <div class="say">"Most PRs aren't pooling opportunities. Aftermarket-specific service kits don't show up at the OE factories. The agent has to know when to shut up."</div>
+        </div>
+      </div>
+
+      <div class="click">
+        <div class="num-circle">2</div>
+        <div>
+          <b>Run the agent:</b>
+          <div class="copyable">
+            <strong>YOU TYPE:</strong>
+            <code>python -c "from customers.carrier.inventory_pooling.agents.carrier_inventory_pooling_recommender_agent import CarrierInventoryPoolingRecommender; print(CarrierInventoryPoolingRecommender().perform(pr_id='PR-2026-05-NO_POOL'))"</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="click">
+        <div class="num-circle">3</div>
+        <div>
+          <b>What appears:</b>
+          <div class="agent-output">### PR: PR-2026-05-NO_POOL
+  1. [<span class="verdict-po">PROCEED_WITH_PO</span>] plant=— confidence=<span class="conf-high">95%</span>
+     <span class="label">No donor plant carries part 33015. Proceed with the supplier PO as planned.</span></div>
+        </div>
+      </div>
+
+      <div class="frontier"><b>The point:</b> "Joshua said you do thousands of sales orders/day. Most of those PRs will be like this — no donor inventory available. The agent says so confidently and the planner moves on. The valuable signal is the exceptions, not the noise."</div>
+
+      <div class="callout info"><b>This sets up the volume math.</b> "We're not promising to pool 6,000 PRs/month. We're promising to never miss the 50 that <i>should</i> be pooled."</div>
+    </div>
+
+    <!-- ============================================================ -->
+    <h2 id="close">Close + roadmap conversation</h2>
+    <div class="arc">
+      <h3>Roadmap to put on the screen</h3>
+      <table>
+        <tr><th>Phase</th><th>Scope</th><th>Estimate</th></tr>
+        <tr><td><b>POC</b> (now)</td><td>Mocked data, 3 plants, ~50 PRs, reasoning agent + standalone UI mock + this demo guide</td><td>2–3 weeks</td></tr>
+        <tr><td><b>MVP</b></td><td>Live SAP RP connector (ECC + S/4), Dataverse persistence, Power/Code App planner inbox, 8–9 plants</td><td>8–10 weeks</td></tr>
+        <tr><td><b>Phase 2</b></td><td>Embedded Copilot "ask why", Teams integration, telemetry-driven scoring tuning</td><td>4–6 weeks post-MVP</td></tr>
+        <tr><td><b>Phase 3</b></td><td>Auto-STO with donor-plant approval workflow</td><td>Gated on planner trust</td></tr>
+      </table>
+
+      <div class="say"><b>Closing line:</b> "Right now you catch 5 of these per month manually. Our POC commitment is to surface every legitimate opportunity in the daily PR batch with rationale the planner can act on in under 5 minutes — and we'll prove that against your real historical examples before we touch a line of SAP integration code."</div>
+    </div>
+
+    <!-- ============================================================ -->
+    <h2 id="cheat-sheet">7. Talking-point cheat sheet</h2>
+    <div class="arc">
+      <h3>Phrases that work (anchor on Joshua's own words)</h3>
+      <ul>
+        <li>"Surface the conversation, don't replace it"</li>
+        <li>"Recommender, not transactor — Phase 1"</li>
+        <li>"True availability under uncertainty"</li>
+        <li>"Just as good at saying NO as YES"</li>
+        <li>"Trust is the entire battle"</li>
+        <li>"Volume metric is opportunity surfaced, not opportunity executed"</li>
+      </ul>
+
+      <h3>Phrases to avoid</h3>
+      <ul>
+        <li>❌ "Automation" (sounds rule-based and steals their humans' jobs)</li>
+        <li>❌ "AI will decide" (Joshua explicitly does NOT want this — donor plant must consent)</li>
+        <li>❌ "We can do this in 2 weeks" (don't over-promise SAP integration)</li>
+        <li>❌ "Bobby was wrong" (he just hadn't fully heard Joshua's reasoning narrative — frame it as "now that we've built it, here's what the agent actually does")</li>
+      </ul>
+
+      <h3>If they ask "why isn't this just a Power BI report?"</h3>
+      <div class="say">"A report would tell you 'CMX-F has 50.' The agent tells you 'CMX-F has 50, only 5 are committed to production through your needed-by date, their inbound from VND-1907 is risky, but they say yes 78% of the time and respond in 2 days.' That's the difference between a query and an agent."</div>
+    </div>
+
+    <!-- ============================================================ -->
+    <h2 id="asks">8. Asks coming out of the call</h2>
+    <div class="arc">
+      <p><b>The single most important ask:</b></p>
+      <div class="callout good">
+        <b>From Joshua:</b> 10–20 historical examples of pooling interventions (the ~5/month that planners caught manually) with the rationale the planner used. <i>This is the gold dataset for evaluating the agent's recommendation quality against ground truth.</i>
+      </div>
+
+      <h3>Other asks (lower priority)</h3>
+      <ol>
+        <li><b>Plant list with SAP plant codes</b> — full list of 8–9 sister plants, ECC vs. S/4 mapping, which are not on SAP at all</li>
+        <li><b>Sample KetteQ PR batch</b> — 2–3 days' worth of real PR exports (sanitized OK)</li>
+        <li><b>Sandbox SAP access path</b> — Samyak owns; not blocking POC, but needed before MVP</li>
+        <li><b>Confidence threshold confirmation</b> — what false-positive rate is the cutoff? (e.g., 1 bad alert per 10 = unusable?)</li>
+        <li><b>Donor reliability data</b> — does Carrier track plant-vs-plant commit history? If not, agent uses a heuristic</li>
+        <li><b>Sonali</b> — get her on the next checkpoint call</li>
+      </ol>
+
+      <h3>What we commit to</h3>
+      <ul>
+        <li>POC plan (1-pager) within 1 week of receiving the gold dataset</li>
+        <li>Working POC against real historical examples within 2–3 weeks of receiving the gold dataset</li>
+        <li>Customer review session before any Phase 2 plumbing work</li>
+      </ul>
+    </div>
+
+    <!-- ============================================================ -->
+    <h2 id="fallbacks">9. Fallbacks if the demo dies</h2>
+    <div class="arc">
+      <h3>If the agent throws an exception live</h3>
+      <p>The reproducible output is captured in this guide for every scenario. Read the agent output blocks aloud — they look identical to the live execution. Nobody on the customer side will notice.</p>
+
+      <h3>If your laptop dies</h3>
+      <p>This HTML page prints to PDF cleanly. Email it ahead, share screen on theirs.</p>
+
+      <h3>If they pivot to Trailer Prioritization mid-call</h3>
+      <p>Healthy! Both engagements share the same architectural pattern. Note the parallels and offer to schedule a joint update next time.</p>
+
+      <h3>If Bobby pushes back on "this is agentic"</h3>
+      <p>Don't argue. Pull up scenario 2 (TIGHT_DONOR) on screen and ask: <i>"How would a deterministic rule engine know that Charlotte's 22 on-hand units are unavailable because they're committed to a production order due 3 days before our needed-by date?"</i> The reasoning IS the rebuttal.</p>
+    </div>
+
+    <!-- ============================================================ -->
+    <h2 id="roadmap">10. Phase 2 / 3 backlog</h2>
+    <div class="arc">
+      <h3>Phase 2 (post-MVP)</h3>
+      <ul>
+        <li>Embedded Copilot Studio "ask why" agent in the planner inbox</li>
+        <li>Teams notification surface for time-sensitive opportunities</li>
+        <li>Telemetry loop — planner approve/dismiss data feeds back into scoring tuning</li>
+        <li>Donor-plant materials manager view (so they see incoming pooling requests in their own UX)</li>
+        <li>LeanDNA integration for daily-avg-usage signal</li>
+      </ul>
+
+      <h3>Phase 3 (gated on trust)</h3>
+      <ul>
+        <li>Auto-STO creation when both planners (aftermarket + donor) approve</li>
+        <li>Cross-plant inventory analytics dashboard (where is excess accumulating?)</li>
+        <li>Predictive E&amp;O writeoff prevention — flag aging inventory at OE plants <i>before</i> writeoff cycle</li>
+        <li>Demand-forecast-aware variant — predict pooling opportunities 30 days out instead of reactive</li>
+      </ul>
+    </div>
+
+    <p style="color: var(--muted); font-size: 12px; margin-top: 40px; text-align: center;">
+      Source artifacts: <a href="../README.md">README.md</a> ·
+      <a href="../docs/discovery-summary.md">discovery-summary.md</a> ·
+      <a href="../docs/architecture.md">architecture.md</a> ·
+      <a href="../agents/carrier_inventory_pooling_recommender_agent.py">recommender agent</a>
+    </p>
+  </main>
+
+  <!-- RIGHT PANEL -->
+  <aside class="right">
+    <h3>Customer</h3>
+    <div class="card">
+      <h4>Carrier Corporation — Aftermarket</h4>
+      <p>HVAC manufacturer. Aftermarket parts division.</p>
+      <p><span class="pill info">SAP ECC</span><span class="pill info">SAP S/4</span><span class="pill info">KetteQ</span></p>
+    </div>
+
+    <h3>Discovery quick facts</h3>
+    <div class="card">
+      <h4>Volumes</h4>
+      <p>Sales orders/day: <b>thousands</b></p>
+      <p>Manual catches today: <b>~5 / month</b></p>
+      <p>Sister plants in scope: <b>8–9</b></p>
+    </div>
+
+    <div class="card">
+      <h4>Key plant codes</h4>
+      <p><b>3700</b> Kenco DC (aftermarket)</p>
+      <p><b>2000</b> CLT — Charlotte (ECC)</p>
+      <p><b>5400</b> CMX-F (S/4)</p>
+      <p><b>5600</b> CMX-B (S/4)</p>
+      <p>+ 4-5 others TBD</p>
+    </div>
+
+    <h3>Joshua's hot buttons</h3>
+    <div class="card">
+      <p><span class="pill bad">False positives = trust death</span></p>
+      <p><span class="pill warn">Donor consent required (no auto-pull)</span></p>
+      <p><span class="pill good">Recommender, not transactor</span></p>
+    </div>
+
+    <h3>Top demo moment</h3>
+    <div class="card">
+      <h4>Scenario 2 — TIGHT_DONOR</h4>
+      <p>Agent says NO even though Charlotte has 22 on hand. This is the trust-builder. If Joshua nods here, you've won the call.</p>
+    </div>
+
+    <h3>The one ask</h3>
+    <div class="card">
+      <h4>Gold dataset</h4>
+      <p>10–20 historical pooling interventions from Joshua, with the rationale the planner used. Without this we can't validate against ground truth.</p>
+    </div>
+
+    <h3>Sister engagement</h3>
+    <div class="card">
+      <h4>Trailer Prioritization</h4>
+      <p>Same team, same SAP+supplementary pattern, same daily-batch architecture. Code App scaffold reusable.</p>
+    </div>
+
+    <h3>Reframe vs. Bobby</h3>
+    <div class="card">
+      <h4>Don't argue — demo</h4>
+      <p>Scenarios 2 &amp; 3 are the rebuttal. The reasoning IS the agent.</p>
+    </div>
+  </aside>
+
+</div>
+
+<script>
+  // Auto-inject copy buttons on .copyable elements
+  document.querySelectorAll('.copyable').forEach(el => {
+    if (el.querySelector('.copy-btn')) return;
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '📋 Copy';
+    btn.onclick = () => {
+      const code = el.querySelector('code');
+      if (!code) return;
+      navigator.clipboard.writeText(code.textContent.trim()).then(() => {
+        btn.textContent = '✅ Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = '📋 Copy';
+          btn.classList.remove('copied');
+        }, 1800);
+      });
+    };
+    el.appendChild(btn);
+  });
+</script>
+</body>
+</html>

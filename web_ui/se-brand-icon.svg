@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44" width="44" height="44" role="img" aria-label="SE CoE">
+  <defs>
+    <linearGradient id="cg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0078d4"/>
+      <stop offset="100%" style="stop-color:#8661c5"/>
+    </linearGradient>
+    <linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0078d4"/>
+      <stop offset="100%" style="stop-color:#00b7c3"/>
+    </linearGradient>
+  </defs>
+  <!-- MS squares -->
+  <rect x="2"  y="2"  width="9" height="9" fill="#f25022" rx="1"/>
+  <rect x="12" y="2"  width="9" height="9" fill="#7fba00" rx="1"/>
+  <rect x="2"  y="12" width="9" height="9" fill="#00a4ef" rx="1"/>
+  <rect x="12" y="12" width="9" height="9" fill="#ffb900" rx="1"/>
+  <!-- Copilot sparkle -->
+  <path d="M33,22 C33,22 36,15 36,22 C36,29 33,22 33,22 Z" fill="url(#cg)"/>
+  <path d="M22,22 C22,22 29,19 36,22 C29,25 22,22 22,22 Z" fill="url(#cg)"/>
+  <circle cx="40" cy="16" r="1.8" fill="#8661c5" opacity="0.8"/>
+  <!-- SE hex badge -->
+  <polygon points="22,33 29.5,37 29.5,43 22,43 14.5,43 14.5,37" fill="url(#sg)" opacity="0.18" stroke="url(#sg)" stroke-width="1.2"/>
+  <text x="22" y="41.5" text-anchor="middle" font-family="Segoe UI,system-ui,sans-serif"
+        font-size="9" font-weight="700" fill="url(#sg)">SE</text>
+</svg>

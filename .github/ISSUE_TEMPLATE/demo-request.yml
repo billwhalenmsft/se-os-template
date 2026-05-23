@@ -1,0 +1,48 @@
+name: Demo Request
+description: Request a new demo script or customer scenario
+title: "[DEMO] "
+labels: ["demo", "backlog"]
+body:
+  - type: input
+    id: customer_vertical
+    attributes:
+      label: Customer vertical / industry
+      placeholder: "e.g., Discrete Manufacturing, Automotive, Aerospace, Process Mfg"
+    validations:
+      required: true
+
+  - type: input
+    id: customer_role
+    attributes:
+      label: Primary customer persona
+      placeholder: "e.g., VP of Customer Service, Plant Manager, IT Director"
+    validations:
+      required: true
+
+  - type: textarea
+    id: scenario
+    attributes:
+      label: Demo scenario
+      description: What's the customer challenge this demo should address?
+      placeholder: "e.g., Customer has 500 field service techs with no mobile access to work orders. Need a demo showing Copilot Studio + D365 Field Service solving this."
+    validations:
+      required: true
+
+  - type: textarea
+    id: desired_outcome
+    attributes:
+      label: Desired outcome statement
+      description: "Fill in: For [persona] at [company type], who needs to [job], this demo proves they can [outcome]."
+      placeholder: "For a VP of Service at a mid-market manufacturer..."
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: When do you need this?
+      options:
+        - Urgent — customer meeting in < 1 week
+        - High — needed in the next 2 weeks
+        - Medium — upcoming pipeline
+        - Low — future reference
+    validations:
+      required: true

@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FreightBot — TE Connectivity Demo Guide</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --te-red: #c00; --te-dark: #1a1a1a; --te-light: #fff0f0;
+    --ms-blue: #0078d4; --ms-dark: #002050;
+    --green: #107c10; --orange: #d83b01; --yellow: #ffd700;
+    --bg: #f5f7fa; --card: #ffffff; --text: #1a1a2e; --muted: #555;
+    --border: #dde2ea; --radius: 10px; --shadow: 0 2px 12px rgba(0,0,0,.08);
+  }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; font-size: 15px; }
+  .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+  /* Sidebar */
+  .sidebar { background: var(--ms-dark); color: white; padding: 24px 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+  .sidebar-logo { padding: 0 20px 24px; border-bottom: 1px solid rgba(255,255,255,.1); margin-bottom: 16px; }
+  .logo-title { font-size: 1rem; font-weight: 700; }
+  .logo-sub { font-size: 0.75rem; opacity: .7; margin-top: 2px; }
+  .nav-section { font-size: 0.68rem; text-transform: uppercase; letter-spacing: .1em; opacity: .5; padding: 12px 20px 4px; }
+  .nav-link { display: flex; align-items: center; gap: 8px; padding: 8px 20px; color: rgba(255,255,255,.8); text-decoration: none; font-size: 0.85rem; border-left: 3px solid transparent; transition: all .15s; }
+  .nav-link:hover, .nav-link.active { background: rgba(255,255,255,.1); color: white; border-left-color: var(--ms-blue); }
+  /* Main */
+  .main { padding: 40px 48px; max-width: 960px; }
+  h1 { font-size: 2rem; color: var(--ms-dark); margin-bottom: 6px; }
+  h2 { font-size: 1.3rem; color: var(--te-dark); margin: 32px 0 12px; border-bottom: 2px solid var(--te-light); padding-bottom: 6px; }
+  h3 { font-size: 1rem; color: var(--ms-dark); margin: 20px 0 8px; }
+  p { color: var(--muted); margin-bottom: 12px; }
+  /* Cards */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin: 16px 0; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); }
+  .card-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 6px; }
+  .card-body { font-size: 0.83rem; color: var(--muted); }
+  /* Table */
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin: 12px 0 20px; }
+  th { background: var(--te-light); color: var(--te-dark); font-weight: 700; padding: 10px 14px; text-align: left; border-bottom: 2px solid var(--te-red); }
+  td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:hover td { background: #fafbfd; }
+  .mono { font-family: monospace; font-size: 0.85em; color: var(--ms-blue); }
+  /* Badges */
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+  .badge-high { background: #fde7e9; border: 1px solid #e53935; color: #7b0000; }
+  .badge-medium { background: #fff8e6; border: 1px solid #f5c342; color: #7a4b00; }
+  .badge-done { background: #e6f4ea; border: 1px solid #34a853; color: #185c26; }
+  .badge-new { background: #e8f4fd; border: 1px solid var(--ms-blue); color: var(--ms-dark); }
+  /* Chat */
+  .chat { background: #f8f9fc; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin: 12px 0 20px; }
+  .chat-header { background: linear-gradient(90deg, var(--ms-blue), var(--te-red)); color: white; padding: 10px 16px; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .chat-body { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+  .msg { display: flex; gap: 8px; max-width: 88%; }
+  .msg.user { flex-direction: row-reverse; align-self: flex-end; }
+  .bubble { border-radius: 14px; padding: 9px 13px; font-size: 0.86rem; line-height: 1.5; }
+  .msg.user .bubble { background: var(--ms-blue); color: white; border-bottom-right-radius: 4px; }
+  .msg.bot .bubble { background: white; border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+  .av { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; align-self: flex-end; }
+  .msg.bot .av { background: var(--te-light); color: var(--te-red); }
+  .msg.user .av { background: var(--ms-blue); color: white; }
+  /* Alerts */
+  .alert { border-radius: var(--radius); padding: 14px 16px; margin: 12px 0; font-size: 0.88rem; }
+  .alert-info { background: #e8f4fd; border: 1px solid var(--ms-blue); color: var(--ms-dark); }
+  .alert-warn { background: #fff8e6; border: 1px solid #f5c342; color: #7a4b00; }
+  .alert-success { background: #e6f4ea; border: 1px solid #34a853; color: #185c26; }
+  .alert-phase2 { background: #f3f0ff; border: 1px solid #6b47d6; color: #3d1f8a; }
+  /* Steps */
+  .steps { list-style: none; counter-reset: step; }
+  .steps li { counter-increment: step; display: flex; gap: 14px; margin-bottom: 16px; }
+  .steps li::before { content: counter(step); width: 28px; height: 28px; border-radius: 50%; background: var(--ms-blue); color: white; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .step-text { font-size: 0.9rem; color: var(--text); }
+  code { font-family: monospace; background: #f0f2f5; padding: 2px 6px; border-radius: 4px; font-size: 0.87em; color: #c7254e; }
+  /* Pills */
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+  .pill { background: var(--te-light); color: var(--te-dark); border-radius: 20px; padding: 4px 12px; font-size: 0.8rem; font-weight: 600; }
+  .section { margin-bottom: 48px; }
+  /* Scene */
+  .scene-banner { background: linear-gradient(135deg, var(--ms-dark) 0%, #3a0000 100%); color: white; border-radius: var(--radius); padding: 20px 24px; margin-bottom: 24px; }
+  .scene-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: .1em; opacity: .7; margin-bottom: 4px; }
+  .scene-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; }
+  .scene-desc { font-size: 0.88rem; opacity: .85; line-height: 1.5; }
+  .persona { display: flex; align-items: center; gap: 14px; background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 18px; margin: 16px 0; box-shadow: var(--shadow); }
+  .persona-av { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--ms-blue), var(--te-red)); color: white; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .persona-name { font-weight: 700; font-size: 0.95rem; }
+  .persona-role { font-size: 0.82rem; color: var(--muted); }
+  .narrator { font-style: italic; color: var(--muted); font-size: 0.88rem; background: #fafbfd; border-left: 3px solid var(--ms-blue); padding: 10px 14px; border-radius: 0 6px 6px 0; margin: 10px 0 16px; }
+  .say-this { background: #e8f4fd; border: 1px solid var(--ms-blue); border-radius: var(--radius); padding: 12px 16px; margin: 10px 0; font-size: 0.88rem; }
+  .say-this strong { color: var(--ms-dark); display: block; margin-bottom: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: .05em; }
+  .outcome { background: #e6f4ea; border: 1px solid #34a853; border-radius: var(--radius); padding: 12px 16px; margin: 10px 0; font-size: 0.88rem; color: #0d4a1d; }
+  .sequence-row { display: flex; align-items: flex-start; gap: 0; margin: 20px 0; position: relative; }
+  .sequence-row::before { content: ''; position: absolute; left: 16px; top: 34px; bottom: 0; width: 2px; background: var(--border); }
+  .seq-dot { width: 34px; height: 34px; border-radius: 50%; background: var(--ms-blue); color: white; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; z-index: 1; margin-right: 16px; margin-top: 2px; }
+  .seq-content { flex: 1; padding-bottom: 20px; }
+  .seq-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; }
+  .seq-body { font-size: 0.87rem; color: var(--muted); }
+  /* Flow diagram */
+  .flow { display: flex; align-items: center; flex-wrap: wrap; gap: 0; margin: 16px 0; }
+  .flow-box { background: white; border: 2px solid var(--ms-blue); border-radius: 8px; padding: 10px 14px; font-size: 0.82rem; font-weight: 600; text-align: center; min-width: 110px; }
+  .flow-arrow { color: var(--muted); font-size: 1.2rem; padding: 0 6px; }
+  .flow-box.highlight { background: var(--te-light); border-color: var(--te-red); }
+  /* Talking point callout */
+  .tp { background: white; border-left: 4px solid var(--te-red); border-radius: 0 var(--radius) var(--radius) 0; padding: 12px 16px; margin: 10px 0; box-shadow: var(--shadow); font-size: 0.88rem; }
+  .tp strong { display: block; color: var(--te-dark); margin-bottom: 4px; }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-title">🚢 FreightBot</div>
+    <div class="logo-sub">TE Connectivity · Copilot Studio</div>
+  </div>
+  <div class="nav-section">Setup</div>
+  <a class="nav-link active" href="#overview">🗺️ Overview</a>
+  <a class="nav-link" href="#architecture">🏗️ Architecture</a>
+  <a class="nav-link" href="#access">🔑 How to Access</a>
+  <a class="nav-section" style="display:block">The Story</a>
+  <a class="nav-link" href="#scenario">📖 The Scenario</a>
+  <a class="nav-link" href="#scene1">Scene 1: Shift Briefing</a>
+  <a class="nav-link" href="#scene2">Scene 2: Task Lookup</a>
+  <a class="nav-link" href="#scene3">Scene 3: Exception Summary</a>
+  <a class="nav-link" href="#scene4">Scene 4: Mark Complete</a>
+  <div class="nav-section">Reference</div>
+  <a class="nav-link" href="#capabilities">💬 All Phrases</a>
+  <a class="nav-link" href="#phase2">🚀 Phase 2 Vision</a>
+  <a class="nav-link" href="#talking-points">🎤 Talking Points</a>
+  <a class="nav-link" href="#ids">🔧 IDs &amp; Config</a>
+</nav>
+
+<div class="main">
+
+<!-- OVERVIEW -->
+<div class="section" id="overview">
+  <h1>🚢 FreightBot — TE Connectivity</h1>
+  <p>A Copilot Studio agent that converts forwarder email exceptions into Planner tasks and gives booking agents a shift-start control tower — all through plain English conversation in Microsoft Teams.</p>
+  <div class="pills">
+    <span class="pill">🤖 Copilot Studio</span>
+    <span class="pill">📋 Microsoft Planner</span>
+    <span class="pill">⚡ Agent Flows (coming)</span>
+    <span class="pill">📧 Outlook Shared Mailbox</span>
+    <span class="pill">💬 Microsoft Teams</span>
+  </div>
+
+  <h2>The Problem It Solves</h2>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-title">📧 Missed Emails</div>
+      <div class="card-body">Forwarder follow-ups arrive asynchronously across shifts and get missed in a shared inbox</div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔄 Shift Gaps</div>
+      <div class="card-body">No handoff visibility — night shift leaves, morning shift doesn't know what's pending</div>
+    </div>
+    <div class="card">
+      <div class="card-title">⚠️ Penalty Risk</div>
+      <div class="card-body">Aged exceptions (24–48h) cause shipment delays, demurrage, and customer penalties</div>
+    </div>
+    <div class="card">
+      <div class="card-title">🎯 No Ownership</div>
+      <div class="card-body">Exceptions sit in a shared inbox — no assigned owner, no SLA tracking</div>
+    </div>
+  </div>
+
+  <h2>5 Conversation Capabilities</h2>
+  <table>
+    <tr><th>Capability</th><th>Example phrases</th><th>Live?</th></tr>
+    <tr><td>📊 Shift Start Briefing</td><td>"Give me the shift briefing" · "What's my exception queue?"</td><td><span class="badge badge-new">✅ Topics live</span></td></tr>
+    <tr><td>🔍 Task Lookup</td><td>"Find tasks for BKG-2024-00341" · "Any DHL exceptions?"</td><td><span class="badge badge-new">✅ Topics live</span></td></tr>
+    <tr><td>⚡ Exception Summary</td><td>"Show high priority exceptions" · "What's aged over 24 hours?"</td><td><span class="badge badge-new">✅ Topics live</span></td></tr>
+    <tr><td>✅ Mark Complete</td><td>"Mark TASK-003 as done" · "Close task TASK-001"</td><td><span class="badge badge-new">✅ Topics live</span></td></tr>
+    <tr><td>❓ Help</td><td>"What can you do?" · "Help"</td><td><span class="badge badge-new">✅ Topics live</span></td></tr>
+  </table>
+
+  <div class="alert alert-warn">⚠️ <strong>Current demo state:</strong> All topics are live and published. Conversational flow works. Planner data responses show placeholder text until the Agent Flow is wired in Copilot Studio UI (~20 min task). Demo the conversation structure and explain the Phase 1 architecture now.</div>
+</div>
+
+<!-- ARCHITECTURE -->
+<div class="section" id="architecture">
+  <h2>🏗️ How It Works</h2>
+
+  <h3>Phase 1 Data Flow</h3>
+  <div class="flow">
+    <div class="flow-box">📧 Forwarder Email<br><small>admin@ inbox</small></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box highlight">⚡ Agent Flow<br><small>CS automation</small></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box">📋 Planner Task<br><small>3 buckets</small></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box highlight">🤖 FreightBot<br><small>Teams chat</small></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box">👩‍💼 Booking Agent<br><small>takes action</small></div>
+  </div>
+
+  <h3>Planner Exception Buckets</h3>
+  <table>
+    <tr><th>Bucket</th><th>What goes here</th><th>SLA</th></tr>
+    <tr><td>📦 Missing Info</td><td>Shipper details, addresses, contacts, packing lists</td><td>Acknowledge 4h · Resolve 24h</td></tr>
+    <tr><td>📄 Documentation</td><td>Invoice corrections, BoL errors, HS code issues, certificates of origin</td><td>Acknowledge 4h · Resolve 24h</td></tr>
+    <tr><td>❓ Clarification</td><td>Schedule changes, vessel substitutions, ETD/ETA confirmations</td><td>Acknowledge 4h · Escalate 48h</td></tr>
+  </table>
+
+  <h3>Priority Keywords (auto-detected)</h3>
+  <div class="pills">
+    <span class="pill" style="background:#fde7e9;color:#7b0000">🔴 urgent</span>
+    <span class="pill" style="background:#fde7e9;color:#7b0000">🔴 penalty</span>
+    <span class="pill" style="background:#fde7e9;color:#7b0000">🔴 demurrage</span>
+    <span class="pill" style="background:#fde7e9;color:#7b0000">🔴 missed cutoff</span>
+    <span class="pill" style="background:#fde7e9;color:#7b0000">🔴 hot shipment</span>
+    <span class="pill" style="background:#fde7e9;color:#7b0000">🔴 expedite</span>
+    <span class="pill" style="background:#fde7e9;color:#7b0000">🔴 critical</span>
+    <span class="pill" style="background:#fde7e9;color:#7b0000">🔴 ASAP</span>
+  </div>
+
+  <h3>Demo Freight Forwarders</h3>
+  <table>
+    <tr><th>Forwarder</th><th>Region</th><th>Demo Email Domain</th></tr>
+    <tr><td>Kuehne+Nagel</td><td>EMEA</td><td>kuehne-nagel-demo.com</td></tr>
+    <tr><td>DHL Freight</td><td>Americas</td><td>dhl-freight-demo.com</td></tr>
+    <tr><td>Panalpina</td><td>EMEA</td><td>panalpina-demo.com</td></tr>
+    <tr><td>Geodis</td><td>APAC</td><td>geodis-demo.com</td></tr>
+    <tr><td>DB Schenker</td><td>APAC</td><td>db-schenker-demo.com</td></tr>
+  </table>
+</div>
+
+<!-- ACCESS -->
+<div class="section" id="access">
+  <h2>🔑 How to Access FreightBot</h2>
+  <ol class="steps">
+    <li><div class="step-text">Go to <strong><a href="https://copilotstudio.microsoft.com" target="_blank">copilotstudio.microsoft.com</a></strong> — sign in as <code>admin@D365DemoTSCE30330346.onmicrosoft.com</code></div></li>
+    <li><div class="step-text">Select environment: <strong>Mfg Gold Template</strong> (top-right dropdown)</div></li>
+    <li><div class="step-text">Go to <strong>Solutions → TE Connectivity Freight Booking → FreightBot - TE Connectivity</strong></div></li>
+    <li><div class="step-text">Click <strong>Test</strong> in the top-right to open the test chat pane</div></li>
+    <li><div class="step-text">Start with <em>"Hello"</em> — you should see the Greeting response with FreightBot's intro</div></li>
+  </ol>
+  <div class="alert alert-info">💡 <strong>Best demo surface:</strong> The <strong>Copilot Studio test pane</strong> shows all topics and the agent instructions. Once the Agent Flow is wired, deploy to <strong>Microsoft Teams</strong> for the full shift-start experience.</div>
+</div>
+
+<!-- THE SCENARIO -->
+<div class="section" id="scenario">
+  <div class="scene-banner">
+    <div class="scene-label">📖 Demo Scenario</div>
+    <div class="scene-title">Monday Morning Shift Start — Freight Booking Team, TE Connectivity</div>
+    <div class="scene-desc">It's 6:45 AM. Sarah Chen, Team Leader, is starting her shift. Three forwarder emails came in overnight — a DHL penalty warning on a Singapore booking, a Kuehne+Nagel missing packing list, and a Panalpina vessel substitution notice. Instead of scanning the shared inbox, Sarah opens FreightBot in Teams and gets a structured briefing in seconds. Follow her morning as she clears the queue before the daily stand-up.</div>
+  </div>
+
+  <div class="persona">
+    <div class="persona-av">👩‍💼</div>
+    <div>
+      <div class="persona-name">Sarah Chen — Freight Booking Team Leader</div>
+      <div class="persona-role">TE Connectivity · Global Logistics · Responsible for shift handoff and exception escalation</div>
+    </div>
+  </div>
+
+  <div class="persona">
+    <div class="persona-av">👨‍💻</div>
+    <div>
+      <div class="persona-name">Alex Rodriguez — Booking Agent</div>
+      <div class="persona-role">TE Connectivity · Day shift · Resolves forwarder queries and updates booking records</div>
+    </div>
+  </div>
+
+  <h3>Demo flow (4 scenes, ~6 minutes)</h3>
+  <div class="sequence-row">
+    <div class="seq-dot">1</div>
+    <div class="seq-content"><div class="seq-title">Shift Start Briefing</div><div class="seq-body">Sarah asks FreightBot for the morning exception queue — counts, priorities, aged items</div></div>
+  </div>
+  <div class="sequence-row">
+    <div class="seq-dot">2</div>
+    <div class="seq-content"><div class="seq-title">Task Lookup by Forwarder</div><div class="seq-body">Alex digs into DHL exceptions — finds the penalty-risk booking, gets full details</div></div>
+  </div>
+  <div class="sequence-row">
+    <div class="seq-dot">3</div>
+    <div class="seq-content"><div class="seq-title">Exception Summary — Aged Items</div><div class="seq-body">Sarah asks what's been open over 24 hours — identifies escalation candidates before stand-up</div></div>
+  </div>
+  <div class="sequence-row" style="margin-bottom:0">
+    <div class="seq-dot">4</div>
+    <div class="seq-content" style="padding-bottom:0"><div class="seq-title">Mark Task Complete</div><div class="seq-body">Alex resolves the Kuehne+Nagel packing list — closes the task directly through FreightBot</div></div>
+  </div>
+</div>
+
+<!-- SCENE 1 -->
+<div class="section" id="scene1">
+  <div class="scene-banner">
+    <div class="scene-label">Scene 1 · 6:47 AM</div>
+    <div class="scene-title">Shift Start Briefing</div>
+    <div class="scene-desc">Sarah opens Teams, @mentions FreightBot, and asks for the morning briefing. She needs to know what came in overnight before the 7:00 AM stand-up.</div>
+  </div>
+
+  <div class="say-this">
+    <strong>💬 Say this</strong>
+    <em>"Give me the shift briefing"</em>
+    &nbsp;— or — &nbsp;<em>"What's my exception queue?"</em>
+    &nbsp;— or — &nbsp;<em>"Morning briefing please"</em>
+  </div>
+
+  <div class="chat">
+    <div class="chat-header">🚢 FreightBot · Microsoft Teams</div>
+    <div class="chat-body">
+      <div class="msg user"><div class="av">SC</div><div class="bubble">Give me the shift briefing</div></div>
+      <div class="msg bot"><div class="av">🚢</div><div class="bubble">
+        <strong>📊 Shift Briefing — Monday 06:47</strong><br><br>
+        🔴 <strong>3 open exceptions</strong> — 1 requires immediate attention<br><br>
+        <strong>High Priority (1)</strong><br>
+        • TASK-001 · DHL Freight · <em>Penalty risk — BKG-2024-00339</em> · ⏰ 26h aged<br><br>
+        <strong>Medium Priority (2)</strong><br>
+        • TASK-002 · Kuehne+Nagel · <em>Missing packing list</em> · 8h aged<br>
+        • TASK-003 · Panalpina · <em>Vessel substitution — ETD update needed</em> · 3h aged<br><br>
+        ⚠️ TASK-001 is approaching the 48h escalation threshold. Recommend immediate action.<br><br>
+        <em>Say "Find tasks for DHL" to dig in, or "Show aged exceptions" to see what needs escalating.</em>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="outcome">✅ <strong>What to highlight:</strong> Sarah gets a structured briefing in &lt;5 seconds — no inbox scanning, no Planner tab switch. Priorities are surfaced automatically. The 26h aged DHL task is flagged before she even knew it was critical.</div>
+
+  <div class="tp"><strong>🎤 Talking point</strong> This replaces the 15-minute "inbox triage" every team leader does at shift start. One question, structured answer, ready for stand-up.</div>
+</div>
+
+<!-- SCENE 2 -->
+<div class="section" id="scene2">
+  <div class="scene-banner">
+    <div class="scene-label">Scene 2 · 6:50 AM</div>
+    <div class="scene-title">Task Lookup — DHL Penalty Risk</div>
+    <div class="scene-desc">Sarah hands TASK-001 to Alex. He looks it up in FreightBot to get the full context before calling DHL.</div>
+  </div>
+
+  <div class="say-this">
+    <strong>💬 Say this</strong>
+    <em>"Find tasks for DHL"</em>
+    &nbsp;— or — &nbsp;<em>"Find tasks for booking BKG-2024-00339"</em>
+    &nbsp;— or — &nbsp;<em>"Any DHL exceptions?"</em>
+  </div>
+
+  <div class="chat">
+    <div class="chat-header">🚢 FreightBot · Microsoft Teams</div>
+    <div class="chat-body">
+      <div class="msg user"><div class="av">AR</div><div class="bubble">Find tasks for DHL</div></div>
+      <div class="msg bot"><div class="av">🚢</div><div class="bubble">
+        What booking ID or forwarder name should I search for?
+      </div></div>
+      <div class="msg user"><div class="av">AR</div><div class="bubble">DHL Freight</div></div>
+      <div class="msg bot"><div class="av">🚢</div><div class="bubble">
+        <strong>🔍 DHL Freight — 1 open task</strong><br><br>
+        📋 <strong>TASK-001</strong> · Missing Info bucket<br>
+        Booking: <code>BKG-2024-00339</code> · Singapore → Chicago<br>
+        Issue: Shipper address not provided — DHL cannot file US customs entry<br>
+        Priority: 🔴 <strong>HIGH</strong> — penalty risk flagged by forwarder<br>
+        Age: <strong>26 hours</strong> (SLA breach in ~22h if not resolved)<br><br>
+        <em>Say "Mark TASK-001 done" when resolved.</em>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="outcome">✅ <strong>What to highlight:</strong> Alex gets the full context — booking ID, lane, issue, risk — without opening Planner, searching email, or asking a colleague. He can call DHL with the right information immediately.</div>
+
+  <div class="tp"><strong>🎤 Talking point</strong> In the current process, Alex would search the shared inbox for "BKG-2024-00339", scan 8 email threads to find the original request, then read back through to understand the issue. FreightBot does that in one exchange.</div>
+</div>
+
+<!-- SCENE 3 -->
+<div class="section" id="scene3">
+  <div class="scene-banner">
+    <div class="scene-label">Scene 3 · 6:53 AM</div>
+    <div class="scene-title">Exception Summary — Aged Items</div>
+    <div class="scene-desc">Before the stand-up, Sarah wants a list of everything that's breached or approaching the 24h SLA — her escalation candidates.</div>
+  </div>
+
+  <div class="say-this">
+    <strong>💬 Say this</strong>
+    <em>"Show me aged exceptions"</em>
+    &nbsp;— or — &nbsp;<em>"What's over 24 hours?"</em>
+    &nbsp;— or — &nbsp;<em>"Show high priority exceptions"</em>
+  </div>
+
+  <div class="chat">
+    <div class="chat-header">🚢 FreightBot · Microsoft Teams</div>
+    <div class="chat-body">
+      <div class="msg user"><div class="av">SC</div><div class="bubble">What's aged over 24 hours?</div></div>
+      <div class="msg bot"><div class="av">🚢</div><div class="bubble">
+        <strong>⏰ Aged Exceptions — 24h+ threshold</strong><br><br>
+        🔴 <strong>TASK-001</strong> · DHL Freight · 26h<br>
+        BKG-2024-00339 · Missing shipper address · <strong>Approaching 48h escalation</strong><br><br>
+        ✅ 2 tasks within SLA<br><br>
+        <em>Recommend: Escalate TASK-001 to forwarder senior contact before stand-up.</em>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="outcome">✅ <strong>What to highlight:</strong> The SLA filter surfaces exactly what needs a management decision — nothing else. Sarah walks into stand-up with data, not guesswork.</div>
+
+  <div class="tp"><strong>🎤 Talking point</strong> This is the Team Leader use case: shift-start decision support in under 60 seconds. No Power BI license needed, no dashboard refresh — it's a conversation.</div>
+</div>
+
+<!-- SCENE 4 -->
+<div class="section" id="scene4">
+  <div class="scene-banner">
+    <div class="scene-label">Scene 4 · 9:15 AM</div>
+    <div class="scene-title">Mark Task Complete</div>
+    <div class="scene-desc">Alex has sent the packing list to Kuehne+Nagel and got confirmation. He closes TASK-002 directly through FreightBot — no need to open Planner.</div>
+  </div>
+
+  <div class="say-this">
+    <strong>💬 Say this</strong>
+    <em>"Mark TASK-002 as done"</em>
+    &nbsp;— or — &nbsp;<em>"Close task TASK-002"</em>
+    &nbsp;— or — &nbsp;<em>"I've resolved TASK-002"</em>
+  </div>
+
+  <div class="chat">
+    <div class="chat-header">🚢 FreightBot · Microsoft Teams</div>
+    <div class="chat-body">
+      <div class="msg user"><div class="av">AR</div><div class="bubble">Mark TASK-002 as done</div></div>
+      <div class="msg bot"><div class="av">🚢</div><div class="bubble">Which task ID should I mark as complete? For example TASK-003.</div></div>
+      <div class="msg user"><div class="av">AR</div><div class="bubble">TASK-002</div></div>
+      <div class="msg bot"><div class="av">🚢</div><div class="bubble">
+        ✅ <strong>TASK-002 marked complete</strong><br>
+        Kuehne+Nagel — Missing packing list resolved.<br>
+        Booking exception closed. Updated in Planner.
+      </div></div>
+    </div>
+  </div>
+
+  <div class="outcome">✅ <strong>What to highlight:</strong> Alex stays in Teams — no context switch to Planner. Closure is instant, the Planner board updates automatically, and the exception count drops in real time.</div>
+
+  <div class="tp"><strong>🎤 Talking point</strong> Booking agents spend their day in Teams and email. Asking them to context-switch into Planner for every update creates friction and drives non-compliance. FreightBot brings the task management to where the work already happens.</div>
+</div>
+
+<!-- ALL PHRASES -->
+<div class="section" id="capabilities">
+  <h2>💬 Complete Phrase Reference</h2>
+  <table>
+    <tr><th>Intent</th><th>Phrases that trigger it</th></tr>
+    <tr><td>Shift Briefing</td><td>Give me the shift briefing · Morning briefing · What's my exception queue · How many open tasks · What came in overnight · What do I have today</td></tr>
+    <tr><td>Task Lookup</td><td>Find tasks for [booking/forwarder] · Look up booking BKG-XXXX · Any exceptions for DHL · Tasks from Kuehne · Show me tasks from [name]</td></tr>
+    <tr><td>Exception Summary</td><td>Show high priority exceptions · What's aged over 24 hours · Critical exceptions · What's urgent · Missing info tasks · Overdue exceptions</td></tr>
+    <tr><td>Mark Complete</td><td>Mark TASK-XXX as done · Close task TASK-XXX · I've resolved TASK-XXX · Task is done · Complete task</td></tr>
+    <tr><td>Help</td><td>What can you do · Help · How do I use this · Show capabilities</td></tr>
+    <tr><td>Greeting</td><td>Hello · Hi · Good morning · Hey FreightBot</td></tr>
+  </table>
+</div>
+
+<!-- PHASE 2 -->
+<div class="section" id="phase2">
+  <h2>🚀 Phase 2 Vision</h2>
+  <div class="alert alert-phase2">💡 Use this section to show the <strong>roadmap</strong> — Phase 1 is the foundation; Phase 2 is where the ROI accelerates.</div>
+
+  <table>
+    <tr><th>Capability</th><th>Description</th><th>Timeframe</th></tr>
+    <tr><td>📧 Auto-acknowledgement</td><td>FreightBot sends an automated reply to forwarder within 4h confirming receipt and ETA for resolution</td><td>Phase 2</td></tr>
+    <tr><td>🤖 AI email classification</td><td>Replace rule-based keywords with GPT intent detection — handles ambiguous forwarder language</td><td>Phase 2</td></tr>
+    <tr><td>📊 Power BI aging dashboard</td><td>Team leader dashboard: exception volume by bucket, forwarder SLA performance, penalty trend</td><td>Phase 2</td></tr>
+    <tr><td>🔔 Proactive Teams alerts</td><td>FreightBot pushes an alert card at 20h — "TASK-001 approaching penalty threshold" before agent asks</td><td>Phase 2</td></tr>
+    <tr><td>🗃️ SAP booking ID validation</td><td>Validate booking reference exists in TMS before creating Planner task — reduces junk tasks</td><td>Phase 3</td></tr>
+    <tr><td>📈 Continuous learning</td><td>Train classification model on resolved tasks — improves bucket accuracy over time</td><td>Phase 3</td></tr>
+  </table>
+</div>
+
+<!-- TALKING POINTS -->
+<div class="section" id="talking-points">
+  <h2>🎤 Key Talking Points</h2>
+
+  <div class="tp">
+    <strong>On the business problem</strong>
+    "TE Connectivity's freight booking team handles 100+ bookings per week across 5 major forwarders. Each forwarder exception that goes unacknowledged for 24+ hours is a potential shipment delay — and each delay has a penalty exposure. The current process is a shared inbox — that's not scalable."
+  </div>
+
+  <div class="tp">
+    <strong>On the technology choice</strong>
+    "We're not adding new tools. This is Microsoft Planner they probably already have, Teams they're already in, and Copilot Studio running on their M365 tenant. Zero net-new tooling."
+  </div>
+
+  <div class="tp">
+    <strong>On Phase 1 scope discipline</strong>
+    "We deliberately kept Phase 1 narrow — no automated email replies, no SAP write-back. Get the visibility problem solved first, prove the model, then layer in intelligence. That's how you avoid 18-month projects."
+  </div>
+
+  <div class="tp">
+    <strong>On the shift-start use case</strong>
+    "The shift briefing is the killer feature. Every team leader does this manually every morning — scan inbox, count exceptions, figure out what's on fire. FreightBot does it in one message. That's the demo moment."
+  </div>
+
+  <div class="tp">
+    <strong>On Phase 2 ROI</strong>
+    "Phase 2 automated acknowledgements alone could save 4–6 hours per day of manual email handling. If a booking agent costs £40k/year, that's meaningful — before you count the penalty cost avoidance."
+  </div>
+</div>
+
+<!-- IDs & CONFIG -->
+<div class="section" id="ids">
+  <h2>🔧 Environment &amp; Config Reference</h2>
+  <table>
+    <tr><th>Item</th><th>Value</th></tr>
+    <tr><td>Dataverse Org</td><td class="mono">org6feab6b5.crm.dynamics.com (Mfg Gold Template)</td></tr>
+    <tr><td>Admin login</td><td class="mono">admin@D365DemoTSCE30330346.onmicrosoft.com</td></tr>
+    <tr><td>FreightBot agent ID</td><td class="mono">b8afc09d-343f-f111-bec6-70a8a59a411e</td></tr>
+    <tr><td>Dataverse solution</td><td class="mono">TEConnectivityFreightBooking</td></tr>
+    <tr><td>Planner plan</td><td class="mono">zA0MFq0KmEeB38Tf8NL_s2UACcuC</td></tr>
+    <tr><td>Planner group</td><td class="mono">5ebf02e8-740a-4fd2-ac2a-02c999d71905</td></tr>
+    <tr><td>Missing Info bucket</td><td class="mono">1fdZLmi0EEqIK0V8zIKUDGUACt-C</td></tr>
+    <tr><td>Documentation bucket</td><td class="mono">3wQJhbv4pUK1EuIfAANQimUABPdL</td></tr>
+    <tr><td>Clarification bucket</td><td class="mono">UYCexKlXoE6K6iHOollmNGUANUMD</td></tr>
+    <tr><td>Last published</td><td>2026-04-23 17:17 UTC</td></tr>
+  </table>
+
+  <h3>Repo Paths</h3>
+  <table>
+    <tr><th>File</th><th>Path</th></tr>
+    <tr><td>This guide</td><td class="mono">customers/te_connectivity/demos/freightbot_demo_guide.html</td></tr>
+    <tr><td>Chat tester</td><td class="mono">customers/te_connectivity/demos/freightbot_tester.html</td></tr>
+    <tr><td>Environment config</td><td class="mono">customers/te_connectivity/d365/config/environment.json</td></tr>
+    <tr><td>Test scenarios (10)</td><td class="mono">customers/te_connectivity/testing/freight_control_tower/scenarios.json</td></tr>
+    <tr><td>CS topics (YAML)</td><td class="mono">customers/te_connectivity/copilot-studio/topics/</td></tr>
+    <tr><td>Agent code</td><td class="mono">customers/te_connectivity/agents/freight_booking_agent.py</td></tr>
+  </table>
+
+  <div class="alert alert-warn">⚠️ <strong>Next step to complete the demo:</strong> Build the Agent Flow in Copilot Studio UI (Settings → Agent Flows) — email trigger on the admin@ mailbox → classify → create Planner task. Then delete + re-add the Action node in ShiftBriefing, TaskLookup, and MarkComplete topics to bind the flow outputs.</div>
+</div>
+
+</div><!-- .main -->
+</div><!-- .layout -->
+</body>
+</html>
