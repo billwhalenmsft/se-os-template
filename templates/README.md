@@ -46,10 +46,11 @@ qa: Rowan (Quality)
 | `product_area` | Motion | Example customers in corpus |
 |---|---|---|
 | `customer-service` | D365 CS, Copilot Studio, omnichannel | Moen, Zurn/Elkay, Otis, Carrier, Navico |
-| `sales` | D365 Sales, Copilot for Sales, pipeline | *(template ready, examples in progress)* |
-| `field-service` | D365 Field Service, mobile tech, scheduling | *(template ready, Ametek partially)* |
-| `mixed-cs-fs` | Service case → work order → asset loop | Ametek HKP RMA |
+| `sales` | D365 Sales, Copilot for Sales, pipeline | ABC Supply (Inside Sales layer) |
+| `field-service` | D365 Field Service, mobile tech, scheduling | ABC Supply (FS layer — see mixed-cs-fs) |
+| `mixed-cs-fs` | CS case → work order → dispatch → mobile tech | **ABC Supply Eagan** ← canonical example |
 | `mixed-sales-cs` | Post-sale handoff, renewal risk | *(template ready)* |
+| `project-operations` | D365 Project Ops, multi-site quoting/bidding | **Lennox AES** (commercial HVAC, 40-store bids) |
 
 The agent reads `motion-matrix.md` **first**, then fills `template.md` with only the matching sections.
 

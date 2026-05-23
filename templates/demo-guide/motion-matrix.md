@@ -80,41 +80,78 @@ Set `product_area` to one of:
 
 ### `product_area: field-service`
 
+**Ground truth from corpus: ABC Supply FS layer** — "No More Status Calls"  
+Replace Smartsheet + manual dispatch with D365 AI Scheduling + Field Service Mobile + proactive status
+
 | `audience` | `duration` | Include Sections |
 |---|---|---|
-| exec | 30min | Cover, Business Challenge (downtime cost), AI Dispatch, First-Time Fix Rate Outcome, CTA |
-| technical | 60min+ | Cover, Architecture (IoT → D365 → Copilot), Work Order Lifecycle, Scheduling Board, Mobile Tech View, Preventive Maintenance, Integration Appendix |
+| exec | 30min | Cover, Business Challenge (manual dispatch cost / Smartsheet), AI Scheduling Win, First-Time Fix / No-More-Status-Calls Outcome, CTA |
+| technical | 60min+ | Cover, Architecture (Case → WO → Scheduling Board → Mobile → Parts), Dispatch Board demo, Mobile App demo, Service Toolkit Sidebar, Parts Tracking, Integration Appendix |
 | mixed | 90min+ | All sections |
-| agent/dispatcher | 60min | Cover, Story, Pre-Demo Checklist, Work Order Creation, AI Scheduling, Dispatch Board, Tech Mobile App |
+| agent/dispatcher | 60min | Cover, Story, Pre-Demo Checklist, Work Order Creation, AI Scheduling, Dispatch Board, Tech Mobile App, Parts Tracking |
 
-### Field Service-specific sections
+### Field Service-specific sections (ABC Supply patterns)
 
 | Section | When |
 |---|---|
-| **Work Order Lifecycle** | always for FS motion |
-| **AI Scheduling / Resource Optimization** | always |
-| **Field Tech Mobile App** | when `audience` includes agent or technical |
+| **Dispatch & Scheduling — Schedule Board + Automated Notifications** | always |
+| **Field Service Mobile — Tech Onsite Experience** | always for FS; skip only in tight exec (30min) |
+| **Service Toolkit Sidebar** | when `products` includes D365 CS Workspace (combined CS+FS) |
+| **Parts Tracking & Proactive Status** | always — "No More Status Calls" is the win |
+| **Work Order from Self-Service Portal** | when `products` includes Power Pages |
 | **Connected Field Service / IoT** | when `products` includes Azure IoT or Dynamics Connected FS |
 | **Preventive Maintenance / Asset History** | when `duration >= 60min` |
-| **Inspections / Mobile Forms** | when `duration >= 90min` or `audience` is technical |
+| **Competitive Close (vs Smartsheet + Manual)** | always; upgrade to (vs ServiceNow) when audience is IT |
 
 ---
 
 ## Mixed Motions
 
-### `product_area: mixed-cs-fs` (RMA / Asset-Linked Service)
+### `product_area: mixed-cs-fs` (CS + Field Service + Inside Sales)
 
-**Narrative anchor:** Case opened in CS → spawns work order in FS → asset record closes the loop  
-**Hero arc:** Bill calls about failed [product] → CSR creates case → system auto-creates WO → tech dispatched → asset updated → case resolved
+**Canonical example: ABC Supply Eagan Branch** — "Replacing Smartsheet & Manual Dispatch"  
+*Omnichannel + CTI + Field Service + Copilot*
 
-**Section sequence:**
-1. Business Challenge (asset reliability + service cost)
-2. CS Intake (case creation, warranty check, entitlement)
-3. Work Order Creation (auto or manual)
-4. FS Dispatch (scheduling board, route optimization)
-5. Mobile Tech Completion (inspection, part usage, signature)
-6. Case Closure (CS notified, survey sent, asset updated)
-7. Executive Dashboard (MTTR, first-time fix, cost per case)
+**Narrative anchor:** Inbound call → case → work order → dispatch → field tech mobile → parts → proactive status → no more status calls  
+**Hero arc:** Customer calls about equipment issue → coordinator creates case (never leaves screen) → auto WO created → AI scheduling dispatches tech → tech completes on mobile → parts tracked → customer gets proactive update
+
+**Actual section structure from ABC Supply demo:**
+1. Pre-Flight Checklist (18 hydrated WOs, CTI loaded, Service Toolkit configured)
+2. Inbound Phone Call — Screen Pop & Case Management (CS, CTI)
+3. Customer Self-Service Portal — Case & Work Order Intake (Power Pages)
+4. Dispatch & Scheduling — Schedule Board + Automated Notifications (FS)
+5. Field Service Mobile — Tech Onsite Experience (FS mobile app)
+6. Service Toolkit Sidebar — Orders, Quotes & Warranty (inline panel in CS Workspace)
+7. Inside Sales — Lead Management, Quoting & Approvals (Sales)
+8. Parts Tracking & Proactive Status — No More Status Calls (FS + proactive comms)
+9. Looking Ahead — Roadmap / What ABC Grows Into
+10. Competitive Close — D365 vs Smartsheet + Manual Dispatch
+
+**Key differentiator for this motion:**  
+> "This sidebar means the coordinator never has to leave the case. Order status, a quick quote, warranty lookups — all right there in the panel while they're on the phone."  
+— The Service Toolkit Sidebar is the proof point that wins this demo.
+
+**Competitive context for CS+FS mixed:** vs. Smartsheet (manual dispatch), vs. ServiceNow (IT-first, not OT-aware), vs. Salesforce (CS strong, FS weak)
+
+---
+
+### `product_area: project-operations` (Multi-Site Quoting & Project Delivery)
+
+**Canonical example: Lennox AES (AES Mechanical Services)** — commercial HVAC for large retail  
+*Multi-site bidding: Excel RFQ → estimate → D365 Project Operations → quote → delivery*
+
+**Narrative anchor:** Customer sends Excel with 40-50 store locations → AI agents parse, calculate, generate bid → PM reviews → D365 project created automatically  
+**Hero arc:** Walmart sends 47-store HVAC RFQ → Excel Parser Agent extracts scope → Estimate Calculator applies pricing → Quote Generator builds customer bid → D365 Project Ops Agent creates project — all in minutes vs. 2-3 week manual cycle
+
+**Section structure:**
+1. Business Challenge (manual multi-site estimating: Excel → SmartSheets → ComputerEase → D365)
+2. Current Workflow Pain (PM time, error rate, bid cycle time: 2-3 weeks)
+3. AI Agent Architecture (7 agents: Parser, Calculator, Pricing DB, Sub Manager, Quote Generator, D365 Ops, Orchestrator)
+4. Live Demo: Excel RFQ → Parsed Scope → Cost Estimate → D365 Quote
+5. Success Metrics (15-30 min per store vs. 2-4 hours; <1% errors vs. 5-10%)
+6. Roadmap / Phase plan
+
+**This motion is DIFFERENT from Field Service:** No work orders, no dispatch, no mobile tech. It's about **pre-delivery quoting and project setup**, not ongoing service delivery.
 
 ---
 
