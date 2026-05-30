@@ -1,0 +1,74 @@
+{
+  "_comment": "Demo Lab — snapshot ledger. v1 is a manual log (entries added when a snapshot is taken in the env itself). v2 will integrate with Power Platform CLI / Dataverse Backup APIs for real snapshot/restore.",
+  "_version": "1.0.0",
+  "_last_updated": "2026-05-29",
+  "snapshots": [
+    {
+      "id": "snap-ce-prod-2026-05-28-pre-pella",
+      "env_id": "ce-prod-master",
+      "label": "Pre-Pella demo data load",
+      "taken_by": "billwhalen@microsoft.com",
+      "taken_at": "2026-05-28T14:30:00Z",
+      "size_mb": 2840,
+      "type": "manual",
+      "notes": "Baseline before loading Pella-specific accounts and Field Service work orders for the May 29 EBC demo.",
+      "restore_method": "ppadmin-portal",
+      "restore_url": "https://admin.powerplatform.microsoft.com/manage/environments",
+      "status": "available"
+    },
+    {
+      "id": "snap-ce-ha-2026-05-27-clean",
+      "env_id": "ce-ha-gold",
+      "label": "Clean Gold Template baseline",
+      "taken_by": "billwhalen@microsoft.com",
+      "taken_at": "2026-05-27T09:00:00Z",
+      "size_mb": 980,
+      "type": "manual",
+      "notes": "Clean baseline of Mfg Gold Template — no customer data, ready to clone for new engagements.",
+      "restore_method": "ppadmin-portal",
+      "restore_url": "https://admin.powerplatform.microsoft.com/manage/environments",
+      "status": "available"
+    },
+    {
+      "id": "snap-ce-prod-2026-05-15-pre-ametek",
+      "env_id": "ce-prod-master",
+      "label": "Pre-AMETEK warranty demo",
+      "taken_by": "billwhalen@microsoft.com",
+      "taken_at": "2026-05-15T10:15:00Z",
+      "size_mb": 2710,
+      "type": "manual",
+      "notes": "Before importing AMETEK warranty case data + custom topic for warranty agent demo.",
+      "restore_method": "ppadmin-portal",
+      "restore_url": "https://admin.powerplatform.microsoft.com/manage/environments",
+      "status": "archived"
+    },
+    {
+      "id": "snap-ce-ha-2026-05-20-presence-pcf",
+      "env_id": "ce-ha-gold",
+      "label": "Post Presence Hub PCF install",
+      "taken_by": "billwhalen@microsoft.com",
+      "taken_at": "2026-05-20T16:45:00Z",
+      "size_mb": 1020,
+      "type": "manual",
+      "notes": "Captured after Presence Hub PCF installed and validated. Ready to promote to Master CE Mfg if approved.",
+      "restore_method": "ppadmin-portal",
+      "restore_url": "https://admin.powerplatform.microsoft.com/manage/environments",
+      "status": "promotion-candidate"
+    }
+  ],
+  "promotions": [
+    {
+      "id": "promo-2026-05-22-agent-home",
+      "asset_id": "d365-agent-home",
+      "asset_name": "D365 Agent Home",
+      "from_env": "ce-ha-gold",
+      "to_env": "ce-prod-master",
+      "promoted_at": "2026-05-22T11:30:00Z",
+      "promoted_by": "billwhalen@microsoft.com",
+      "reviewer": "billwhalen@microsoft.com",
+      "github_issue": "https://github.com/billwhalenmsft/CommunityRAPP/issues/0",
+      "status": "completed",
+      "notes": "Validated for 2 weeks in HA, no issues — promoted to Prod for live demos."
+    }
+  ]
+}

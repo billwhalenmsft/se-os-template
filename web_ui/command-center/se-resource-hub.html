@@ -105,6 +105,36 @@
     .auth-demo-link a { color: var(--text2); }
     .auth-demo-link a:hover { color: var(--ms-blue); }
 
+    /* ── Auth Wizard ─────────────────────────────────────────────────────────── */
+    .auth-steps { display: flex; align-items: center; gap: 8px; justify-content: center; margin-bottom: 22px; }
+    .auth-step-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border2); transition: all .2s; }
+    .auth-step-dot.active { background: var(--ms-blue); transform: scale(1.3); }
+    .auth-step-dot.done { background: var(--ms-green); }
+    .auth-step-connector { width: 32px; height: 2px; background: var(--border); }
+    .auth-step-label { font-size: 11px; color: var(--text3); font-weight: 500; }
+    #auth-step1 { display: block; }
+    #auth-step2 { display: none; }
+    .auth-card.step2 { max-width: 560px; text-align: left; }
+    .auth-card.step2 h1 { font-size: 20px; text-align: left; margin-bottom: 6px; }
+    .auth-card-sub { font-size: 13px; color: var(--text2); margin-bottom: 18px; line-height: 1.6; }
+    .setup-env-list { display: flex; flex-direction: column; gap: 6px; max-height: 260px; overflow-y: auto; margin-bottom: 14px; }
+    .setup-env-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: var(--radius); cursor: pointer; transition: all .13s; }
+    .setup-env-item:hover { border-color: var(--ms-blue); background: var(--ms-blue-lt); }
+    .setup-env-item.selected { border-color: var(--ms-blue); background: var(--ms-blue-lt); }
+    .setup-env-item input[type=checkbox] { width: 15px; height: 15px; accent-color: var(--ms-blue); flex-shrink: 0; pointer-events: none; }
+    .setup-env-info { flex: 1; min-width: 0; }
+    .setup-env-name { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .setup-env-url { font-size: 11px; color: var(--text3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .setup-env-type { font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 10px; background: var(--surface2); color: var(--text2); flex-shrink: 0; white-space: nowrap; }
+    .setup-loading { display: flex; align-items: center; gap: 8px; padding: 14px 0; color: var(--text2); font-size: 13px; }
+    .setup-empty { padding: 14px 0; color: var(--text2); font-size: 13px; }
+    .setup-manual-row { display: flex; gap: 6px; margin-top: 10px; }
+    .setup-manual-row input { flex: 1; height: 32px; padding: 0 10px; border: 1px solid var(--border2); border-radius: var(--radius); font-size: 12px; background: var(--surface); color: var(--text); font-family: var(--font); min-width: 0; }
+    .setup-manual-row input:focus { outline: none; border-color: var(--ms-blue); }
+    .setup-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; }
+    .setup-select-all { font-size: 12px; color: var(--ms-blue); cursor: pointer; margin-bottom: 8px; display: inline-block; }
+    .setup-select-all:hover { text-decoration: underline; }
+
     /* ── App Shell ───────────────────────────────────────────────────────────── */
     #app { display: none; min-height: 100vh; }
     #app.visible { display: block; }
@@ -449,6 +479,43 @@
     .section-heading a { font-size: 12px; color: var(--ms-blue); }
 
     /* ── AI Studio Panel ─────────────────────────────────────────────────────── */
+    /* ── Embedded Tool Views ─────────────────────────────────────────────────── */
+    .embed-view-frame {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      border: none; display: block;
+      background: white;
+    }
+    .view.embed-view {
+      padding: 0; overflow: hidden;
+      position: relative;
+      display: none; /* hidden until active */
+    }
+    .view.embed-view.active { display: flex; flex-direction: column; }
+    .embed-topbar {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 16px; border-bottom: 1px solid var(--border);
+      background: var(--surface); flex-shrink: 0; z-index: 1;
+    }
+    .embed-topbar h3 { font-size: 14px; font-weight: 700; flex: 1; margin: 0; }
+    .embed-topbar .embed-env-badge {
+      font-size: 11px; color: var(--text2); background: var(--surface2);
+      padding: 2px 8px; border-radius: 10px; border: 1px solid var(--border);
+      max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .embed-body { flex: 1; position: relative; overflow: hidden; }
+    .embed-fallback {
+      position: absolute; inset: 0;
+      display: none; flex-direction: column; align-items: center;
+      justify-content: center; gap: 14px; padding: 32px; text-align: center;
+      background: var(--surface);
+    }
+    .embed-fallback.visible { display: flex; }
+    .embed-fallback .icon { font-size: 48px; }
+    .embed-fallback h3 { font-size: 18px; font-weight: 700; margin: 0; }
+    .embed-fallback p { color: var(--text2); font-size: 13px; line-height: 1.6; max-width: 340px; margin: 0; }
+
+    /* Keep slide-out panel for backward compat (asset card "Open in Panel" btn) */
     #ai-studio-panel {
       position: fixed; right: 0; top: var(--topbar-h); bottom: 0;
       width: 640px; background: var(--surface);
@@ -555,6 +622,97 @@
     .env-empty { text-align: center; padding: 32px 16px; color: var(--text2); font-size: 13px; }
     .env-empty .icon { font-size: 36px; margin-bottom: 12px; }
     .env-connect-info { background: var(--ms-blue-lt); border: 1px solid rgba(0,120,212,.15); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 14px; font-size: 12px; color: var(--text2); line-height: 1.6; }
+
+    /* ── Demo Lab ───────────────────────────────────────────────────────── */
+    .demo-lab-matrix {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 14px;
+    }
+    .dl-env-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      position: relative;
+      transition: box-shadow .15s, transform .15s;
+    }
+    .dl-env-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-1px); }
+    .dl-env-card.stage-prod { border-left: 4px solid var(--ms-green); }
+    .dl-env-card.stage-ha { border-left: 4px solid var(--ms-blue); }
+    .dl-env-card.needs-registration { opacity: .65; border-style: dashed; }
+    .dl-env-head { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+    .dl-env-icon { font-size: 28px; line-height: 1; }
+    .dl-env-title { font-size: 15px; font-weight: 600; color: var(--text); margin: 0; }
+    .dl-env-sub { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: .5px; margin-top: 2px; }
+    .dl-env-badges { display: flex; flex-wrap: wrap; gap: 4px; margin: 8px 0; }
+    .dl-badge {
+      display: inline-block; padding: 2px 8px; border-radius: 10px;
+      font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .3px;
+    }
+    .dl-badge.stage-prod { background: rgba(16,124,16,.12); color: var(--ms-green); }
+    .dl-badge.stage-ha { background: rgba(0,120,212,.12); color: var(--ms-blue); }
+    .dl-badge.product-ce, .dl-badge.product-cx { background: rgba(92,45,145,.1); color: var(--ms-purple); }
+    .dl-badge.product-fno, .dl-badge.product-erp { background: rgba(0,130,114,.1); color: var(--ms-teal); }
+    .dl-badge.status-active { background: rgba(16,124,16,.1); color: var(--ms-green); }
+    .dl-badge.status-needs-registration { background: rgba(216,59,1,.1); color: var(--ms-orange); }
+    .dl-badge.status-staged { background: rgba(0,120,212,.08); color: var(--ms-blue); }
+    .dl-env-purpose { font-size: 12px; color: var(--text2); line-height: 1.5; margin-bottom: 10px; }
+    .dl-env-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; font-size: 11px; color: var(--text2); margin-bottom: 12px; padding: 8px 10px; background: var(--surface2); border-radius: var(--radius); }
+    .dl-env-meta-label { font-weight: 600; color: var(--text3); display: block; font-size: 10px; text-transform: uppercase; }
+    .dl-env-meta-value { color: var(--text); word-break: break-all; }
+    .dl-env-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+    .dl-promote-arrow { text-align: center; font-size: 11px; color: var(--text3); margin: 6px 0; }
+    .dl-corp-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--ms-purple);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px 24px;
+      font-size: 12px;
+    }
+    .dl-corp-item { display: flex; flex-direction: column; }
+    .dl-corp-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: .5px; font-weight: 600; }
+    .dl-corp-value { color: var(--text); font-family: 'Consolas', monospace; font-size: 11px; word-break: break-all; }
+    .dl-snap-row, .dl-promo-row {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 14px;
+      align-items: center;
+    }
+    .dl-snap-icon { font-size: 22px; }
+    .dl-snap-meta { font-size: 12px; color: var(--text2); }
+    .dl-snap-meta strong { color: var(--text); font-size: 13px; display: block; margin-bottom: 2px; }
+    .dl-snap-badge {
+      display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 8px;
+      background: var(--surface2); color: var(--text2); margin-left: 6px; font-weight: 600; text-transform: uppercase;
+    }
+    .dl-snap-badge.available { background: rgba(16,124,16,.1); color: var(--ms-green); }
+    .dl-snap-badge.archived { background: rgba(140,149,159,.15); color: var(--text3); }
+    .dl-snap-badge.promotion-candidate { background: rgba(0,120,212,.12); color: var(--ms-blue); }
+    .dl-snap-badge.completed { background: rgba(16,124,16,.12); color: var(--ms-green); }
+    .dl-install-env-pick {
+      display: grid; gap: 8px;
+    }
+    .dl-install-env-pick label {
+      display: flex; gap: 10px; align-items: center;
+      padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius);
+      cursor: pointer; transition: background .12s, border-color .12s;
+    }
+    .dl-install-env-pick label:hover { background: var(--surface2); border-color: var(--ms-blue); }
+    .dl-install-env-pick input[type="radio"] { margin: 0; }
+    .dl-install-env-pick .env-name { font-weight: 600; color: var(--text); }
+    .dl-install-env-pick .env-stage { font-size: 11px; color: var(--text3); text-transform: uppercase; margin-left: 6px; }
+    .dl-install-env-pick label.disabled { opacity: .45; cursor: not-allowed; }
 
     /* ── Submit Modal ───────────────────────────────────────────────────────── */
     #submit-modal .modal-body form { display: flex; flex-direction: column; gap: 14px; }
@@ -673,7 +831,14 @@
 
 <!-- ── Auth Gate ─────────────────────────────────────────────────────────── -->
 <div id="auth-gate">
-  <div class="auth-card">
+  <!-- Step 1: Microsoft sign-in -->
+  <div class="auth-card" id="auth-step1">
+    <div class="auth-steps">
+      <div class="auth-step-dot active" id="wizard-dot-1a"></div>
+      <div class="auth-step-connector"></div>
+      <div class="auth-step-dot" id="wizard-dot-2a"></div>
+      <span class="auth-step-label" style="margin-left:6px">Step 1 of 2</span>
+    </div>
     <div class="auth-logo">
       <svg width="64" height="64" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg" aria-label="Microsoft">
         <rect x="1" y="1" width="9" height="9" fill="#f25022"/>
@@ -696,6 +861,38 @@
     </button>
     <div class="auth-demo-link">
       No MSAL app configured? <a href="#" onclick="demoMode()">Browse in demo mode</a>
+    </div>
+  </div>
+
+  <!-- Step 2: Environment setup -->
+  <div class="auth-card step2" id="auth-step2">
+    <div class="auth-steps">
+      <div class="auth-step-dot done"></div>
+      <div class="auth-step-connector"></div>
+      <div class="auth-step-dot active"></div>
+      <span class="auth-step-label" style="margin-left:6px">Step 2 of 2</span>
+    </div>
+    <div style="font-size:32px;margin-bottom:12px">🏭</div>
+    <h1>Connect your demo environments</h1>
+    <p class="auth-card-sub">Select which Power Platform environments to track in Demo Lab. These appear on your environment matrix and enable install, snapshot, and promotion workflows.</p>
+    <div id="setup-env-status" style="font-size:12px;color:var(--text2);margin-bottom:6px"></div>
+    <a class="setup-select-all" onclick="setupSelectAll()" id="setup-select-all-link" style="display:none">Select all</a>
+    <div class="setup-env-list" id="setup-env-list">
+      <div class="setup-loading">⏳ Discovering your Power Platform environments…</div>
+    </div>
+    <details style="margin-bottom:6px">
+      <summary style="font-size:12px;color:var(--text2);cursor:pointer;padding:4px 0;list-style:none">
+        <span style="color:var(--ms-blue)">+ Add environment manually</span>
+      </summary>
+      <div class="setup-manual-row">
+        <input type="text" id="manual-env-name" placeholder="Display name (e.g. My Demo CE)" />
+        <input type="text" id="manual-env-url" placeholder="Org URL (https://org….crm.dynamics.com/)" />
+        <button class="btn btn-secondary btn-sm" onclick="addManualSetupEnv()">Add</button>
+      </div>
+    </details>
+    <div class="setup-footer">
+      <button class="btn btn-ghost btn-sm" onclick="skipEnvSetup()">Skip for now</button>
+      <button class="btn btn-primary" onclick="completeEnvSetup()" id="setup-complete-btn">Get Started →</button>
     </div>
   </div>
 </div>
@@ -751,6 +948,7 @@
     </button>
 
     <div class="topbar-actions">
+      <a href="index.html" style="font-size:12px;color:var(--text2);text-decoration:none;padding:6px 10px;border:1px solid var(--border);border-radius:6px;white-space:nowrap;display:flex;align-items:center;gap:4px" title="Back to SE Command Center">‹ Command Center</a>
       <button class="topbar-icon" onclick="toggleDark()" title="Toggle Dark Mode">🌙</button>
       <button class="topbar-icon" onclick="openSubmitModal()" title="Submit a Resource">➕</button>
       <button class="user-avatar" id="user-avatar" onclick="signOut()" title="Sign out">?</button>
@@ -774,6 +972,36 @@
     </button>
     <button class="nav-item" onclick="showView('tools')" data-view="tools">
       <span class="nav-icon">🔧</span> Tools
+    </button>
+
+    <div class="nav-divider"></div>
+    <span class="nav-group-label">Demo Lab</span>
+    <button class="nav-item" onclick="showView('demo-lab')" data-view="demo-lab">
+      <span class="nav-icon">🧪</span> Environments
+    </button>
+    <button class="nav-item" onclick="showView('demo-lab-snapshots')" data-view="demo-lab-snapshots">
+      <span class="nav-icon">📸</span> Snapshots
+    </button>
+    <button class="nav-item" onclick="showView('demo-lab-installers')" data-view="demo-lab-installers">
+      <span class="nav-icon">⚡</span> Installers
+    </button>
+    <button class="nav-item" onclick="showView('demo-lab-promotions')" data-view="demo-lab-promotions">
+      <span class="nav-icon">🚀</span> Promotions
+    </button>
+
+    <div class="nav-divider"></div>
+    <span class="nav-group-label">Mauricio's Tools</span>
+    <button class="nav-item" onclick="showView('ai-studio')" data-view="ai-studio">
+      <span class="nav-icon">🔬</span> AI Studio
+    </button>
+    <button class="nav-item" onclick="showView('agent-home-embed')" data-view="agent-home-embed">
+      <span class="nav-icon">🏠</span> Agent Home
+    </button>
+    <button class="nav-item" onclick="showView('contact-center-iq-embed')" data-view="contact-center-iq-embed">
+      <span class="nav-icon">📊</span> Contact Center IQ
+    </button>
+    <button class="nav-item" onclick="showView('chat-widget-studio-embed')" data-view="chat-widget-studio-embed">
+      <span class="nav-icon">💬</span> Chat Widget Studio
     </button>
 
     <div class="nav-divider"></div>
@@ -898,9 +1126,9 @@
         <div class="card-icon" style="width:54px;height:54px;font-size:24px;flex-shrink:0">🔬</div>
         <div style="flex:1">
           <div style="font-size:15px;font-weight:700;margin-bottom:4px">AI Studio for D365 — by Mauricio Oliveira</div>
-          <div style="font-size:13px;color:var(--text2);margin-bottom:12px">Connect your active D365 environment and get AI-powered analysis, insights, and utilities. Runs inline in this panel — no new tab needed when an env is active.</div>
+          <div style="font-size:13px;color:var(--text2);margin-bottom:12px">Connect your active D365 environment and get AI-powered analysis, insights, and utilities. Now a full embedded tab — no new tab needed when an env is active.</div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="btn btn-primary btn-sm" onclick="openAIStudio()">Open in Side Panel</button>
+            <button class="btn btn-primary btn-sm" onclick="showView('ai-studio')">Open AI Studio Tab</button>
             <a href="https://proud-dune-0959aad0f.3.azurestaticapps.net/" target="_blank" class="btn btn-secondary btn-sm">Open in New Tab ↗</a>
             <button class="btn btn-secondary btn-sm" onclick="openEnvModal()">⚙️ Change Active Env</button>
           </div>
@@ -985,6 +1213,58 @@
       </div>
     </div>
 
+    <!-- ── Demo Lab — Environments ────────────────────────────────────────── -->
+    <div class="view" id="view-demo-lab">
+      <div class="page-header">
+        <h1>🧪 Demo Lab — Environments</h1>
+        <p>The matrix of D365 environments powering our demos. <strong>Build in HA → review → promote to Prod → repeat.</strong> Pair this with the Installers tab to deploy assets to any env.</p>
+        <div class="header-actions">
+          <button class="btn btn-secondary btn-sm" onclick="reopenEnvSetup()" title="Re-run the environment setup wizard to add or remove environments">⚙️ Manage Environments</button>
+          <a href="https://admin.powerplatform.microsoft.com/manage/environments" target="_blank" class="btn btn-secondary btn-sm">↗ Power Platform Admin</a>
+          <button class="btn btn-secondary btn-sm" onclick="reloadDemoLab()">🔄 Reload</button>
+        </div>
+      </div>
+      <div id="demo-lab-corp-panel"></div>
+      <h2 style="font-size:16px;margin:20px 0 10px;color:var(--text)">Build → Deploy Matrix</h2>
+      <div class="demo-lab-matrix" id="demo-lab-matrix"></div>
+      <h2 style="font-size:16px;margin:24px 0 10px;color:var(--text)">Ancillary Environments</h2>
+      <div class="card-grid" id="demo-lab-ancillary-grid"></div>
+    </div>
+
+    <!-- ── Demo Lab — Snapshots ───────────────────────────────────────────── -->
+    <div class="view" id="view-demo-lab-snapshots">
+      <div class="page-header">
+        <h1>📸 Snapshots</h1>
+        <p>Manual snapshot ledger across all envs. v1 logs snapshots you've taken via the PPAdmin portal; v2 will integrate with PAC CLI for headless snapshot/restore.</p>
+        <div class="header-actions">
+          <button class="btn btn-primary btn-sm" onclick="openSnapshotModal()">➕ Log Snapshot</button>
+          <a href="https://admin.powerplatform.microsoft.com/manage/environments" target="_blank" class="btn btn-secondary btn-sm">↗ PPAdmin</a>
+        </div>
+      </div>
+      <div id="demo-lab-snapshots-list"></div>
+    </div>
+
+    <!-- ── Demo Lab — Installers ──────────────────────────────────────────── -->
+    <div class="view" id="view-demo-lab-installers">
+      <div class="page-header">
+        <h1>⚡ Installers</h1>
+        <p>One-click deploys for known assets. Each installer is paired with one or more compatible environments — pick an asset, pick an env, deploy.</p>
+      </div>
+      <div class="card-grid" id="demo-lab-installers-grid"></div>
+    </div>
+
+    <!-- ── Demo Lab — Promotions ──────────────────────────────────────────── -->
+    <div class="view" id="view-demo-lab-promotions">
+      <div class="page-header">
+        <h1>🚀 Promotions (HA → Prod)</h1>
+        <p>The audit trail of what's been promoted from HA to Prod. Each promotion files a GitHub issue for review before deploy.</p>
+        <div class="header-actions">
+          <button class="btn btn-primary btn-sm" onclick="openPromoteModal()">➕ Request Promotion</button>
+        </div>
+      </div>
+      <div id="demo-lab-promotions-list"></div>
+    </div>
+
     <!-- ── Search Results ─────────────────────────────────────────────────── -->
     <div class="view" id="view-search-results">
       <div class="page-header">
@@ -1004,6 +1284,97 @@
         </div>
       </div>
       <div class="card-grid" id="my-resources-grid"></div>
+    </div>
+
+    <!-- ── Mauricio's Tools — AI Studio ──────────────────────────────────── -->
+    <div class="view embed-view" id="view-ai-studio">
+      <div class="embed-topbar">
+        <span style="font-size:20px">🔬</span>
+        <h3>AI Studio for D365 <span style="font-size:11px;font-weight:400;color:var(--text3)">by Mauricio Oliveira</span></h3>
+        <span class="embed-env-badge" id="ai-studio-embed-env">No env connected</span>
+        <button class="btn btn-secondary btn-xs" onclick="openEnvModal()">Change Env</button>
+        <a href="https://proud-dune-0959aad0f.3.azurestaticapps.net/" target="_blank" class="btn btn-ghost btn-xs">↗ New Tab</a>
+      </div>
+      <div class="embed-body">
+        <iframe id="ai-studio-embed-iframe" src="about:blank" class="embed-view-frame"
+          allow="clipboard-write; clipboard-read"
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"></iframe>
+        <div class="embed-fallback" id="ai-studio-embed-fallback">
+          <div class="icon">🔬</div>
+          <h3>Connect a D365 Environment</h3>
+          <p>Select an active D365 environment to automatically pass your org URL to AI Studio, or open it in a new tab.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:8px">
+            <button class="btn btn-primary" onclick="openEnvModal()">Connect Environment</button>
+            <a href="https://proud-dune-0959aad0f.3.azurestaticapps.net/" target="_blank" class="btn btn-secondary">Open in New Tab ↗</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Mauricio's Tools — Agent Home ─────────────────────────────────── -->
+    <div class="view embed-view" id="view-agent-home-embed">
+      <div class="embed-topbar">
+        <span style="font-size:20px">🏠</span>
+        <h3>D365 Agent Home <span style="font-size:11px;font-weight:400;color:var(--text3)">by Mauricio Oliveira</span></h3>
+        <span class="embed-env-badge" id="agent-home-embed-env">No env connected</span>
+        <a href="https://github.com/moliveirapinto/D365-Agent-Home/releases/latest" target="_blank" class="btn btn-secondary btn-xs">📦 Download Solution</a>
+        <a href="https://github.com/moliveirapinto/D365-Agent-Home" target="_blank" class="btn btn-ghost btn-xs">↗ GitHub</a>
+      </div>
+      <div class="embed-body">
+        <div class="embed-fallback visible" id="agent-home-embed-fallback">
+          <div class="icon">🏠</div>
+          <h3>Install to your environment first</h3>
+          <p>D365 Agent Home is installed as a solution in your D365 environment. Download and import the solution, then access it through your D365 app.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:8px">
+            <a href="https://github.com/moliveirapinto/D365-Agent-Home/releases/latest" target="_blank" class="btn btn-primary">📦 Download Solution</a>
+            <button class="btn btn-secondary" onclick="showView('demo-lab-installers')">⚡ Install via Demo Lab</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Mauricio's Tools — Contact Center IQ ──────────────────────────── -->
+    <div class="view embed-view" id="view-contact-center-iq-embed">
+      <div class="embed-topbar">
+        <span style="font-size:20px">📊</span>
+        <h3>Contact Center IQ <span style="font-size:11px;font-weight:400;color:var(--text3)">by Mauricio Oliveira</span></h3>
+        <span class="embed-env-badge" id="cciq-embed-env">No env connected</span>
+        <a href="https://github.com/moliveirapinto/Contact-Center-IQ/releases/latest" target="_blank" class="btn btn-secondary btn-xs">📦 Download Solution</a>
+        <a href="https://github.com/moliveirapinto/Contact-Center-IQ" target="_blank" class="btn btn-ghost btn-xs">↗ GitHub</a>
+      </div>
+      <div class="embed-body">
+        <div class="embed-fallback visible" id="cciq-embed-fallback">
+          <div class="icon">📊</div>
+          <h3>Install to your environment first</h3>
+          <p>Contact Center IQ adds AI-powered conversation trending to your D365 environment. Import the solution, configure the Cloud Flow, then access dashboards from within D365 Customer Service.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:8px">
+            <a href="https://github.com/moliveirapinto/Contact-Center-IQ/releases/latest" target="_blank" class="btn btn-primary">📦 Download Solution</a>
+            <button class="btn btn-secondary" onclick="showView('demo-lab-installers')">⚡ Install via Demo Lab</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Mauricio's Tools — Chat Widget Studio ─────────────────────────── -->
+    <div class="view embed-view" id="view-chat-widget-studio-embed">
+      <div class="embed-topbar">
+        <span style="font-size:20px">💬</span>
+        <h3>Chat Widget Studio <span style="font-size:11px;font-weight:400;color:var(--text3)">by Mauricio Oliveira</span></h3>
+        <a href="https://lemon-water-0adbcca0f.1.azurestaticapps.net/" target="_blank" class="btn btn-ghost btn-xs">↗ New Tab</a>
+      </div>
+      <div class="embed-body">
+        <iframe id="chat-widget-embed-iframe" src="about:blank" class="embed-view-frame"
+          allow="clipboard-write; clipboard-read"
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"></iframe>
+        <div class="embed-fallback" id="chat-widget-embed-fallback">
+          <div class="icon">💬</div>
+          <h3>Chat Widget Studio</h3>
+          <p>Visual builder for D365 Omnichannel chat widgets. Generate embed code for any portal or website.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:8px">
+            <a href="https://lemon-water-0adbcca0f.1.azurestaticapps.net/" target="_blank" class="btn btn-primary">Open in New Tab ↗</a>
+          </div>
+        </div>
+      </div>
     </div>
 
   </main>
@@ -1050,6 +1421,101 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeEnvModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Demo Lab — Install To Env Picker Modal ──────────────────────────── -->
+<div class="modal-overlay hidden" id="dl-install-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span style="font-size:22px">⚡</span>
+      <h2 id="dl-install-title">Install to Environment</h2>
+      <button class="btn btn-ghost" onclick="closeDLInstallModal()" style="padding:4px 8px;font-size:18px">✕</button>
+    </div>
+    <div class="modal-body">
+      <p id="dl-install-desc" style="font-size:13px;color:var(--text2);margin-bottom:14px"></p>
+      <div id="dl-install-meta" style="font-size:12px;color:var(--text2);margin-bottom:14px;padding:10px 12px;background:var(--surface2);border-radius:var(--radius)"></div>
+      <h3 style="font-size:13px;color:var(--text);margin-bottom:10px">Pick a target environment:</h3>
+      <div class="dl-install-env-pick" id="dl-install-env-list"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeDLInstallModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="executeDLInstall()" id="dl-install-go" disabled>Open Install →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Demo Lab — Log Snapshot Modal ───────────────────────────────────── -->
+<div class="modal-overlay hidden" id="dl-snapshot-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span style="font-size:22px">📸</span>
+      <h2>Log a Snapshot</h2>
+      <button class="btn btn-ghost" onclick="closeSnapshotModal()" style="padding:4px 8px;font-size:18px">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--text2);margin-bottom:14px">
+        Take the snapshot in PPAdmin first, then log the metadata here. This files a GitHub issue with the snapshot details for tracking.
+      </p>
+      <form id="dl-snapshot-form" onsubmit="submitSnapshot(event)">
+        <div class="form-group">
+          <label>Environment *</label>
+          <select id="dl-snap-env" required></select>
+        </div>
+        <div class="form-group">
+          <label>Label *</label>
+          <input type="text" id="dl-snap-label" placeholder="e.g. Pre-Pella demo data load" required />
+        </div>
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea id="dl-snap-notes" placeholder="What's in this snapshot? Why was it taken?"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Size (MB, optional)</label>
+          <input type="number" id="dl-snap-size" placeholder="2840" />
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top:4px">Log via GitHub Issue →</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ── Demo Lab — Promote (HA → Prod) Modal ─────────────────────────────── -->
+<div class="modal-overlay hidden" id="dl-promote-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span style="font-size:22px">🚀</span>
+      <h2>Request Promotion (HA → Prod)</h2>
+      <button class="btn btn-ghost" onclick="closePromoteModal()" style="padding:4px 8px;font-size:18px">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--text2);margin-bottom:14px">
+        Promote a validated asset from an HA env to its paired Prod env. Files a GitHub issue with label <code>promote-request</code> for review.
+      </p>
+      <form id="dl-promote-form" onsubmit="submitPromotion(event)">
+        <div class="form-group">
+          <label>Asset Name *</label>
+          <input type="text" id="dl-promo-asset" placeholder="e.g. D365 Agent Home v2.1" required />
+        </div>
+        <div class="form-group">
+          <label>From (HA) *</label>
+          <select id="dl-promo-from" required></select>
+        </div>
+        <div class="form-group">
+          <label>To (Prod) *</label>
+          <select id="dl-promo-to" required></select>
+        </div>
+        <div class="form-group">
+          <label>Validation Notes *</label>
+          <textarea id="dl-promo-notes" placeholder="What's been tested? What's the rollback plan? Any data dependencies?" required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Reviewer (optional)</label>
+          <input type="text" id="dl-promo-reviewer" placeholder="GitHub handle, e.g. billwhalenmsft" />
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top:4px">File Promotion Request →</button>
+      </form>
     </div>
   </div>
 </div>
@@ -1227,6 +1693,12 @@ const MSAL_CONFIG = {
 const HUB_DATA_URL = 'resource-hub-data.json';
 const AI_STUDIO_BASE = 'https://proud-dune-0959aad0f.3.azurestaticapps.net/';
 const AI_STUDIO_ORG_PARAM = 'orgUrl'; // update if Mauricio uses different param
+const CHAT_WIDGET_BASE = 'https://lemon-water-0adbcca0f.1.azurestaticapps.net/';
+
+// Demo Lab — env matrix, snapshots, installers (Build → Review → Deploy → Repeat)
+const DEMO_LAB_ENVS_URL = 'data/demo-lab-envs.json';
+const DEMO_LAB_SNAPSHOTS_URL = 'data/demo-lab-snapshots.json';
+const DEMO_LAB_INSTALLERS_URL = 'data/demo-lab-installers.json';
 
 // ── State ─────────────────────────────────────────────────────────────────────
 let hubData = null;
@@ -1239,6 +1711,12 @@ let currentUser = null;
 let isDemoMode = false;
 let seismicLinks = JSON.parse(localStorage.getItem('hub_seismic_links') || '[]');
 let pinnedItems = new Set(JSON.parse(localStorage.getItem('hub_pins') || '[]'));
+
+// Demo Lab state
+let demoLabEnvs = null;       // { _matrix, corp, environments[], ancillary[] }
+let demoLabSnapshots = null;  // { snapshots[], promotions[] }
+let demoLabInstallers = null; // { installers[] }
+let _installerAsset = null;   // currently selected asset for env-picker install
 
 // ── 3-Tier Scope ──────────────────────────────────────────────────────────────
 // Items default to 'bu' (Mfg CoE). Items with item.tier='corporate' belong to
@@ -1347,7 +1825,7 @@ async function initAuth() {
   const swaUser = await getSWAUser();
   if (swaUser) {
     currentUser = { name: swaUser.userDetails || 'SE', initials: getInitials(swaUser.userDetails || 'SE') };
-    launchApp();
+    maybeShowEnvSetup();
     return;
   }
 
@@ -1358,14 +1836,189 @@ async function initAuth() {
       const accounts = msalInstance.getAllAccounts();
       if (accounts.length > 0) {
         currentUser = buildUserFromAccount(accounts[0]);
-        launchApp();
+        maybeShowEnvSetup();
         return;
       }
     } catch(e) { console.warn('MSAL silent init failed', e); }
   }
 
-  // Show auth gate
+  // Show auth gate step 1
   document.getElementById('auth-gate').classList.remove('hidden');
+}
+
+// After sign-in: go to env setup wizard on first run, else straight to app
+function maybeShowEnvSetup() {
+  if (localStorage.getItem('hub_env_setup_done') === '1') {
+    launchApp();
+  } else {
+    showEnvSetupStep();
+  }
+}
+
+function showEnvSetupStep() {
+  document.getElementById('auth-gate').classList.remove('hidden');
+  document.getElementById('auth-step1').style.display = 'none';
+  document.getElementById('auth-step2').style.display = 'block';
+  loadSetupEnvs();
+}
+
+// State for env setup wizard
+let _setupEnvs = []; // discovered from PP API
+let _setupSelected = new Set(JSON.parse(localStorage.getItem('hub_pinned_envs') || '[]').map(e=>e.id));
+let _setupManual = [];
+
+async function loadSetupEnvs() {
+  const listEl = document.getElementById('setup-env-list');
+  const statusEl = document.getElementById('setup-env-status');
+  listEl.innerHTML = '<div class="setup-loading">⏳ Discovering your Power Platform environments…</div>';
+
+  try {
+    let token = '';
+    if (msalInstance) {
+      const accounts = msalInstance.getAllAccounts();
+      if (accounts.length > 0) {
+        try {
+          const r = await msalInstance.acquireTokenSilent({
+            account: accounts[0],
+            scopes: ['https://service.flow.microsoft.com/.default']
+          });
+          token = r.accessToken;
+        } catch(e) {
+          // Try interactive
+          try {
+            const r = await msalInstance.acquireTokenPopup({ scopes: ['https://service.flow.microsoft.com/.default'] });
+            token = r.accessToken;
+          } catch(e2) { console.warn('Token acquire failed', e2); }
+        }
+      }
+    }
+
+    if (!token) {
+      statusEl.textContent = 'No live token — add environments manually or skip.';
+      listEl.innerHTML = '<div class="setup-empty">Sign in with an MSAL-registered app to auto-discover environments, or add them manually below.</div>';
+      return;
+    }
+
+    const res = await fetch('https://api.bap.microsoft.com/providers/Microsoft.BusinessAppPlatform/environments?api-version=2016-11-01', {
+      headers: { Authorization: 'Bearer ' + token }
+    });
+    if (!res.ok) throw new Error(`PP API error: ${res.status}`);
+    const data = await res.json();
+    _setupEnvs = (data.value || []).map(e => ({
+      id: e.name,
+      name: e.properties?.displayName || e.name,
+      url: e.properties?.linkedEnvironmentMetadata?.instanceUrl || '',
+      environmentSku: e.properties?.environmentSku || 'Default',
+      region: e.properties?.azureRegion || ''
+    })).filter(e => e.url); // only envs with a Dataverse URL
+
+    statusEl.textContent = `${_setupEnvs.length} environment${_setupEnvs.length !== 1 ? 's' : ''} found`;
+    if (_setupEnvs.length > 0) {
+      document.getElementById('setup-select-all-link').style.display = 'inline';
+    }
+    renderSetupEnvList();
+  } catch(e) {
+    console.error(e);
+    statusEl.textContent = 'Discovery failed: ' + e.message;
+    listEl.innerHTML = '<div class="setup-empty">Could not load environments. Add them manually below, or skip.</div>';
+  }
+}
+
+function renderSetupEnvList() {
+  const all = [..._setupEnvs, ..._setupManual];
+  const listEl = document.getElementById('setup-env-list');
+  if (all.length === 0) {
+    listEl.innerHTML = '<div class="setup-empty">No environments found. Add manually below or skip.</div>';
+    return;
+  }
+  listEl.innerHTML = all.map(env => {
+    const sel = _setupSelected.has(env.id);
+    const typeLabel = env.environmentSku || 'Env';
+    const typeCls = typeLabel.toLowerCase().includes('sandbox') ? 'sandbox'
+      : typeLabel.toLowerCase().includes('trial') ? 'trial'
+      : typeLabel.toLowerCase().includes('developer') ? 'developer' : 'default';
+    return `<div class="setup-env-item ${sel ? 'selected' : ''}" onclick="toggleSetupEnv('${env.id}')">
+      <input type="checkbox" ${sel ? 'checked' : ''} />
+      <div class="setup-env-info">
+        <div class="setup-env-name">${env.name}</div>
+        <div class="setup-env-url">${env.url || env.id}</div>
+      </div>
+      <span class="setup-env-type ${typeCls}">${typeLabel}</span>
+    </div>`;
+  }).join('');
+}
+
+function toggleSetupEnv(id) {
+  if (_setupSelected.has(id)) _setupSelected.delete(id);
+  else _setupSelected.add(id);
+  renderSetupEnvList();
+}
+
+function setupSelectAll() {
+  const all = [..._setupEnvs, ..._setupManual];
+  const allSelected = all.every(e => _setupSelected.has(e.id));
+  if (allSelected) {
+    all.forEach(e => _setupSelected.delete(e.id));
+    document.getElementById('setup-select-all-link').textContent = 'Select all';
+  } else {
+    all.forEach(e => _setupSelected.add(e.id));
+    document.getElementById('setup-select-all-link').textContent = 'Deselect all';
+  }
+  renderSetupEnvList();
+}
+
+function addManualSetupEnv() {
+  const nameEl = document.getElementById('manual-env-name');
+  const urlEl = document.getElementById('manual-env-url');
+  const name = nameEl.value.trim();
+  let url = urlEl.value.trim();
+  if (!name || !url) { toast('Enter a name and URL.'); return; }
+  if (!url.endsWith('/')) url += '/';
+  const id = 'manual-' + url.replace(/https?:\/\/|\.crm\d*\.dynamics\.com\//g, '');
+  if (_setupManual.some(e => e.id === id) || _setupEnvs.some(e => e.url === url)) {
+    toast('Environment already in list.'); return;
+  }
+  _setupManual.push({ id, name, url, environmentSku: 'Manual', region: '' });
+  _setupSelected.add(id);
+  nameEl.value = '';
+  urlEl.value = '';
+  renderSetupEnvList();
+}
+
+function completeEnvSetup() {
+  const all = [..._setupEnvs, ..._setupManual];
+  const selected = all.filter(e => _setupSelected.has(e.id));
+  // Save as pinned envs (used by existing env modal logic + Demo Lab)
+  pinnedEnvs = selected;
+  localStorage.setItem('hub_pinned_envs', JSON.stringify(pinnedEnvs));
+  if (selected.length > 0 && !activeEnv) {
+    activeEnv = selected[0];
+    localStorage.setItem('hub_active_env', JSON.stringify(activeEnv));
+  }
+  // Save full discovered list for Demo Lab merge
+  localStorage.setItem('hub_user_pp_envs', JSON.stringify(all));
+  localStorage.setItem('hub_env_setup_done', '1');
+  document.getElementById('auth-gate').classList.add('hidden');
+  launchApp();
+}
+
+function skipEnvSetup() {
+  localStorage.setItem('hub_env_setup_done', '1');
+  document.getElementById('auth-gate').classList.add('hidden');
+  launchApp();
+}
+
+// Re-run setup wizard from within the app (Demo Lab "Manage" button)
+function reopenEnvSetup() {
+  _setupEnvs = [];
+  _setupSelected = new Set(pinnedEnvs.map(e => e.id));
+  _setupManual = [];
+  document.getElementById('auth-step1').style.display = 'none';
+  document.getElementById('auth-step2').style.display = 'block';
+  document.getElementById('setup-select-all-link').style.display = 'none';
+  document.getElementById('app').classList.remove('visible');
+  document.getElementById('auth-gate').classList.remove('hidden');
+  loadSetupEnvs();
 }
 
 async function getSWAUser() {
@@ -1410,6 +2063,7 @@ async function signIn() {
 function demoMode() {
   isDemoMode = true;
   currentUser = { name: 'Demo User', initials: 'D' };
+  localStorage.setItem('hub_env_setup_done', '1'); // skip setup for demo mode
   document.getElementById('auth-gate').classList.add('hidden');
   launchApp();
 }
@@ -1426,6 +2080,8 @@ function getInitials(name) {
 async function signOut() {
   if (confirm('Sign out?')) {
     localStorage.removeItem('hub_active_env');
+    localStorage.removeItem('hub_env_setup_done');
+    localStorage.removeItem('hub_user_pp_envs');
     if (msalInstance) msalInstance.logoutRedirect();
     else window.location = '/.auth/logout?post_logout_redirect_uri=' + encodeURIComponent(window.location.pathname);
   }
@@ -1451,6 +2107,9 @@ async function launchApp() {
     hubData = { featured:[], agents:[], solutions:[], demo_scripts:[], tools:[], resources:[], onboarding:[], seismic:[] };
   }
 
+  // Load Demo Lab data (parallel, non-blocking)
+  loadDemoLabData();
+
   buildAllItems();
   updateActiveEnvUI();
   renderAll();
@@ -1458,7 +2117,7 @@ async function launchApp() {
   updatePinsBadge();
   applyScopeUI();
 
-  // Deep-link: ?view=resources|onboarding|solutions|agents|tools|seismic|demos|my-resources
+  // Deep-link: ?view=resources|onboarding|solutions|agents|tools|seismic|demos|my-resources|demo-lab
   const viewParam = new URLSearchParams(window.location.search).get('view');
   if (viewParam) {
     const viewMap = {
@@ -1466,7 +2125,10 @@ async function launchApp() {
       solutions: 'solutions', agents: 'agents',
       tools: 'tools', seismic: 'seismic',
       'my-resources': 'my-resources',
-      demos: 'demo-scripts', demo_scripts: 'demo-scripts'
+      demos: 'demo-scripts', demo_scripts: 'demo-scripts',
+      'demo-lab': 'demo-lab', demolab: 'demo-lab', envs: 'demo-lab',
+      snapshots: 'demo-lab-snapshots', installers: 'demo-lab-installers',
+      promotions: 'demo-lab-promotions'
     };
     const target = viewMap[viewParam.toLowerCase()];
     if (target) {
@@ -1539,12 +2201,19 @@ function renderCard(item, compact=false) {
 
   let actionsHtml = '';
   if (item.launchMode === 'panel') {
-    actionsHtml = `<button class="btn btn-primary btn-xs" onclick="openAIStudioWithEnv('${encodeURIComponent(item.url||'')}')">Open in Panel</button>`;
+    actionsHtml = `<button class="btn btn-primary btn-xs" onclick="showView('ai-studio');return false;">Open in Tab</button>`;
   } else if (item.url && item.url !== '#') {
     actionsHtml = `<a href="${item.url}" target="_blank" class="btn btn-primary btn-xs">Open ↗</a>`;
   }
   if (item.installUrl) {
     actionsHtml += ` <button class="btn btn-secondary btn-xs" onclick="installInOrg('${encodeURIComponent(item.installUrl||'')}')">Install in Org</button>`;
+  }
+  // Demo Lab: offer one-click install if a matching installer exists for this asset
+  if (item.id && demoLabInstallers?.installers) {
+    const match = demoLabInstallers.installers.find(i => i.asset_id === String(item.id));
+    if (match) {
+      actionsHtml += ` <button class="btn btn-secondary btn-xs" onclick="openInstallForInstaller('${match.id}')" title="One-click deploy to a registered demo env">⚡ Install to Env</button>`;
+    }
   }
 
   const clickAttr = itemId ? `onclick="openCardDetail('${itemId}',event)"` : '';
@@ -1839,6 +2508,38 @@ function closeAIStudio() {
   document.getElementById('ai-studio-iframe').src = 'about:blank';
 }
 
+// ── Embed View Loaders ────────────────────────────────────────────────────────
+function loadAIStudioEmbed() {
+  const iframe = document.getElementById('ai-studio-embed-iframe');
+  const fallback = document.getElementById('ai-studio-embed-fallback');
+  const envBadge = document.getElementById('ai-studio-embed-env');
+  const orgUrl = activeEnv?.url || '';
+
+  if (orgUrl) {
+    const targetUrl = AI_STUDIO_BASE + '?' + AI_STUDIO_ORG_PARAM + '=' + encodeURIComponent(orgUrl);
+    envBadge.textContent = activeEnv.name || orgUrl;
+    fallback.classList.remove('visible');
+    iframe.style.display = 'block';
+    if (iframe.src !== targetUrl) iframe.src = targetUrl;
+    iframe.onerror = () => { iframe.style.display='none'; fallback.classList.add('visible'); };
+  } else {
+    envBadge.textContent = 'No env connected';
+    iframe.style.display = 'none';
+    fallback.classList.add('visible');
+  }
+}
+
+function loadChatWidgetEmbed() {
+  const iframe = document.getElementById('chat-widget-embed-iframe');
+  const fallback = document.getElementById('chat-widget-embed-fallback');
+  fallback.classList.remove('visible');
+  iframe.style.display = 'block';
+  if (!iframe.src || iframe.src === 'about:blank' || iframe.src === '') {
+    iframe.src = CHAT_WIDGET_BASE;
+  }
+  iframe.onerror = () => { iframe.style.display='none'; fallback.classList.add('visible'); };
+}
+
 // ── PP Env Modal ──────────────────────────────────────────────────────────────
 function openEnvModal() { document.getElementById('env-modal').classList.remove('hidden'); renderEnvList(); }
 function closeEnvModal() { document.getElementById('env-modal').classList.add('hidden'); }
@@ -1947,6 +2648,13 @@ function updateActiveEnvUI() {
     nameEl.textContent = activeEnv.name || activeEnv.url || 'Env Active';
     indEl.classList.remove('inactive');
     document.getElementById('panel-active-env').textContent = activeEnv.name || activeEnv.url;
+    // Refresh embed tab badge if visible
+    const aiEmbedEnv = document.getElementById('ai-studio-embed-env');
+    if (aiEmbedEnv) aiEmbedEnv.textContent = activeEnv.name || activeEnv.url;
+    // If AI Studio tab is currently active, reload with new env
+    if (document.getElementById('view-ai-studio')?.classList.contains('active')) {
+      loadAIStudioEmbed();
+    }
   } else {
     nameEl.textContent = 'Connect D365 Env';
     indEl.classList.add('inactive');
@@ -2278,9 +2986,485 @@ function showView(name) {
   if (nEl) nEl.classList.add('active');
   // Render My Resources on nav
   if (name === 'my-resources') renderMyResources();
+  // Render Demo Lab views on nav
+  if (name === 'demo-lab') renderDemoLabEnvs();
+  if (name === 'demo-lab-snapshots') renderDemoLabSnapshots();
+  if (name === 'demo-lab-installers') renderDemoLabInstallers();
+  if (name === 'demo-lab-promotions') renderDemoLabPromotions();
+  // Load embedded tool views
+  if (name === 'ai-studio') loadAIStudioEmbed();
+  if (name === 'chat-widget-studio-embed') loadChatWidgetEmbed();
   // Clear search when navigating away
   if (name !== 'search-results') document.getElementById('global-search').value = '';
   return false;
+}
+
+// ── Demo Lab ──────────────────────────────────────────────────────────────────
+async function loadDemoLabData() {
+  try {
+    const [envsRes, snapsRes, instRes] = await Promise.all([
+      fetch(DEMO_LAB_ENVS_URL).then(r => r.ok ? r.json() : null),
+      fetch(DEMO_LAB_SNAPSHOTS_URL).then(r => r.ok ? r.json() : null),
+      fetch(DEMO_LAB_INSTALLERS_URL).then(r => r.ok ? r.json() : null)
+    ]);
+    demoLabEnvs = envsRes;
+    demoLabSnapshots = snapsRes;
+    demoLabInstallers = instRes;
+
+    // Merge user-selected PP envs (from env setup wizard) into the matrix
+    // User envs take precedence for display; JSON metadata enriches known envs
+    const userPPEnvs = JSON.parse(localStorage.getItem('hub_user_pp_envs') || '[]');
+    const pinnedIds = new Set(JSON.parse(localStorage.getItem('hub_pinned_envs') || '[]').map(e => e.id));
+    const selectedPPEnvs = userPPEnvs.filter(e => pinnedIds.has(e.id));
+    if (selectedPPEnvs.length > 0 && demoLabEnvs) {
+      // Build a URL→env map from the JSON for enrichment
+      const jsonByUrl = {};
+      [...(demoLabEnvs.environments || []), ...(demoLabEnvs.ancillary || [])].forEach(e => {
+        if (e.url) jsonByUrl[e.url.replace(/\/$/, '')] = e;
+      });
+      // For each selected PP env not already in the JSON matrix, inject it as active
+      const existingUrls = new Set(
+        [...(demoLabEnvs.environments || []), ...(demoLabEnvs.ancillary || [])]
+          .map(e => (e.url || '').replace(/\/$/, ''))
+      );
+      selectedPPEnvs.forEach(ppEnv => {
+        const normUrl = (ppEnv.url || '').replace(/\/$/, '');
+        if (!existingUrls.has(normUrl) && normUrl) {
+          // Inject as a new active env in the matrix
+          const injected = {
+            id: 'pp-' + ppEnv.id,
+            label: ppEnv.name,
+            product: ppEnv.environmentSku?.toLowerCase().includes('fno') ? 'erp' : 'cx',
+            role: 'prod',
+            url: ppEnv.url,
+            env_id: ppEnv.id,
+            status: 'active',
+            purpose: `Connected via Power Platform — ${ppEnv.environmentSku || 'Environment'}`,
+            tags: ['pp-discovered'],
+            supports_install: ['solution-zip', 'copilot-studio'],
+            guardrails: 'Connected from Power Platform discovery',
+            login_hint: currentUser?.name || ''
+          };
+          if (!demoLabEnvs.environments) demoLabEnvs.environments = [];
+          demoLabEnvs.environments.push(injected);
+        }
+      });
+    }
+
+    // Re-render asset grids so "Install to Env" buttons appear on matching cards
+    if (typeof renderAll === 'function' && hubData) renderAll();
+  } catch(e) {
+    console.error('Failed to load Demo Lab data', e);
+  }
+}
+
+async function reloadDemoLab() {
+  toast('Reloading Demo Lab data…');
+  await loadDemoLabData();
+  renderDemoLabEnvs();
+  renderDemoLabSnapshots();
+  renderDemoLabInstallers();
+  renderDemoLabPromotions();
+  toast('Demo Lab reloaded');
+}
+
+function _dlLastSnapshotFor(envId) {
+  if (!demoLabSnapshots?.snapshots) return null;
+  const matches = demoLabSnapshots.snapshots.filter(s => s.env_id === envId);
+  if (!matches.length) return null;
+  return matches.sort((a,b) => (b.taken_at || '').localeCompare(a.taken_at || ''))[0];
+}
+
+function _dlEnvById(id) {
+  if (!demoLabEnvs?.environments) return null;
+  return demoLabEnvs.environments.find(e => e.id === id) || (demoLabEnvs.ancillary || []).find(e => e.id === id);
+}
+
+function renderDemoLabEnvs() {
+  if (!demoLabEnvs) {
+    document.getElementById('demo-lab-matrix').innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="icon">⏳</div><h3>Loading…</h3><p>Demo Lab data is loading. If this persists, check console for fetch errors.</p></div>';
+    return;
+  }
+
+  // Corp panel
+  const corp = demoLabEnvs.corp || {};
+  const corpEl = document.getElementById('demo-lab-corp-panel');
+  if (corpEl && corp.tenant_name) {
+    corpEl.innerHTML = `
+      <div class="dl-corp-panel">
+        <div class="dl-corp-item">
+          <span class="dl-corp-label">Tenant</span>
+          <span class="dl-corp-value">${corp.tenant_name}</span>
+        </div>
+        <div class="dl-corp-item">
+          <span class="dl-corp-label">Primary UPN</span>
+          <span class="dl-corp-value">${corp.primary_upn || '—'}</span>
+        </div>
+        <div class="dl-corp-item">
+          <span class="dl-corp-label">GitHub Fork</span>
+          <span class="dl-corp-value"><a href="https://github.com/${corp.github?.fork_org || ''}" target="_blank">${corp.github?.primary_repo || corp.github?.fork_org || '—'}</a></span>
+        </div>
+        <div class="dl-corp-item">
+          <span class="dl-corp-label">Azure Region</span>
+          <span class="dl-corp-value">${corp.azure?.preferred_region || '—'}</span>
+        </div>
+        <div class="dl-corp-item">
+          <span class="dl-corp-label">MSX Territory</span>
+          <span class="dl-corp-value">${corp.msx?.territory || '—'}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  // Matrix (sort: prod first then ha; ce before fno)
+  const envs = (demoLabEnvs.environments || []).slice().sort((a, b) => {
+    const stage = (s) => s === 'prod' ? 0 : s === 'ha' ? 1 : 2;
+    const prod = (p) => p === 'ce' ? 0 : p === 'fno' ? 1 : 2;
+    return prod(a.product) - prod(b.product) || stage(a.stage) - stage(b.stage);
+  });
+
+  const matrixEl = document.getElementById('demo-lab-matrix');
+  matrixEl.innerHTML = envs.map(env => _renderEnvCard(env)).join('');
+
+  // Ancillary grid
+  const anc = demoLabEnvs.ancillary || [];
+  const ancEl = document.getElementById('demo-lab-ancillary-grid');
+  ancEl.innerHTML = anc.map(env => _renderEnvCard(env, true)).join('');
+}
+
+function _renderEnvCard(env, ancillary = false) {
+  const lastSnap = _dlLastSnapshotFor(env.id);
+  const installCount = (demoLabInstallers?.installers || []).filter(i =>
+    (i.target_envs || []).includes(env.id) || (i.compatible_env_types || []).includes(env.type)
+  ).length;
+  const stage = env.stage || '';
+  const product = env.product || '';
+  const needs = env.status === 'needs-registration' || env.status === 'staged';
+  const icon = (product === 'ce' || product === 'cx') ? '👥' : (product === 'fno' || product === 'erp') ? '🏭' : env.type === 'azure_function' ? '⚡' : '🧪';
+
+  const promoteArrow = env.promote_to ? `<div class="dl-promote-arrow">↓ promotes to <strong>${_dlEnvById(env.promote_to)?.name || env.promote_to}</strong></div>` : '';
+  const promoteFromArrow = env.promote_from ? `<div class="dl-promote-arrow">↑ from <strong>${_dlEnvById(env.promote_from)?.name || env.promote_from}</strong></div>` : '';
+
+  const urlLine = env.url ? `<a href="${env.url}" target="_blank" class="dl-env-meta-value">${env.url.replace(/^https?:\/\//, '').replace(/\/$/, '')} ↗</a>` : '<span class="dl-env-meta-value" style="color:var(--ms-orange)">Not registered</span>';
+
+  return `
+    <div class="dl-env-card stage-${stage} ${needs ? 'needs-registration' : ''}">
+      <div class="dl-env-head">
+        <span class="dl-env-icon">${icon}</span>
+        <div style="flex:1">
+          <h3 class="dl-env-title">${env.name}</h3>
+          <div class="dl-env-sub">${env.type || ''}${env.release_cycle ? ' · ' + env.release_cycle : ''}</div>
+        </div>
+      </div>
+      <div class="dl-env-badges">
+        ${product ? `<span class="dl-badge product-${product}">${product.toUpperCase()}</span>` : ''}
+        ${stage ? `<span class="dl-badge stage-${stage}">${stage.toUpperCase()}</span>` : ''}
+        ${env.status ? `<span class="dl-badge status-${env.status}">${env.status.replace('-', ' ')}</span>` : ''}
+      </div>
+      <p class="dl-env-purpose">${env.purpose || ''}</p>
+      <div class="dl-env-meta">
+        <div>
+          <span class="dl-env-meta-label">URL</span>
+          ${urlLine}
+        </div>
+        <div>
+          <span class="dl-env-meta-label">Last Snapshot</span>
+          <span class="dl-env-meta-value">${lastSnap ? new Date(lastSnap.taken_at).toLocaleDateString() + ' — ' + lastSnap.label : '—'}</span>
+        </div>
+        <div>
+          <span class="dl-env-meta-label">Installers Available</span>
+          <span class="dl-env-meta-value">${installCount}</span>
+        </div>
+        <div>
+          <span class="dl-env-meta-label">Owner</span>
+          <span class="dl-env-meta-value">${env.owner || '—'}</span>
+        </div>
+      </div>
+      ${promoteArrow}${promoteFromArrow}
+      <div class="dl-env-actions">
+        ${env.url ? `<a href="${env.url}" target="_blank" class="btn btn-primary btn-xs">Open ↗</a>` : ''}
+        ${env.knowledge_card ? `<a href="https://github.com/billwhalenmsft/CommunityRAPP/blob/main/${env.knowledge_card}" target="_blank" class="btn btn-secondary btn-xs">📖 Card</a>` : ''}
+        ${!needs ? `<button class="btn btn-secondary btn-xs" onclick="openInstallForEnv('${env.id}')">⚡ Install Asset</button>` : ''}
+        ${!needs ? `<button class="btn btn-ghost btn-xs" onclick="openSnapshotModal('${env.id}')" style="font-size:11px">📸 Snapshot</button>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function renderDemoLabSnapshots() {
+  const listEl = document.getElementById('demo-lab-snapshots-list');
+  if (!listEl) return;
+  if (!demoLabSnapshots?.snapshots?.length) {
+    listEl.innerHTML = '<div class="empty-state"><div class="icon">📸</div><h3>No snapshots logged yet</h3><p>Take snapshots via the PPAdmin portal, then log them here for tracking.</p></div>';
+    return;
+  }
+  const snaps = demoLabSnapshots.snapshots.slice().sort((a, b) => (b.taken_at || '').localeCompare(a.taken_at || ''));
+  listEl.innerHTML = snaps.map(s => {
+    const env = _dlEnvById(s.env_id);
+    return `
+      <div class="dl-snap-row">
+        <div class="dl-snap-icon">📸</div>
+        <div class="dl-snap-meta">
+          <strong>${s.label}</strong>
+          <div>${env?.name || s.env_id} · ${new Date(s.taken_at).toLocaleString()} · ${s.taken_by || '—'} · ${s.size_mb ? s.size_mb + ' MB' : ''}</div>
+          ${s.notes ? `<div style="margin-top:4px;font-style:italic">${s.notes}</div>` : ''}
+        </div>
+        <div>
+          <span class="dl-snap-badge ${s.status}">${(s.status||'').replace('-', ' ')}</span>
+          ${s.restore_url ? `<a href="${s.restore_url}" target="_blank" class="btn btn-secondary btn-xs" style="margin-left:6px">Restore ↗</a>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderDemoLabInstallers() {
+  const el = document.getElementById('demo-lab-installers-grid');
+  if (!el) return;
+  if (!demoLabInstallers?.installers?.length) {
+    el.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="icon">⚡</div><h3>No installers configured</h3><p>Add entries to data/demo-lab-installers.json to enable one-click deploys.</p></div>';
+    return;
+  }
+  el.innerHTML = demoLabInstallers.installers.map(inst => {
+    const targets = (inst.target_envs || []).map(eid => _dlEnvById(eid)?.name || eid).join(', ');
+    const verified = inst.verified ? '<span class="dl-badge status-active">VERIFIED</span>' : '<span class="dl-badge status-needs-registration">UNVERIFIED</span>';
+    return `
+      <div class="resource-card" data-id="${inst.id}">
+        <div class="card-header">
+          <div class="card-icon green-bg">${inst.icon || '⚡'}</div>
+          <div class="card-title-block">
+            <div class="card-title">${inst.name}</div>
+            <div class="card-author">${inst.category || ''} · ${inst.estimated_minutes || '?'} min</div>
+          </div>
+        </div>
+        <div class="card-desc">${inst.description || ''}</div>
+        <div class="card-tags">
+          ${verified}
+          <span class="tag">${inst.target_type || ''}</span>
+          <span class="tag">${inst.install_method || ''}</span>
+        </div>
+        <div style="font-size:11px;color:var(--text2);margin-top:8px"><strong>Targets:</strong> ${targets || '—'}</div>
+        <div class="card-actions" style="margin-top:10px">
+          <button class="btn btn-primary btn-xs" onclick="openInstallForInstaller('${inst.id}')">⚡ Install</button>
+          ${inst.source_url ? `<a href="${inst.source_url}" target="_blank" class="btn btn-secondary btn-xs">Source ↗</a>` : ''}
+          ${inst.live_demo ? `<a href="${inst.live_demo}" target="_blank" class="btn btn-secondary btn-xs">Live Demo ↗</a>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderDemoLabPromotions() {
+  const el = document.getElementById('demo-lab-promotions-list');
+  if (!el) return;
+  const promos = demoLabSnapshots?.promotions || [];
+  if (!promos.length) {
+    el.innerHTML = '<div class="empty-state"><div class="icon">🚀</div><h3>No promotions yet</h3><p>When you promote an asset from HA to Prod, the event lands here as an audit record.</p></div>';
+    return;
+  }
+  const sorted = promos.slice().sort((a, b) => (b.promoted_at || '').localeCompare(a.promoted_at || ''));
+  el.innerHTML = sorted.map(p => {
+    const from = _dlEnvById(p.from_env);
+    const to = _dlEnvById(p.to_env);
+    return `
+      <div class="dl-promo-row">
+        <div class="dl-snap-icon">🚀</div>
+        <div class="dl-snap-meta">
+          <strong>${p.asset_name || p.asset_id}</strong>
+          <div>${from?.name || p.from_env} → ${to?.name || p.to_env} · ${new Date(p.promoted_at).toLocaleString()} · by ${p.promoted_by || '—'}</div>
+          ${p.notes ? `<div style="margin-top:4px;font-style:italic">${p.notes}</div>` : ''}
+          ${p.reviewer ? `<div style="margin-top:2px">Reviewer: ${p.reviewer}</div>` : ''}
+        </div>
+        <div>
+          <span class="dl-snap-badge ${p.status}">${p.status}</span>
+          ${p.github_issue ? `<a href="${p.github_issue}" target="_blank" class="btn btn-secondary btn-xs" style="margin-left:6px">Issue ↗</a>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ── Install Modal (Demo Lab) ──────────────────────────────────────────────────
+function openInstallForInstaller(installerId) {
+  if (!demoLabInstallers) { toast('Demo Lab data still loading…'); return; }
+  const inst = demoLabInstallers.installers.find(i => i.id === installerId);
+  if (!inst) { toast('Installer not found'); return; }
+  _installerAsset = { installer: inst, mode: 'installer' };
+  _openInstallPicker(inst);
+}
+
+function openInstallForEnv(envId) {
+  if (!demoLabInstallers || !demoLabEnvs) { toast('Demo Lab data still loading…'); return; }
+  const env = _dlEnvById(envId);
+  if (!env) { toast('Environment not found'); return; }
+  // Show only installers compatible with this env
+  const compat = demoLabInstallers.installers.filter(i =>
+    (i.target_envs || []).includes(envId) || (i.compatible_env_types || []).includes(env.type)
+  );
+  if (!compat.length) { toast(`No installers compatible with ${env.name}`); return; }
+  // Render a chooser: a synthetic installer-list mode
+  _installerAsset = { env, compat, mode: 'env-first' };
+  document.getElementById('dl-install-title').textContent = `Install to ${env.name}`;
+  document.getElementById('dl-install-desc').textContent = `Pick an asset to deploy to this environment. ${compat.length} compatible installer(s) available.`;
+  document.getElementById('dl-install-meta').innerHTML = `<strong>Env URL:</strong> ${env.url || '—'}<br/><strong>Type:</strong> ${env.type || '—'} · <strong>Stage:</strong> ${env.stage || '—'}`;
+  document.getElementById('dl-install-env-list').innerHTML = compat.map(i => `
+    <label>
+      <input type="radio" name="dl-install-pick" value="${i.id}" onchange="_dlInstallPickerSelect('${i.id}')" />
+      <div style="flex:1">
+        <div class="env-name">${i.icon || '⚡'} ${i.name}</div>
+        <div style="font-size:11px;color:var(--text2)">${i.description || ''}</div>
+      </div>
+    </label>
+  `).join('');
+  document.getElementById('dl-install-go').disabled = true;
+  document.getElementById('dl-install-modal').classList.remove('hidden');
+}
+
+function _openInstallPicker(inst) {
+  document.getElementById('dl-install-title').textContent = `Install: ${inst.name}`;
+  document.getElementById('dl-install-desc').textContent = inst.description || '';
+  document.getElementById('dl-install-meta').innerHTML = `
+    <strong>Type:</strong> ${inst.target_type || '—'} · <strong>Time:</strong> ${inst.estimated_minutes || '?'} min<br/>
+    <strong>Prereqs:</strong> ${(inst.prerequisites || []).join(' · ') || 'None'}
+  `;
+  // Render env picker — only envs the installer is compatible with
+  const allEnvs = [...(demoLabEnvs.environments || []), ...(demoLabEnvs.ancillary || [])];
+  const eligible = allEnvs.filter(env =>
+    (inst.target_envs || []).includes(env.id) || (inst.compatible_env_types || []).includes(env.type)
+  );
+  if (!eligible.length) {
+    document.getElementById('dl-install-env-list').innerHTML = '<div class="empty-state"><p>No registered environments are compatible with this installer.</p></div>';
+    document.getElementById('dl-install-go').disabled = true;
+  } else {
+    document.getElementById('dl-install-env-list').innerHTML = eligible.map(env => {
+      const disabled = env.status === 'needs-registration';
+      return `
+        <label class="${disabled ? 'disabled' : ''}">
+          <input type="radio" name="dl-install-pick" value="${env.id}" ${disabled ? 'disabled' : ''} onchange="_dlInstallPickerSelect('${env.id}')" />
+          <div style="flex:1">
+            <div class="env-name">${env.name} <span class="env-stage">${env.stage || ''}</span></div>
+            <div style="font-size:11px;color:var(--text2)">${env.url || (disabled ? 'Not registered' : '')}</div>
+          </div>
+        </label>
+      `;
+    }).join('');
+    document.getElementById('dl-install-go').disabled = true;
+  }
+  document.getElementById('dl-install-modal').classList.remove('hidden');
+}
+
+function _dlInstallPickerSelect(_id) {
+  document.getElementById('dl-install-go').disabled = false;
+}
+
+function closeDLInstallModal() {
+  document.getElementById('dl-install-modal').classList.add('hidden');
+  _installerAsset = null;
+}
+
+function _dlBuildDeployUrl(installer, env) {
+  let tpl = installer.deploy_url_template || installer.source_url || '#';
+  return tpl
+    .replace('{env_id}', env?.env_id || env?.id || '')
+    .replace('{env_url}', env?.url || '')
+    .replace('{source_url}', encodeURIComponent(installer.source_url || ''))
+    .replace('{encoded_source_url}', encodeURIComponent(installer.source_url || ''));
+}
+
+function executeDLInstall() {
+  const picked = document.querySelector('input[name="dl-install-pick"]:checked');
+  if (!picked || !_installerAsset) return;
+
+  let installer, env;
+  if (_installerAsset.mode === 'env-first') {
+    env = _installerAsset.env;
+    installer = demoLabInstallers.installers.find(i => i.id === picked.value);
+  } else {
+    installer = _installerAsset.installer;
+    env = _dlEnvById(picked.value);
+  }
+  if (!installer) { toast('Installer not found'); return; }
+
+  const url = _dlBuildDeployUrl(installer, env);
+  toast(`Opening install for ${installer.name}${env ? ' → ' + env.name : ''}…`);
+  window.open(url, '_blank');
+  closeDLInstallModal();
+}
+
+// ── Snapshot Modal ────────────────────────────────────────────────────────────
+function openSnapshotModal(envId) {
+  if (!demoLabEnvs) { toast('Demo Lab data still loading…'); return; }
+  const sel = document.getElementById('dl-snap-env');
+  const allEnvs = [...(demoLabEnvs.environments || []), ...(demoLabEnvs.ancillary || [])].filter(e => e.status !== 'needs-registration');
+  sel.innerHTML = '<option value="">Pick an env…</option>' + allEnvs.map(e =>
+    `<option value="${e.id}" ${e.id === envId ? 'selected' : ''}>${e.name} (${e.stage || e.type})</option>`
+  ).join('');
+  document.getElementById('dl-snap-label').value = '';
+  document.getElementById('dl-snap-notes').value = '';
+  document.getElementById('dl-snap-size').value = '';
+  document.getElementById('dl-snapshot-modal').classList.remove('hidden');
+}
+
+function closeSnapshotModal() {
+  document.getElementById('dl-snapshot-modal').classList.add('hidden');
+}
+
+function submitSnapshot(evt) {
+  evt.preventDefault();
+  const envId = document.getElementById('dl-snap-env').value;
+  const env = _dlEnvById(envId);
+  const label = document.getElementById('dl-snap-label').value.trim();
+  const notes = document.getElementById('dl-snap-notes').value.trim();
+  const size = document.getElementById('dl-snap-size').value.trim();
+  if (!envId || !label) { toast('Env + label required'); return; }
+  const title = encodeURIComponent(`[snapshot] ${env?.name || envId}: ${label}`);
+  const body = encodeURIComponent(
+    `## Snapshot Log\n\n**Environment:** ${env?.name || envId} (\`${envId}\`)\n**Label:** ${label}\n**Taken:** ${new Date().toISOString()}\n${size ? `**Size:** ${size} MB\n` : ''}\n### Notes\n${notes || '_(none)_'}\n\n---\n_Logged via SE Resource Hub → Demo Lab → Snapshots_`
+  );
+  const url = `https://github.com/billwhalenmsft/CommunityRAPP/issues/new?title=${title}&body=${body}&labels=demo-lab,snapshot`;
+  window.open(url, '_blank');
+  toast('Opening GitHub to file snapshot…');
+  closeSnapshotModal();
+}
+
+// ── Promote Modal ─────────────────────────────────────────────────────────────
+function openPromoteModal() {
+  if (!demoLabEnvs) { toast('Demo Lab data still loading…'); return; }
+  const fromSel = document.getElementById('dl-promo-from');
+  const toSel = document.getElementById('dl-promo-to');
+  const haEnvs = (demoLabEnvs.environments || []).filter(e => e.stage === 'ha' && e.status === 'active');
+  const prodEnvs = (demoLabEnvs.environments || []).filter(e => e.stage === 'prod' && e.status === 'active');
+  fromSel.innerHTML = '<option value="">Pick HA env…</option>' + haEnvs.map(e => `<option value="${e.id}">${e.name}</option>`).join('');
+  toSel.innerHTML = '<option value="">Pick Prod env…</option>' + prodEnvs.map(e => `<option value="${e.id}">${e.name}</option>`).join('');
+  document.getElementById('dl-promo-asset').value = '';
+  document.getElementById('dl-promo-notes').value = '';
+  document.getElementById('dl-promo-reviewer').value = '';
+  document.getElementById('dl-promote-modal').classList.remove('hidden');
+}
+
+function closePromoteModal() {
+  document.getElementById('dl-promote-modal').classList.add('hidden');
+}
+
+function submitPromotion(evt) {
+  evt.preventDefault();
+  const asset = document.getElementById('dl-promo-asset').value.trim();
+  const fromId = document.getElementById('dl-promo-from').value;
+  const toId = document.getElementById('dl-promo-to').value;
+  const notes = document.getElementById('dl-promo-notes').value.trim();
+  const reviewer = document.getElementById('dl-promo-reviewer').value.trim();
+  const from = _dlEnvById(fromId);
+  const to = _dlEnvById(toId);
+  if (!asset || !fromId || !toId || !notes) { toast('Asset, from, to, notes required'); return; }
+  const title = encodeURIComponent(`[promote] ${asset}: ${from?.name || fromId} → ${to?.name || toId}`);
+  const body = encodeURIComponent(
+    `## Promotion Request\n\n**Asset:** ${asset}\n**From (HA):** ${from?.name || fromId} (\`${fromId}\`)\n**To (Prod):** ${to?.name || toId} (\`${toId}\`)\n**Requested:** ${new Date().toISOString()}\n${reviewer ? `**Reviewer:** @${reviewer}\n` : ''}\n### Validation Notes\n${notes}\n\n### Checklist\n- [ ] Reviewer approved\n- [ ] Snapshot taken on target before deploy\n- [ ] Deployed to Prod\n- [ ] Smoke-tested in Prod\n- [ ] Promotion logged in demo-lab-snapshots.json\n\n---\n_Filed via SE Resource Hub → Demo Lab → Promotions_`
+  );
+  const assignee = reviewer ? `&assignees=${encodeURIComponent(reviewer)}` : '';
+  const url = `https://github.com/billwhalenmsft/CommunityRAPP/issues/new?title=${title}&body=${body}&labels=demo-lab,promote-request${assignee}`;
+  window.open(url, '_blank');
+  toast('Opening GitHub to file promotion request…');
+  closePromoteModal();
 }
 
 // ── Toast ─────────────────────────────────────────────────────────────────────
