@@ -104,3 +104,8 @@ if (-not $DryRun) {
     Write-Host "  https://$swa.azurestaticapps.net" -ForegroundColor Cyan
 }
 Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Cyan
+
+# -- Register with the SE-OS network (central fleet visibility) -----------------
+if (-not $DryRun) {
+    try { & "$PSScriptRoot/register.ps1" -ConfigPath $ConfigPath } catch { Write-Host "  (register) skipped: $_" -ForegroundColor DarkGray }
+}
