@@ -78,3 +78,8 @@ echo "  git add -A && git commit -m 'feat: initial SE OS setup for $ALIAS' && gi
 $DRY_RUN || echo ""
 $DRY_RUN || echo "  Your Command Center: https://$SWA.azurestaticapps.net"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+# -- Register with the SE-OS network (central fleet visibility) -----------------
+if ! $DRY_RUN; then
+  "$(cd "$(dirname "$0")" && pwd)/register.sh" "$CONFIG_PATH" || true
+fi
