@@ -68,6 +68,22 @@ Three layers. One platform.
 
 ---
 
+## What you get out of the box
+
+The moment you generate your repo, you inherit a working system — not an empty scaffold:
+
+| You get | What it is |
+|---|---|
+| 🖥️ **A deployable Command Center** | The SE-OS SPA — Launcher, Workshop, Signal Lab — runs locally with no build step |
+| 🧑‍💼 **~25 specialist agents** | The digital SE team, pre-wired as an outcome-first pipeline on GitHub Actions |
+| 🗂️ **Practice tracks** | Solution-area × vertical tracks (Discrete/Process Mfg, Mobility, Distribution) with charters, use-cases, talk-tracks |
+| 🎬 **A demo library** | 31+ ready-to-use customer demo guides |
+| 🧠 **Knowledge-base templates** | Context-card starters so your environment knowledge is captured, not lost |
+| 🛠️ **The spin-up wizard** | One script provisions Azure + registers your workspace on the SE-OS network |
+| 📋 **Issue templates + CI** | Feature / demo / SOP request inboxes and auto-deploy wired in |
+
+---
+
 ## Quick Start (15 minutes)
 
 ### Prerequisites
@@ -159,6 +175,44 @@ These are not tools you use. They are team members you work with — an **outcom
 
 ---
 
+## How SEs get skilled — Tracks · Neighborhoods · Guilds
+
+SE-OS treats skilling as **architecture, not after-the-fact training.** You don't assemble your setup — you inherit a profile composed for your role, track, and vertical on day one. Three axes do it:
+
+| Axis | What it is | Why it matters |
+|---|---|---|
+| 🗂️ **Tracks** — *what you're skilled for* | Organized like we sell: solution area (AI Business Process · AI Workplace · Cloud & AI Platforms · Security) × vertical (Discrete / Process Mfg · Mobility · Distribution). Each ships pre-loaded with charter, use-cases, talk-tracks, demos. | Pick your track → inherit the domain on **day one, not month three**. ([tracks/](./tracks/)) |
+| 🏘️ **Neighborhoods** — *how the team organizes* | The agents cluster into 4 neighborhoods: Customer-Facing · Build-Time · Quality · Strategy. | Routing is automatic — issue type → neighborhood → right persona. ([neighborhoods/](./agents/neighborhoods/)) |
+| 🛡️ **Guilds** — *the craft bar across tracks* | Horizontal communities of practice: **AI Craft** (eval rigor, prompts, model selection), **Demo Excellence** (narrative, polish), **Customer Empathy** (outcome framing). | A guild **review gate** ratchets the quality bar up once and applies it everywhere — no drift. ([guilds/](./agents/guilds/)) |
+
+> **The up-front mechanism:** `Role + Track → a per-SE profile` that pre-composes your **agent mix + guild standards + track context + tooling (skills · MCP · environments)**. As you deliver, your work harvests back into the shared library — so the next SE in your role starts further ahead. **Skilling compounds; it doesn't reset per hire.**
+
+---
+
+## How customer work is organized
+
+Every engagement lives in its own folder — browseable, snapshot-deployable, and the source of truth for that customer:
+
+```
+customers/<name>/
+├── CONTEXT.md       # AI session memory — what this customer is about
+├── .project.yml     # phase, signals[], MSX milestone (ties work to a real outcome)
+├── demo-build/      # the cockpit, scripts, leave-behind
+└── knowledge_base/  # environment context cards the agents read first
+```
+
+Work flows **Signal → Triage → Engage → Build → Deliver → Harvest → Value** — a signal arrives (meeting, inbox, M365), the router opens or advances the right customer project, the team builds, and value ties back to an MSX milestone.
+
+---
+
+## Tokenomics — scale the output, not the spend
+
+One SE at full throttle this year took **2+ billion tokens a month** — but that's the **one-time cost of *discovering* the patterns**, not the cost of *operating* SE-OS. The platform turns that spend into a durable, distributable library so every SE inherits the output without re-paying the bill: **skills not re-derivation · a model cost ladder (small models for routine work) · curated memory · deterministic work where possible · estimate-before-you-spend · one deploy, many SEs.**
+
+**Pay the discovery cost once, distribute the result.** → [Full tokenomics breakdown](https://billwhalenmsft.github.io/se-os-overview/#tokenomics)
+
+---
+
 ## How a turn of the flywheel works
 
 1. A **Signal** arrives — you (or the orchestrator) file a GitHub issue
@@ -182,6 +236,17 @@ See `docs/DEPLOYMENT.md`.
 
 ---
 
+## Your data & identity stay yours
+
+SE-OS is built so you can adopt it without handing anything over:
+
+- **You own your repo.** Generated from the template into your account — your customers, your environments, your context.
+- **Secrets never live in the repo.** Credentials go to Azure config / a vault by reference; `setup.config.json` is gitignored.
+- **Central visibility is non-sensitive by design.** When you deploy, your workspace registers on the SE-OS network with a **names-only manifest** (alias, practice, hub URL, resource names) — **never** subscription IDs, tenant IDs, org URLs, or secrets. The fleet can see *that* you onboarded and *where your hub is* — nothing about your customers.
+- **Sign-in reads only your profile.** The Command Center uses your `@microsoft.com` identity to personalize — it doesn't change anything in your account.
+
+---
+
 ## Practice areas (seed the flywheel for your domain)
 
 SE OS ships with **Discrete Manufacturing** as the baseline. To add your own:
@@ -195,9 +260,10 @@ SE OS ships with **Discrete Manufacturing** as the baseline. To add your own:
 ## Built on
 
 - **Azure Static Web Apps** — zero-config hosting, GitHub auth built in
-- **RAPP pipeline** (optional) — transcript → agent → deployed demo in one step
+- **RAPP pipeline** (optional) — transcript → agent → deployed demo in one step ([CommunityRAPP](https://github.com/kody-w/CommunityRAPP))
 - **Azure Functions** (optional) — backend API for the Digital SE Team
 - **GitHub Issues** — the agent inbox and feature backlog (Signal in)
+- **MCAPS-IQ** — the broader Microsoft SE tooling ecosystem ([repo](https://github.com/microsoft/MCAPS-IQ))
 
 ---
 
@@ -216,14 +282,24 @@ If SE OS doesn't deliver these numbers, it's a failed experiment.
 
 ---
 
-## Related
+## FAQ
 
-| Repo | What it is |
-|---|---|
-| [CommunityRAPP](https://github.com/kody-w/CommunityRAPP) | The RAPP pipeline engine — transcript → deployable agent |
-| [MCAPS-IQ](https://github.com/microsoft/MCAPS-IQ) | Microsoft SE tooling ecosystem |
+**Is this only for Discrete Manufacturing?**
+No. Discrete Mfg is the seeded baseline; the track structure (solution area × vertical) is built to add your own practice — duplicate a track, drop in your context cards.
+
+**Do I need the agent backend running to get value?**
+No. The Command Center SPA is useful standalone (no build step, open `index.html`). The Digital SE Team (Azure Functions + GitHub Actions) is the autonomous layer you add when you want work to run between meetings.
+
+**Will this touch my customers' environments?**
+Only what *you* connect, by reference. SE-OS holds the *recipe*; data lives in your D365 org. No credentials in the repo.
+
+**I'm a practice lead, not an individual SE — can my team share one?**
+Yes — see [Two deployment modes](#two-deployment-modes). One shared deployment, every SE connects with their own identity.
+
+**How do I steer the agents?**
+File or comment on a GitHub issue. When a real decision is needed, the engine posts a 3-option brief and flags `needs-se-input` — it surfaces only the calls that need you.
 
 ---
 
 > **SE OS is THE platform for Microsoft SEs.**
-> Spin the flywheel — use the template, or file an issue.
+> Spin the flywheel — [use the template](https://github.com/billwhalenmsft/se-os-template/generate), or file an issue.
