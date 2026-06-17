@@ -8,6 +8,10 @@
 > 📖 **Start here:** [The SE Reinvention Manifesto](./MANIFESTO.md) — why this exists and the measurable promise
 > 📅 **See it in action:** [A Day in the Life — reinvented](./web_ui/day-in-the-life.html)
 
+![SE-OS Launcher — one front door to Command Center, Workshop, Signal Lab, and Dynamics Experience Studio](./docs/img/launcher.png)
+
+> *The Launcher — "what do you need?" One front door to every module. [See more views →](https://billwhalenmsft.github.io/se-os-overview/#see)*
+
 ---
 
 ## The flywheel
