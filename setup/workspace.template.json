@@ -1,0 +1,19 @@
+{
+  "_comment": "Generated automatically by setup/register.(ps1|sh) on deploy — you do not edit this by hand. It is the NON-SENSITIVE manifest that registers your workspace on the SE-OS network so the team can see your hub centrally. Secrets, subscription/tenant IDs, and D365 org URLs are intentionally excluded.",
+  "schema_version": "1.0",
+  "se_alias": "youralias",
+  "se_name": "Your Name",
+  "practice_area": "Discrete Manufacturing",
+  "team_name": "Americas SE - [Your Practice]",
+  "track": "Discrete Manufacturing",
+  "repo": "youralias/se-os-workspace",
+  "command_center_url": "https://se-os-youralias.azurestaticapps.net",
+  "region": "eastus",
+  "resources": {
+    "static_web_app": "se-os-youralias",
+    "function_app": "se-os-api-youralias",
+    "storage_account": "seosyouralias"
+  },
+  "status": "active",
+  "registered_at": "2026-01-01T00:00:00Z"
+}
