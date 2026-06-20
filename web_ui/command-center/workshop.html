@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Workshop — SE-OS · Customer → Project → Asset</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"/>
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ── Reset & Variables (SE-OS / d365-datagen design standard) ───────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body { overflow: hidden; }
+
+    :root {
+      --bg: #0d1117;
+      --bg2: #161b22;
+      --bg3: #21262d;
+      --bg4: #2d333b;
+      --border: #30363d;
+      --border-soft: #21262d;
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --text3: #6e7681;
+
+      --accent: #58a6ff;
+      --accent2: #1f6feb;
+      --violet: #a78bfa;
+      --violet-dim: rgba(167,139,250,0.10);
+      --violet-glow: rgba(167,139,250,0.30);
+
+      --green: #3fb950;
+      --yellow: #d29922;
+      --red: #f85149;
+      --purple: #bc8cff;
+      --orange: #ffa657;
+
+      --r-sm: 4px; --r-md: 6px; --r-lg: 8px; --r-xl: 10px; --r-2xl: 14px; --r-full: 9999px;
+      --radius: var(--r-xl);
+
+      --sh-1: 0 1px 2px rgba(0,0,0,0.20);
+      --sh-2: 0 1px 2px rgba(0,0,0,0.18), 0 4px 16px rgba(0,0,0,0.22);
+      --sh-3: 0 2px 4px rgba(0,0,0,0.20), 0 8px 32px rgba(0,0,0,0.26);
+      --sh-4: 0 4px 8px rgba(0,0,0,0.24), 0 16px 48px rgba(0,0,0,0.32);
+
+      --ease: cubic-bezier(.4,0,.2,1);
+      --spring: cubic-bezier(.34,1.56,.64,1);
+      --dur: 0.18s; --dur-slow: 0.3s;
+
+      --font: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    }
+    /* Light skin (matches the system's html.light overrides) */
+    html.light {
+      --bg: #f6f8fa; --bg2: #ffffff; --bg3: #eef1f4; --bg4: #e3e8 ee;
+      --border: #d0d7de; --border-soft: #e6e9ed;
+      --text: #1f2328; --text2: #57606a; --text3: #818b98;
+      --accent: #0969da; --accent2: #0550ae; --violet: #8250df; --violet-dim: rgba(130,80,223,0.08);
+      --green: #1a7f37; --yellow: #9a6700; --red: #cf222e; --orange: #bc4c00; --purple: #8250df;
+      --sh-2: 0 1px 2px rgba(31,35,40,0.10), 0 3px 12px rgba(31,35,40,0.08);
+      --sh-3: 0 2px 4px rgba(31,35,40,0.10), 0 8px 24px rgba(31,35,40,0.10);
+      --sh-4: 0 4px 8px rgba(31,35,40,0.12), 0 16px 40px rgba(31,35,40,0.14);
+    }
+
+    body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px;
+      -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    /* ── Shell grid: [rail 64] [content] · rows [topbar 48][main] ───────── */
+    .app { display: grid; grid-template-columns: 64px 1fr; grid-template-rows: 48px 1fr; height: 100vh; overflow: hidden; }
+
+    /* ── Topbar (M365) ──────────────────────────────────────────────────── */
+    .topbar { grid-column: 1 / -1; background: var(--bg2); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; padding: 0 12px 0 8px; gap: 8px; z-index: 100; }
+    .waffle-btn { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+      border: none; background: none; cursor: pointer; border-radius: 4px; color: var(--text2); flex-shrink: 0; }
+    .waffle-btn:hover { background: var(--bg3); }
+    .ms-sq-r { fill: #f25022; } .ms-sq-g { fill: #7fba00; } .ms-sq-b { fill: #00a4ef; } .ms-sq-y { fill: #ffb900; }
+    html.light .ms-sq-r { fill:#d83b01;} html.light .ms-sq-g{fill:#498205;} html.light .ms-sq-b{fill:#0078d4;} html.light .ms-sq-y{fill:#c19c00;}
+    .app-brand { display: flex; align-items: center; gap: 9px; margin-right: 8px; flex-shrink: 0; }
+    .brand-mark { width: 30px; height: 30px; border-radius: 8px; display:flex; align-items:center; justify-content:center;
+      font-size: 16px; background: linear-gradient(135deg, var(--accent), var(--violet)); color:#fff; font-weight:800; }
+    .app-name { font-weight: 700; font-size: 15px; color: var(--text); white-space: nowrap; }
+    .app-name b { color: var(--accent); }
+    .app-name small { color: var(--text2); font-weight: 500; }
+    .global-search { flex: 1; max-width: 460px; display: flex; align-items: center; gap: 8px;
+      background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 0 12px; height: 32px; }
+    .global-search input { border: none; background: none; outline: none; color: var(--text); font-size: 13px;
+      width: 100%; font-family: var(--font); }
+    .global-search input::placeholder { color: var(--text2); }
+    .global-search .search-icon { color: var(--text2); font-size: 13px; }
+    .topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    .topbar-icon-btn { width: 36px; height: 36px; display:flex; align-items:center; justify-content:center; border:none;
+      background:none; cursor:pointer; border-radius:4px; font-size:15px; color: var(--text2); }
+    .topbar-icon-btn:hover { background: var(--bg3); color: var(--text); }
+    .user-avatar-btn { width: 32px; height: 32px; border-radius: 50%; background: var(--accent); color: #fff;
+      display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; cursor:pointer; border:none; }
+
+    /* ── Icon rail ──────────────────────────────────────────────────────── */
+    .icon-rail { background: var(--bg2); border-right: 1px solid var(--border); grid-row: 2; display:flex;
+      flex-direction: column; padding: 4px 0; overflow-y:auto; overflow-x:hidden; scrollbar-width:none; }
+    .icon-rail::-webkit-scrollbar { display:none; }
+    .rail-item { position: relative; width:100%; min-height:52px; display:flex; flex-direction:column; align-items:center;
+      justify-content:center; gap:2px; padding:6px 4px 5px; cursor:pointer; color:var(--text2); text-decoration:none;
+      transition: background .12s,color .12s; border:none; background:none; border-left:3px solid transparent; }
+    .rail-item .rail-icon { font-size:18px; line-height:1; }
+    .rail-item .rail-label { font-size:9px; font-weight:500; line-height:1.1; text-align:center; max-width:56px;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .rail-item:hover { background: var(--bg3); color: var(--text); }
+    .rail-item.active { color: var(--accent); border-left-color: var(--accent); background: rgba(88,166,255,0.08); }
+    .rail-divider { width:40px; height:1px; background: var(--border); margin:4px auto; }
+    .rail-item::after { content: attr(data-tip); position:absolute; left:66px; top:50%; transform:translateY(-50%);
+      background: var(--bg3); border:1px solid var(--border); color:var(--text); font-size:12px; font-weight:500;
+      padding:5px 10px; border-radius:6px; white-space:nowrap; opacity:0; pointer-events:none; transition:opacity .12s; z-index:200; }
+    .rail-item:hover::after { opacity:1; }
+
+    /* ── Main ───────────────────────────────────────────────────────────── */
+    .main { grid-row: 2; overflow-y: auto; }
+    .wrap { max-width: 1320px; margin: 0 auto; padding: 28px 32px 80px; }
+
+    /* Header */
+    .ws-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 18px; margin-bottom: 6px; }
+    .ws-eyebrow { display:inline-flex; align-items:center; gap:8px; font-size:12px; font-weight:700; letter-spacing:.5px;
+      text-transform:uppercase; color: var(--accent); background: rgba(88,166,255,0.10); border:1px solid rgba(88,166,255,0.25);
+      padding: 5px 12px; border-radius: var(--r-full); }
+    .ws-eyebrow .dot { width:7px; height:7px; border-radius:50%; background: var(--green); }
+    h1.ws-title { font-size: 30px; font-weight: 800; letter-spacing:-0.4px; margin: 14px 0 6px; }
+    .ws-sub { color: var(--text2); font-size: 15px; max-width: 720px; line-height: 1.5; }
+    .ws-stats { display:flex; gap: 22px; }
+    .ws-stat { text-align: right; }
+    .ws-stat .n { font-size: 26px; font-weight: 800; color: var(--text); line-height: 1; }
+    .ws-stat .l { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing:.6px; margin-top: 5px; }
+
+    /* Filter bar */
+    .ws-filters { display:flex; flex-wrap:wrap; align-items:center; gap: 8px; margin: 22px 0 18px; }
+    .ws-search { flex: 1; min-width: 220px; max-width: 360px; display:flex; align-items:center; gap:8px;
+      background: var(--bg2); border:1px solid var(--border); border-radius: var(--r-lg); padding: 0 12px; height: 36px; }
+    .ws-search input { border:none; background:none; outline:none; color: var(--text); font-size:13px; width:100%; font-family:var(--font); }
+    .ws-search input::placeholder { color: var(--text2); }
+    .pill { font-size:12.5px; font-weight:600; color: var(--text2); background: var(--bg2); border:1px solid var(--border);
+      padding: 7px 13px; border-radius: var(--r-full); cursor:pointer; transition: all .14s; white-space:nowrap; }
+    .pill:hover { color: var(--text); border-color: var(--border-strong, var(--text3)); }
+    .pill.active { color:#fff; background: var(--accent2); border-color: var(--accent2); }
+    html.light .pill.active { color:#fff; }
+
+    /* Customer grid */
+    .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 16px; }
+    .ccard { position:relative; background: var(--bg2); border:1px solid var(--border); border-radius: var(--r-2xl);
+      padding: 18px 18px 16px; cursor:pointer; transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), border-color var(--dur); overflow:hidden; }
+    .ccard::before { content:""; position:absolute; inset:0 0 auto 0; height:3px; background: linear-gradient(90deg,var(--accent),var(--violet)); opacity:0; transition:opacity var(--dur); }
+    .ccard:hover { transform: translateY(-3px); box-shadow: var(--sh-3); border-color: var(--accent2); }
+    .ccard:hover::before { opacity:1; }
+    .ccard-top { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom: 12px; }
+    .avatar { width: 46px; height: 46px; border-radius: 12px; display:flex; align-items:center; justify-content:center;
+      font-weight:800; font-size:16px; color:#fff; flex-shrink:0; letter-spacing:.3px; }
+    .status-tag { font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; padding:4px 9px;
+      border-radius: var(--r-full); white-space:nowrap; }
+    .ccard h3 { font-size:17px; font-weight:700; margin-bottom: 3px; }
+    .ccard .seg { font-size:12px; color: var(--text2); font-weight:600; margin-bottom: 10px; }
+    .ccard .blurb { font-size:12.5px; color: var(--text2); line-height:1.5; min-height: 38px;
+      display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .chips { display:flex; flex-wrap:wrap; gap:6px; margin: 13px 0 12px; }
+    .chip { font-size:11px; font-weight:600; color: var(--text2); background: var(--bg3); border:1px solid var(--border);
+      padding: 3px 8px; border-radius: var(--r-md); display:inline-flex; align-items:center; gap:4px; }
+    .chip b { color: var(--text); font-weight:700; }
+    .ccard-foot { display:flex; align-items:center; justify-content:space-between; gap:8px; padding-top: 11px;
+      border-top: 1px solid var(--border-soft); }
+    .foot-metrics { display:flex; gap:14px; }
+    .foot-metric { font-size:11px; color: var(--text2); }
+    .foot-metric b { color: var(--text); font-size:14px; font-weight:800; display:block; line-height:1.1; }
+    .drill-hint { font-size:12px; font-weight:700; color: var(--accent); display:flex; align-items:center; gap:4px; }
+    .ccard:hover .drill-hint { gap:7px; }
+
+    .empty { grid-column:1/-1; text-align:center; padding: 60px 20px; color: var(--text2); }
+
+    /* ── Drawer ─────────────────────────────────────────────────────────── */
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); backdrop-filter: blur(2px); opacity:0;
+      pointer-events:none; transition: opacity var(--dur-slow) var(--ease); z-index: 500; }
+    .overlay.open { opacity:1; pointer-events:auto; }
+    .drawer { position: fixed; top:0; right:0; height:100vh; width: min(720px, 94vw); background: var(--bg);
+      border-left: 1px solid var(--border); box-shadow: var(--sh-4); transform: translateX(102%);
+      transition: transform var(--dur-slow) var(--spring); z-index: 510; display:flex; flex-direction:column; }
+    .drawer.open { transform: translateX(0); }
+    .drawer-head { padding: 20px 26px 16px; border-bottom: 1px solid var(--border); background: var(--bg2); flex-shrink:0; }
+    .crumb { font-size:12px; color: var(--text2); font-weight:600; letter-spacing:.2px; margin-bottom: 6px; }
+    .drawer-title-row { display:flex; align-items:center; gap:14px; }
+    .drawer-title-row .avatar { width:44px; height:44px; }
+    .drawer-title-row h2 { font-size: 26px; font-weight: 800; letter-spacing:-0.3px; flex:1; }
+    .drawer-close { width:36px; height:36px; border:none; background: var(--bg3); color: var(--text2); border-radius: var(--r-md);
+      font-size:18px; cursor:pointer; flex-shrink:0; transition: all .14s; }
+    .drawer-close:hover { background: var(--red); color:#fff; }
+    .drawer-body { overflow-y:auto; padding: 22px 26px 40px; flex:1; }
+
+    .ws-box { background: var(--violet-dim); border:1px solid rgba(167,139,250,0.30); border-radius: var(--r-2xl);
+      padding: 16px 16px 14px; margin-bottom: 22px; }
+    .ws-box-head { font-size:12px; font-weight:800; letter-spacing:.6px; text-transform:uppercase; color: var(--violet);
+      display:flex; align-items:center; gap:8px; margin-bottom: 12px; }
+    .ws-box-head .cnt { background: var(--violet); color:#1a1a1a; border-radius: var(--r-full); min-width:20px; height:20px;
+      display:inline-flex; align-items:center; justify-content:center; font-size:11px; padding:0 6px; }
+    html.light .ws-box-head .cnt { color:#fff; }
+    .ws-tiles { display:grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .ws-tile { background: var(--bg2); border:1px solid var(--border); border-radius: var(--r-lg); padding: 12px 13px;
+      cursor:pointer; transition: all .14s; }
+    .ws-tile:hover { border-color: var(--violet); transform: translateY(-2px); box-shadow: var(--sh-2); }
+    .ws-tile .t-name { font-size:13.5px; font-weight:700; display:flex; align-items:center; gap:7px; margin-bottom:5px; }
+    .ws-tile .t-blurb { font-size:11.5px; color: var(--text2); line-height:1.45; display:-webkit-box; -webkit-line-clamp:2;
+      -webkit-box-orient:vertical; overflow:hidden; min-height: 16px; }
+    .ws-tile .t-link { font-size:11.5px; font-weight:700; color: var(--accent); margin-top: 8px; display:inline-block; }
+    .scroll-hint { text-align:center; font-size:11px; color: var(--text2); margin: -6px 0 18px; }
+
+    .sec { margin-bottom: 22px; }
+    .sec-label { font-size:11px; font-weight:800; letter-spacing:.8px; text-transform:uppercase; color: var(--text2); margin-bottom: 9px; }
+    .sec p { font-size: 14px; color: var(--text); line-height: 1.6; }
+    .built-grid { display:flex; flex-wrap:wrap; gap: 8px; }
+    .built-chip { background: var(--bg2); border:1px solid var(--border); border-radius: var(--r-lg); padding: 9px 13px;
+      display:flex; align-items:center; gap:9px; }
+    .built-chip .bc-ico { font-size:18px; }
+    .built-chip .bc-n { font-size:18px; font-weight:800; line-height:1; }
+    .built-chip .bc-l { font-size:11px; color: var(--text2); }
+    .tagrow { display:flex; flex-wrap:wrap; gap:6px; }
+    .tag { font-size:11.5px; font-weight:600; color: var(--text2); background: var(--bg3); border:1px solid var(--border);
+      padding: 4px 10px; border-radius: var(--r-full); }
+
+    /* Asset list */
+    .asset-toolbar { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom: 10px; }
+    .asset-group { margin-bottom: 16px; }
+    .asset-group-head { font-size:12px; font-weight:700; color: var(--text2); margin: 4px 0 8px; display:flex; align-items:center; gap:8px; }
+    .asset-group-head .ag-cnt { color: var(--text3); font-weight:600; }
+    .asset-row { display:flex; align-items:center; gap:11px; padding: 10px 12px; background: var(--bg2);
+      border:1px solid var(--border); border-radius: var(--r-lg); margin-bottom: 6px; transition: border-color .14s; }
+    .asset-row:hover { border-color: var(--accent2); }
+    .asset-row .a-ico { font-size:16px; flex-shrink:0; }
+    .asset-row .a-name { font-size:13px; font-weight:600; color: var(--text); flex:1; word-break: break-word; }
+    .asset-row .a-type { font-size:10.5px; font-weight:700; color: var(--text2); background: var(--bg3); border:1px solid var(--border);
+      padding: 2px 8px; border-radius: var(--r-full); white-space:nowrap; }
+    .vis-badge { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; padding: 2px 7px; border-radius: var(--r-full);
+      white-space:nowrap; }
+    .vis-internal { color: var(--text2); background: var(--bg3); border:1px solid var(--border); }
+    .vis-customer { color: var(--green); background: rgba(63,185,80,0.12); border:1px solid rgba(63,185,80,0.30); }
+    .a-actions { display:flex; gap:4px; flex-shrink:0; }
+    .a-btn { width:28px; height:28px; border:none; background: var(--bg3); color: var(--text2); border-radius: var(--r-sm);
+      cursor:pointer; font-size:13px; display:flex; align-items:center; justify-content:center; transition: all .14s; }
+    .a-btn:hover { background: var(--accent2); color:#fff; }
+
+    .pack-cta { display:flex; align-items:center; gap:12px; background: var(--bg2); border:1px dashed var(--border);
+      border-radius: var(--r-2xl); padding: 14px 16px; margin-top: 10px; }
+    .pack-cta .pc-ico { font-size:22px; }
+    .pack-cta .pc-txt { flex:1; }
+    .pack-cta .pc-txt b { font-size:13.5px; }
+    .pack-cta .pc-txt div { font-size:12px; color: var(--text2); margin-top:2px; }
+    .pack-cta button { border:none; background: var(--accent2); color:#fff; font-weight:700; font-size:12.5px;
+      padding: 9px 15px; border-radius: var(--r-md); cursor:pointer; white-space:nowrap; }
+    .pack-cta button:hover { background: var(--accent); }
+
+    @media (max-width: 720px) {
+      .wrap { padding: 20px 16px 60px; }
+      .ws-tiles { grid-template-columns: 1fr; }
+      .ws-stats { width:100%; justify-content:space-between; }
+    }
+
+    .toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--bg3);
+      border:1px solid var(--border); color: var(--text); padding: 10px 18px; border-radius: var(--r-lg); font-size:13px;
+      font-weight:600; box-shadow: var(--sh-3); opacity:0; pointer-events:none; transition: all .25s var(--ease); z-index: 600; }
+    .toast.show { opacity:1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+<div class="app">
+  <!-- Topbar -->
+  <header class="topbar">
+    <button class="waffle-btn" title="App launcher" onclick="location.href='../index.html'">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 21" width="20" height="20" aria-label="Microsoft">
+        <rect class="ms-sq-r" x="0" y="0" width="10" height="10"/><rect class="ms-sq-g" x="11" y="0" width="10" height="10"/>
+        <rect class="ms-sq-b" x="0" y="11" width="10" height="10"/><rect class="ms-sq-y" x="11" y="11" width="10" height="10"/>
+      </svg>
+    </button>
+    <div class="app-brand">
+      <div class="brand-mark">🛠️</div>
+      <span class="app-name">The <b>Workshop</b> <small>· SE-OS</small></span>
+    </div>
+    <div class="global-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="topSearch" placeholder="Search customers, assets, industries…" />
+    </div>
+    <div class="topbar-actions">
+      <div class="status-dot" title="System online"></div>
+      <button class="topbar-icon-btn" id="themeBtn" title="Toggle theme">🌓</button>
+      <button class="topbar-icon-btn" title="Command Center" onclick="location.href='index.html'">⌘</button>
+      <button class="user-avatar-btn" title="Account">B</button>
+    </div>
+  </header>
+
+  <!-- Icon rail -->
+  <nav class="icon-rail">
+    <a class="rail-item" href="../index.html" data-tip="SE-OS Home"><span class="rail-icon">🏠</span><span class="rail-label">Home</span></a>
+    <a class="rail-item" href="index.html" data-tip="Command Center"><span class="rail-icon">⌘</span><span class="rail-label">Command</span></a>
+    <a class="rail-item active" href="workshop.html" data-tip="The Workshop — Customer → Project → Asset"><span class="rail-icon">🛠️</span><span class="rail-label">Workshop</span></a>
+    <a class="rail-item" href="se-resource-hub.html" data-tip="SE Resource Hub"><span class="rail-icon">🗺️</span><span class="rail-label">Hub</span></a>
+    <div class="rail-divider"></div>
+    <a class="rail-item" href="demo-intake.html" data-tip="Demo Intake"><span class="rail-icon">📥</span><span class="rail-label">Intake</span></a>
+    <a class="rail-item" href="command-center-deck.html" data-tip="Command Center Deck"><span class="rail-icon">📊</span><span class="rail-label">Deck</span></a>
+  </nav>
+
+  <!-- Main -->
+  <main class="main">
+    <div class="wrap">
+      <div class="ws-head">
+        <div>
+          <span class="ws-eyebrow"><span class="dot"></span> <span id="eyebrow">What we've built · drillable</span></span>
+          <h1 class="ws-title">Customer → Project → Asset</h1>
+          <p class="ws-sub">Every named build we've shipped — agents, D365 scripts, Copilot Studio topics, demos, and decks. Click any customer to drill into the workspaces and source assets behind the build.</p>
+        </div>
+        <div class="ws-stats">
+          <div class="ws-stat"><div class="n" id="statCustomers">—</div><div class="l">Customers</div></div>
+          <div class="ws-stat"><div class="n" id="statWorkspaces">—</div><div class="l">Workspaces</div></div>
+          <div class="ws-stat"><div class="n" id="statAssets">—</div><div class="l">Assets</div></div>
+        </div>
+      </div>
+
+      <div class="ws-filters">
+        <div class="ws-search"><span class="search-icon">🔍</span><input type="text" id="gridSearch" placeholder="Filter customers…"/></div>
+        <div id="industryPills" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+      </div>
+
+      <div class="grid" id="grid"><div class="empty">Loading builds…</div></div>
+    </div>
+  </main>
+</div>
+
+<!-- Drawer -->
+<div class="overlay" id="overlay" onclick="closeDrawer()"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-head">
+    <div class="crumb" id="dCrumb">Customer build</div>
+    <div class="drawer-title-row">
+      <div class="avatar" id="dAvatar">CG</div>
+      <h2 id="dName">Customer</h2>
+      <button class="drawer-close" onclick="closeDrawer()" title="Close">✕</button>
+    </div>
+  </div>
+  <div class="drawer-body" id="dBody"></div>
+</aside>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  /* ── Theme: default dark (system standard); honor ?theme= and prefers ── */
+  (() => {
+    const p = new URLSearchParams(location.search).get('theme');
+    const t = p || (localStorage.getItem('seos-theme'));
+    if (t === 'light') document.documentElement.classList.add('light');
+  })();
+  document.getElementById('themeBtn').addEventListener('click', () => {
+    const r = document.documentElement; r.classList.toggle('light');
+    localStorage.setItem('seos-theme', r.classList.contains('light') ? 'light' : 'dark');
+  });
+
+  /* ── Config ─────────────────────────────────────────────────────────── */
+  // GitHub base for opening a source asset. Configurable — adjust to your repo.
+  const REPO_BASE = 'https://github.com/billwhalenmsft/CommunityRAPP-BillWhalen/blob/main/customers';
+
+  /* ── Palette for avatars / status ───────────────────────────────────── */
+  const AV_COLORS = ['#1f6feb','#8957e5','#1a7f37','#bc4c00','#0d8aa8','#9a6700','#bf3989','#3d5afe','#00838f','#6e40c9'];
+  function avatarColor(slug){ let h=0; for(const c of slug) h=(h*31+c.charCodeAt(0))>>>0; return AV_COLORS[h%AV_COLORS.length]; }
+  const STATUS = {
+    discovery:{l:'Discovery',c:'var(--accent)',bg:'rgba(88,166,255,.12)'},
+    scoping:{l:'Scoping',c:'var(--yellow)',bg:'rgba(210,153,34,.14)'},
+    mvp:{l:'MVP',c:'var(--violet)',bg:'var(--violet-dim)'},
+    demo:{l:'Demo Ready',c:'var(--green)',bg:'rgba(63,185,80,.13)'},
+    deployment:{l:'Deployed',c:'var(--green)',bg:'rgba(63,185,80,.13)'},
+    parked:{l:'Parked',c:'var(--text2)',bg:'var(--bg3)'},
+    retro:{l:'Retro',c:'var(--orange)',bg:'rgba(255,166,87,.13)'},
+    live:{l:'Live',c:'var(--green)',bg:'rgba(63,185,80,.13)'}
+  };
+  function statusTag(s){ const d=STATUS[s]||STATUS.parked; return `<span class="status-tag" style="color:${d.c};background:${d.bg}">${d.l}</span>`; }
+
+  let DATA = null, activeIndustry = 'all', gridQuery = '';
+
+  function esc(s){ return (s||'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+  function topChips(tc){
+    const order = ['Agent','Copilot Studio','D365 Script','Demo / Page','Deck','Doc','Data','Video'];
+    const items = Object.entries(tc||{}).sort((a,b)=>b[1]-a[1]).slice(0,4);
+    const ICO = {'Agent':'🧩','Copilot Studio':'🤖','D365 Script':'⚙️','Demo / Page':'🖥️','Deck':'📊','Doc':'📄','Data':'🗄️','Video':'🎬'};
+    return items.map(([t,n])=>`<span class="chip">${ICO[t]||'•'} <b>${n}</b> ${esc(t)}</span>`).join('');
+  }
+
+  function renderGrid(){
+    const grid = document.getElementById('grid');
+    let list = DATA.customers.slice();
+    if (activeIndustry !== 'all') list = list.filter(c => c.industry === activeIndustry);
+    if (gridQuery) {
+      const q = gridQuery.toLowerCase();
+      list = list.filter(c => (c.name+' '+c.industry+' '+c.subVertical+' '+(c.tags||[]).join(' ')+' '+(c.blurb||'')).toLowerCase().includes(q));
+    }
+    if (!list.length) { grid.innerHTML = `<div class="empty">No builds match your filter.</div>`; return; }
+    grid.innerHTML = list.map(c => {
+      const seg = [c.industry, c.subVertical].filter(Boolean).join(' · ');
+      return `<div class="ccard" onclick="openDrawer('${c.slug}')">
+        <div class="ccard-top">
+          <div class="avatar" style="background:${avatarColor(c.slug)}">${esc(c.initials)}</div>
+          ${statusTag(c.status)}
+        </div>
+        <h3>${esc(c.name)}</h3>
+        <div class="seg">${esc(seg||'—')}</div>
+        <div class="blurb">${esc(c.blurb || 'Build assets catalogued for this account.')}</div>
+        <div class="chips">${topChips(c.typeCounts)}</div>
+        <div class="ccard-foot">
+          <div class="foot-metrics">
+            <div class="foot-metric"><b>${c.workspaceCount||0}</b> workspaces</div>
+            <div class="foot-metric"><b>${c.assetCount||0}</b> assets</div>
+          </div>
+          <span class="drill-hint">Drill in →</span>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function renderIndustryPills(){
+    const counts = {};
+    DATA.customers.forEach(c => { if(c.industry) counts[c.industry]=(counts[c.industry]||0)+1; });
+    const inds = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+    const el = document.getElementById('industryPills');
+    el.innerHTML = `<button class="pill active" data-ind="all">All <b>${DATA.customers.length}</b></button>` +
+      inds.map(([i,n])=>`<button class="pill" data-ind="${esc(i)}">${esc(i)} ${n}</button>`).join('');
+    el.querySelectorAll('.pill').forEach(p => p.addEventListener('click', () => {
+      el.querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
+      p.classList.add('active'); activeIndustry = p.dataset.ind; renderGrid();
+    }));
+  }
+
+  /* ── Drawer ─────────────────────────────────────────────────────────── */
+  function openDrawer(slug){
+    const c = DATA.customers.find(x => x.slug === slug); if(!c) return;
+    document.getElementById('dCrumb').textContent = ['Customer build', c.industry, c.subVertical].filter(Boolean).join(' · ');
+    const av = document.getElementById('dAvatar'); av.textContent = c.initials; av.style.background = avatarColor(c.slug);
+    document.getElementById('dName').textContent = c.name;
+    document.getElementById('dBody').innerHTML = drawerBody(c);
+    document.getElementById('overlay').classList.add('open');
+    const d = document.getElementById('drawer'); d.classList.add('open'); d.setAttribute('aria-hidden','false');
+    document.getElementById('dBody').scrollTop = 0;
+  }
+  function closeDrawer(){
+    document.getElementById('overlay').classList.remove('open');
+    const d = document.getElementById('drawer'); d.classList.remove('open'); d.setAttribute('aria-hidden','true');
+  }
+  document.addEventListener('keydown', e => { if(e.key==='Escape') closeDrawer(); });
+
+  function drawerBody(c){
+    let html = '';
+    // Workspaces box
+    if (c.workspaces && c.workspaces.length) {
+      html += `<div class="ws-box">
+        <div class="ws-box-head"><span class="cnt">${c.workspaces.length}</span> Drillable workspaces · click any tile</div>
+        <div class="ws-tiles">` + c.workspaces.map(w => `
+          <div class="ws-tile" onclick="scrollToWorkspace('${esc(w.id)}')">
+            <div class="t-name">📦 ${esc(w.name)}</div>
+            <div class="t-blurb">${esc(w.blurb || (w.assetCount+' assets in this workspace'))}</div>
+            <div class="t-link">${w.assetCount} assets →</div>
+          </div>`).join('') + `</div></div>
+        <div class="scroll-hint">↓ context, what we built, and all source assets below ↓</div>`;
+    }
+    // Story
+    if (c.blurb) html += `<div class="sec"><div class="sec-label">The story</div><p>${esc(c.blurb)}</p></div>`;
+    // What we've built
+    const tc = Object.entries(c.typeCounts||{}).sort((a,b)=>b[1]-a[1]);
+    const ICO = {'Agent':'🧩','Copilot Studio':'🤖','D365 Script':'⚙️','Demo / Page':'🖥️','Deck':'📊','Doc':'📄','Data':'🗄️','Video':'🎬'};
+    if (tc.length) html += `<div class="sec"><div class="sec-label">What we've built</div><div class="built-grid">` +
+      tc.map(([t,n])=>`<div class="built-chip"><span class="bc-ico">${ICO[t]||'•'}</span><div><div class="bc-n">${n}</div><div class="bc-l">${esc(t)}</div></div></div>`).join('') + `</div></div>`;
+    // Meta
+    const meta = [];
+    if (c.motion) meta.push(c.motion);
+    if (c.opportunitySize) meta.push(c.opportunitySize);
+    if (c.lastEngaged) meta.push('Last engaged '+c.lastEngaged);
+    const tags = (c.tags||[]).concat(meta);
+    if (tags.length) html += `<div class="sec"><div class="sec-label">Profile</div><div class="tagrow">` +
+      tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('') +
+      (c.website?` <a class="tag" style="color:var(--accent)" href="${esc(c.website)}" target="_blank" rel="noopener">🌐 ${esc(c.website.replace(/^https?:\/\//,''))}</a>`:'') + `</div></div>`;
+
+    // Assets grouped
+    html += `<div class="sec"><div class="asset-toolbar"><div class="sec-label" style="margin:0">All assets in this build · ${c.assetCount}</div></div>`;
+    const groups = {};
+    (c.assets||[]).forEach(a => { const k = a.path.includes('/') ? a.path.split('/')[0] : '__root'; (groups[k] = groups[k] || []).push(a); });
+    // group by top-level folder (workspace); root-level files share one "Overview" bucket
+    const order = Object.keys(groups).sort((a,b)=> a==='__root'?-1 : b==='__root'?1 : a.localeCompare(b));
+    html += order.map(g => {
+      const rows = groups[g];
+      const label = g === '__root' ? 'Overview' : humanize(g);
+      const gid = 'ws-'+g.replace(/[^a-z0-9]/gi,'-');
+      return `<div class="asset-group" id="${gid}">
+        <div class="asset-group-head">📂 ${esc(label)} <span class="ag-cnt">· ${rows.length}</span></div>` +
+        rows.slice(0,40).map(a => assetRow(a, c.slug)).join('') +
+        (rows.length>40?`<div class="scroll-hint">+ ${rows.length-40} more in this folder</div>`:'') +
+        `</div>`;
+    }).join('');
+    html += `</div>`;
+
+    // Sharing / package CTA (honors Customer-Viewable model)
+    html += `<div class="pack-cta">
+      <span class="pc-ico">📦</span>
+      <div class="pc-txt"><b>Package this build for sharing</b>
+        <div>Bundle Customer-Viewable assets into an external Engagement Page, a Tech Pack, or an internal Handoff Pack.</div></div>
+      <button onclick="toast('Sharing model wired next — see SHARING-AND-PUBLISH-MODEL.md')">Build a Pack</button>
+    </div>`;
+    return html;
+  }
+
+  function assetRow(a, slug){
+    const vis = a.visibility === 'customer-viewable'
+      ? `<span class="vis-badge vis-customer">Customer-Viewable</span>`
+      : `<span class="vis-badge vis-internal">Internal</span>`;
+    const url = REPO_BASE + '/' + slug + '/' + a.path;
+    return `<div class="asset-row">
+      <span class="a-ico">${a.icon||'•'}</span>
+      <span class="a-name">${esc(a.name)}</span>
+      <span class="a-type">${esc(a.type)}</span>
+      ${vis}
+      <div class="a-actions">
+        <button class="a-btn" title="Copy path" onclick="copyPath('${esc(a.path)}')">⧉</button>
+        <button class="a-btn" title="Open on GitHub" onclick="window.open('${url}','_blank')">↗</button>
+      </div>
+    </div>`;
+  }
+
+  function humanize(s){ return (s||'').replace(/[-_]/g,' ').replace(/\b\w/g, m=>m.toUpperCase()); }
+  function scrollToWorkspace(id){ const el = document.getElementById('ws-'+id.replace(/[^a-z0-9]/gi,'-')); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); }
+  function copyPath(p){ navigator.clipboard?.writeText(p).then(()=>toast('Path copied: '+p)); }
+  let toastT; function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2600); }
+
+  /* ── Search wiring ──────────────────────────────────────────────────── */
+  function wireSearch(){
+    const sync = v => { gridQuery = v; renderGrid(); };
+    document.getElementById('gridSearch').addEventListener('input', e => { document.getElementById('topSearch').value=e.target.value; sync(e.target.value); });
+    document.getElementById('topSearch').addEventListener('input', e => { document.getElementById('gridSearch').value=e.target.value; sync(e.target.value); });
+  }
+
+  /* ── Boot ───────────────────────────────────────────────────────────── */
+  fetch('data/workshop-data.json').then(r=>r.json()).then(d => {
+    DATA = d;
+    document.getElementById('statCustomers').textContent = d.stats.customers;
+    document.getElementById('statWorkspaces').textContent = d.stats.workspaces;
+    document.getElementById('statAssets').textContent = d.stats.assets;
+    document.getElementById('eyebrow').textContent = `${d.stats.customers} customers · ${d.stats.assets} assets · drillable`;
+    renderIndustryPills(); renderGrid(); wireSearch();
+  }).catch(err => {
+    document.getElementById('grid').innerHTML = `<div class="empty">Could not load workshop-data.json — run <code>python tools/gen_workshop_data.py</code>.<br>${esc(String(err))}</div>`;
+  });
+</script>
+</body>
+</html>
