@@ -1,0 +1,18 @@
+{
+  "_comment": "Generated locally by setup/register.(ps1|sh). Review it before explicitly submitting it to an approved registrar. Secrets, subscription/tenant IDs, and D365 org URLs are intentionally excluded.",
+  "schema_version": "1.0",
+  "se_alias": "youralias",
+  "se_name": "Your Name",
+  "practice_area": "Discrete Manufacturing",
+  "team_name": "Americas SE - [Your Practice]",
+  "track": "Discrete Manufacturing",
+  "repo": "youralias/se-os-workspace",
+  "command_center_url": "https://se-os-youralias.azurestaticapps.net",
+  "region": "eastus2",
+  "resources": {
+    "static_web_app": "se-os-youralias",
+    "storage_account": "seosyouralias"
+  },
+  "status": "provisioned",
+  "generated_at": "2026-01-01T00:00:00Z"
+}

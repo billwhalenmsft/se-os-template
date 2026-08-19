@@ -1,0 +1,42 @@
+# SE-specific config (fill in from config.template.json — do NOT commit your real values)
+setup.config.json
+local.settings.json
+local.settings.json.bak*
+workspace.json
+web_ui/instance-config.local.js
+*.bak
+
+# Azure
+.azure/
+*.publishsettings
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+.env
+.env.*
+.env.*.local
+!.env.seos.example
+venv/
+.venv/
+
+# Node
+node_modules/
+.npm
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Secrets
+*.pem
+*.key
+*.pfx
+*.p12
+
+# Per-SE knowledge (keep local or in private branches)
+knowledge_base/[a-z]*/
+!knowledge_base/_templates/

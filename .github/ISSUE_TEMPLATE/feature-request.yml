@@ -1,0 +1,55 @@
+name: Feature Request
+description: Propose a new capability for SE OS
+title: "[FEATURE] "
+labels: ["feature", "backlog"]
+body:
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: Which part of SE OS does this affect?
+      options:
+        - SE Command Center (dashboard)
+        - Digital SE Team (agents)
+        - Demo Hub (demo scripts/library)
+        - Resource Hub
+        - CoE Infrastructure
+        - Deployment / Setup Wizard
+        - Knowledge Base
+        - Practice Area Track
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What SE problem does this solve?
+      description: Be specific — what's the pain point that slows you down today?
+      placeholder: "e.g., Before a customer meeting I spend 2 hours assembling context from 5 different places..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      placeholder: "What should SE OS do to fix this?"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - High — blocking SE productivity
+        - Medium — would meaningfully improve workflow
+        - Low — nice to have
+    validations:
+      required: true
+
+  - type: input
+    id: agent_candidate
+    attributes:
+      label: Which agent should own this? (optional)
+      placeholder: "e.g., Maya (PM), Sam (Developer), Jonas (Content)"

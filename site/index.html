@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Customer-free SE-OS experiment template">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%237aa2ff'/%3E%3Ctext x='32' y='40' text-anchor='middle' font-family='Segoe UI' font-size='24' font-weight='700' fill='%23081124'%3EOS%3C/text%3E%3C/svg%3E">
+  <title>SE-OS experiment template</title>
+  <style>
+    :root {
+      --bg:#090e1c; --surface:#131b2f; --surface-2:#1b2742;
+      --text:#edf2ff; --muted:#a4aec2; --border:#2b3856;
+      --accent:#7aa2ff; --accent-2:#b99cff; --good:#5ed6aa;
+    }
+    * { box-sizing:border-box; }
+    body {
+      background:
+        radial-gradient(circle at 85% 0, rgba(185,156,255,.17), transparent 30rem),
+        radial-gradient(circle at 10% 25%, rgba(122,162,255,.15), transparent 35rem),
+        var(--bg);
+      color:var(--text);
+      font:16px/1.6 "Segoe UI",system-ui,sans-serif;
+      margin:0;
+    }
+    a { color:var(--accent); }
+    nav {
+      align-items:center; backdrop-filter:blur(14px); background:rgba(9,14,28,.85);
+      border-bottom:1px solid var(--border); display:flex; gap:1rem;
+      justify-content:space-between; padding:.85rem max(1.25rem,calc((100vw - 1120px)/2));
+      position:sticky; top:0; z-index:5;
+    }
+    nav strong { letter-spacing:-.02em; }
+    nav div { display:flex; gap:1rem; }
+    main { margin:auto; max-width:1120px; padding:4rem 1.25rem; }
+    .hero { padding:3rem 0 4rem; }
+    .eyebrow {
+      border:1px solid rgba(94,214,170,.4); border-radius:999px; color:var(--good);
+      display:inline-block; font-size:.75rem; font-weight:800; padding:.25rem .6rem;
+    }
+    h1 { font-size:clamp(3rem,8vw,6.5rem); letter-spacing:-.065em; line-height:.92; margin:1rem 0 1.5rem; max-width:900px; }
+    h2 { font-size:2rem; letter-spacing:-.035em; }
+    .lead { color:var(--muted); font-size:1.15rem; max-width:760px; }
+    .actions { display:flex; flex-wrap:wrap; gap:.75rem; margin-top:1.6rem; }
+    .button {
+      background:var(--surface); border:1px solid var(--border); border-radius:10px;
+      color:var(--text); font-weight:700; padding:.75rem 1rem; text-decoration:none;
+    }
+    .button.primary { background:var(--accent); border-color:var(--accent); color:#081124; }
+    .grid { display:grid; gap:1rem; grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:1.2rem; }
+    .card p { color:var(--muted); }
+    .steps { counter-reset:steps; display:grid; gap:.8rem; }
+    .step { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1rem 1rem 1rem 3.5rem; position:relative; }
+    .step::before {
+      align-items:center; background:var(--accent); border-radius:8px; color:#081124;
+      content:counter(steps); counter-increment:steps; display:flex; font-weight:800;
+      height:2rem; justify-content:center; left:1rem; position:absolute; top:1rem; width:2rem;
+    }
+    section { margin-top:4rem; }
+    code { background:var(--surface-2); border-radius:5px; padding:.1rem .3rem; }
+    footer { border-top:1px solid var(--border); color:var(--muted); margin-top:4rem; padding:1.5rem 0; }
+    @media (max-width:760px) { .grid { grid-template-columns:1fr; } nav div { display:none; } }
+  </style>
+</head>
+<body>
+  <nav>
+    <strong>SE-OS experiment template</strong>
+    <div>
+      <a href="#ships">What ships</a>
+      <a href="#start">Start</a>
+      <a href="https://github.com/billwhalenmsft/mcaps-os">MCAPS OS</a>
+    </div>
+  </nav>
+  <main>
+    <header class="hero">
+      <span class="eyebrow">CUSTOMER-FREE AND LOCAL-FIRST</span>
+      <h1>Experiment with an AI operating model, not someone else's private setup.</h1>
+      <p class="lead">
+        Generate a private My SE-OS repository with a static Command Center,
+        synthetic demo patterns, persona blueprints, a deterministic local agent,
+        and review-and-go guardrails. No connector or central registration is
+        enabled by default.
+      </p>
+      <div class="actions">
+        <a class="button primary" href="https://github.com/billwhalenmsft/se-os-template/generate">Use this template</a>
+        <a class="button" href="../web_ui/index.html">Open local sandbox</a>
+        <a class="button" href="../README.md">Read the repository guide</a>
+      </div>
+    </header>
+
+    <section id="ships">
+      <h2>What actually ships</h2>
+      <div class="grid">
+        <article class="card"><h3>Static Command Center</h3><p>Runs locally without a build, cloud resource, identity provider, or network request.</p></article>
+        <article class="card"><h3>Agent teaching runtime</h3><p>A dependency-free outcome-framing example with structured output and unit tests.</p></article>
+        <article class="card"><h3>Portable operating model</h3><p>MCAPS relationship, automation planes, review-and-go levels, and privacy boundaries.</p></article>
+        <article class="card"><h3>Persona blueprints</h3><p>Twelve optional perspectives organized into neighborhoods and quality guilds.</p></article>
+        <article class="card"><h3>Synthetic demos</h3><p>Contoso and Fabrikam examples that demonstrate outcome, evidence, review, and measurement.</p></article>
+        <article class="card"><h3>Validation CI</h3><p>Fails on private markers, real-looking environment URLs, malformed JSON, missing local links, or broken tests.</p></article>
+      </div>
+    </section>
+
+    <section id="start">
+      <h2>Start safely</h2>
+      <div class="steps">
+        <div class="step"><strong>Generate a private repository.</strong> Use the template button and keep the first experiment isolated.</div>
+        <div class="step"><strong>Open the local sandbox.</strong> Run <code>Start-Process .\web_ui\index.html</code>.</div>
+        <div class="step"><strong>Run the teaching agent.</strong> Use <code>python .\scripts\run_agent.py "Your synthetic request"</code>.</div>
+        <div class="step"><strong>Validate.</strong> Run <code>python .\scripts\validate_template.py</code> and the unit tests.</div>
+        <div class="step"><strong>Add cloud resources only if needed.</strong> Dry-run setup first; registration remains separately opt-in.</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Boundaries</h2>
+      <div class="grid">
+        <article class="card"><h3>Private stays private</h3><p>No customer records, Microsoft 365 bodies, account strategy, credentials, environment IDs, or private repositories belong in the template.</p></article>
+        <article class="card"><h3>Authority is explicit</h3><p>Provisioning, pushing, deploying, registering, publishing, messaging, and operational writes each require their own approval.</p></article>
+        <article class="card"><h3>Patterns cross the boundary</h3><p>Share only reviewed, minimized patterns with provenance and validation evidence.</p></article>
+      </div>
+    </section>
+
+    <footer>
+      MIT licensed. Originated by Bill Whalen and the Digital SE Team.
+    </footer>
+  </main>
+</body>
+</html>

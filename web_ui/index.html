@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Customer-free My SE-OS experiment sandbox">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232563eb'/%3E%3Ctext x='32' y='40' text-anchor='middle' font-family='Segoe UI' font-size='24' font-weight='700' fill='white'%3EOS%3C/text%3E%3C/svg%3E">
+  <title>My SE-OS Experiment</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f5f7fb;
+      --surface: #ffffff;
+      --surface-2: #eef2f8;
+      --text: #172033;
+      --muted: #667085;
+      --border: #d7dfeb;
+      --accent: #2563eb;
+      --accent-2: #7c3aed;
+      --good: #087a55;
+      --warn: #a15c00;
+      --shadow: 0 14px 38px rgba(15, 23, 42, .08);
+    }
+    [data-theme="dark"] {
+      --bg: #0b1020;
+      --surface: #141b2e;
+      --surface-2: #1c2740;
+      --text: #edf2ff;
+      --muted: #a3adc2;
+      --border: #2b3856;
+      --accent: #7aa2ff;
+      --accent-2: #b99cff;
+      --good: #5ed6aa;
+      --warn: #ffc36a;
+      --shadow: 0 16px 42px rgba(0, 0, 0, .28);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 90% 0, rgba(124, 58, 237, .12), transparent 34rem),
+        radial-gradient(circle at 10% 20%, rgba(37, 99, 235, .12), transparent 30rem),
+        var(--bg);
+      color: var(--text);
+      font: 15px/1.55 "Segoe UI", system-ui, sans-serif;
+    }
+    a { color: var(--accent); }
+    button, a.button {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      font: inherit;
+      font-weight: 650;
+      padding: .68rem .9rem;
+      text-decoration: none;
+    }
+    button:hover, a.button:hover { border-color: var(--accent); }
+    .primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid var(--border);
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      backdrop-filter: blur(16px);
+    }
+    .topbar {
+      align-items: center;
+      display: flex;
+      gap: 1rem;
+      margin: auto;
+      max-width: 1180px;
+      padding: .85rem 1.2rem;
+    }
+    .brand { font-size: 1.05rem; font-weight: 800; letter-spacing: -.02em; }
+    .badge {
+      border: 1px solid color-mix(in srgb, var(--good) 40%, var(--border));
+      border-radius: 999px;
+      color: var(--good);
+      font-size: .75rem;
+      font-weight: 750;
+      padding: .2rem .55rem;
+    }
+    nav { display: flex; flex: 1; gap: .25rem; justify-content: center; }
+    nav button {
+      background: transparent;
+      border-color: transparent;
+      color: var(--muted);
+      padding: .45rem .7rem;
+    }
+    nav button[aria-current="page"] {
+      background: var(--surface-2);
+      color: var(--text);
+    }
+    main { margin: auto; max-width: 1180px; padding: 2.2rem 1.2rem 4rem; }
+    .hero {
+      align-items: end;
+      display: grid;
+      gap: 1.5rem;
+      grid-template-columns: 1.4fr .8fr;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 {
+      font-size: clamp(2.25rem, 6vw, 4.7rem);
+      letter-spacing: -.055em;
+      line-height: .98;
+      margin: .45rem 0 1rem;
+    }
+    .hero p { color: var(--muted); font-size: 1.05rem; max-width: 56rem; }
+    .notice {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 5px solid var(--good);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 1rem 1.1rem;
+    }
+    .notice strong { display: block; margin-bottom: .35rem; }
+    .metrics {
+      display: grid;
+      gap: .8rem;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin: 1.5rem 0;
+    }
+    .metric, .panel, .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+    }
+    .metric { padding: 1rem; }
+    .metric strong { display: block; font-size: 1.7rem; }
+    .metric span { color: var(--muted); font-size: .78rem; }
+    .view[hidden] { display: none; }
+    .section-head {
+      align-items: end;
+      display: flex;
+      gap: 1rem;
+      justify-content: space-between;
+      margin: 2rem 0 1rem;
+    }
+    .section-head h2 { margin: 0; }
+    .section-head p { color: var(--muted); margin: .2rem 0 0; }
+    .grid {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .card { padding: 1rem; }
+    .card h3 { font-size: 1rem; margin: .35rem 0; }
+    .card p { color: var(--muted); margin: .4rem 0 .8rem; }
+    .card .meta {
+      color: var(--muted);
+      display: flex;
+      font-size: .75rem;
+      gap: .5rem;
+      justify-content: space-between;
+    }
+    .status {
+      border-radius: 999px;
+      display: inline-block;
+      font-size: .72rem;
+      font-weight: 750;
+      padding: .18rem .5rem;
+    }
+    .status.good { background: color-mix(in srgb, var(--good) 14%, transparent); color: var(--good); }
+    .status.warn { background: color-mix(in srgb, var(--warn) 14%, transparent); color: var(--warn); }
+    .tags { display: flex; flex-wrap: wrap; gap: .35rem; }
+    .tag {
+      background: var(--surface-2);
+      border-radius: 6px;
+      color: var(--muted);
+      font-size: .7rem;
+      padding: .16rem .4rem;
+    }
+    .steps { display: grid; gap: .8rem; }
+    .step {
+      align-items: start;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      display: grid;
+      gap: .8rem;
+      grid-template-columns: 2rem 1fr;
+      padding: 1rem;
+    }
+    .step b {
+      align-items: center;
+      background: var(--accent);
+      border-radius: 8px;
+      color: #fff;
+      display: flex;
+      height: 2rem;
+      justify-content: center;
+    }
+    code {
+      background: var(--surface-2);
+      border-radius: 5px;
+      padding: .1rem .3rem;
+    }
+    footer {
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      margin-top: 3rem;
+      padding-top: 1rem;
+    }
+    @media (max-width: 850px) {
+      .hero { grid-template-columns: 1fr; }
+      .metrics, .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      nav { justify-content: start; overflow-x: auto; }
+    }
+    @media (max-width: 560px) {
+      .topbar { align-items: start; flex-wrap: wrap; }
+      nav {
+        flex: 1 0 100%;
+        justify-content: flex-start;
+        order: 3;
+        overflow-x: auto;
+        width: 100%;
+      }
+      .metrics, .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="topbar">
+      <div class="brand">My SE-OS</div>
+      <span class="badge">LOCAL SANDBOX</span>
+      <nav aria-label="Primary">
+        <button data-view="today" aria-current="page">Today</button>
+        <button data-view="signals">Signals</button>
+        <button data-view="builds">Builds</button>
+        <button data-view="library">Library</button>
+        <button data-view="setup">Setup</button>
+      </nav>
+      <button id="theme-toggle" aria-label="Toggle color theme">Theme</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <span class="badge">CUSTOMER-FREE EXPERIMENT</span>
+        <h1>Turn requests into reviewed outcomes.</h1>
+        <p>
+          This sandbox demonstrates the SE-OS operating pattern with fictional
+          organizations and deterministic local data. It does not call GitHub,
+          Azure, Microsoft 365, MSX, Dataverse, or a central registrar.
+        </p>
+      </div>
+      <div class="notice">
+        <strong>Safe by default</strong>
+        External writes stay disabled until a user configures and explicitly
+        invokes them. Edit <code>sample-data.js</code> to test your own synthetic
+        workflow.
+      </div>
+    </section>
+
+    <section id="metrics" class="metrics" aria-label="Experiment metrics"></section>
+
+    <section class="view" id="view-today">
+      <div class="section-head">
+        <div>
+          <h2>Today</h2>
+          <p>What needs framing, building, or an owner decision.</p>
+        </div>
+      </div>
+      <div id="today-grid" class="grid"></div>
+    </section>
+
+    <section class="view" id="view-signals" hidden>
+      <div class="section-head">
+        <div>
+          <h2>Signals</h2>
+          <p>Authorized, synthetic inputs waiting to become scoped work.</p>
+        </div>
+      </div>
+      <div id="signals-grid" class="grid"></div>
+    </section>
+
+    <section class="view" id="view-builds" hidden>
+      <div class="section-head">
+        <div>
+          <h2>Builds</h2>
+          <p>Local and reversible experiments only.</p>
+        </div>
+      </div>
+      <div id="builds-grid" class="grid"></div>
+    </section>
+
+    <section class="view" id="view-library" hidden>
+      <div class="section-head">
+        <div>
+          <h2>Library</h2>
+          <p>Reviewed synthetic patterns included with the template.</p>
+        </div>
+      </div>
+      <div id="library-grid" class="grid"></div>
+    </section>
+
+    <section class="view" id="view-setup" hidden>
+      <div class="section-head">
+        <div>
+          <h2>Setup</h2>
+          <p>Start local, validate, then add only the capabilities you need.</p>
+        </div>
+      </div>
+      <div class="steps">
+        <div class="step"><b>1</b><div><strong>Read the contract</strong><br><a href="help/agent-contract.html">The agent contract</a> defines privacy and external-action boundaries.</div></div>
+        <div class="step"><b>2</b><div><strong>Run the local example</strong><br><code>python scripts\run_agent.py "Your synthetic request"</code></div></div>
+        <div class="step"><b>3</b><div><strong>Validate</strong><br><code>python scripts\validate_template.py</code></div></div>
+        <div class="step"><b>4</b><div><strong>Preview optional Azure setup</strong><br><code>.\setup\hatch.ps1 -DryRun</code></div></div>
+        <div class="step"><b>5</b><div><strong>Review before sharing</strong><br><a href="help/review-and-go.html">Review-and-go levels</a> keep external writes separate.</div></div>
+      </div>
+    </section>
+
+    <footer>
+      Synthetic data only. Source systems remain authoritative. See
+      <a href="help/experiment-guide.html">the experiment guide</a>.
+    </footer>
+  </main>
+
+  <script src="sample-data.js"></script>
+  <script>
+    "use strict";
+
+    const data = window.SEOS_SAMPLE_DATA;
+    if (!data) {
+      throw new Error("sample-data.js did not load");
+    }
+
+    const statusClass = status =>
+      /ready|reviewed|healthy/i.test(status) ? "good" : "warn";
+
+    function makeCard(item) {
+      const card = document.createElement("article");
+      card.className = "card";
+
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      const id = document.createElement("span");
+      id.textContent = item.id;
+      const status = document.createElement("span");
+      status.className = `status ${statusClass(item.status)}`;
+      status.textContent = item.status;
+      meta.append(id, status);
+
+      const title = document.createElement("h3");
+      title.textContent = item.title;
+      const description = document.createElement("p");
+      description.textContent = item.description;
+
+      const tags = document.createElement("div");
+      tags.className = "tags";
+      (item.tags || []).forEach(value => {
+        const tag = document.createElement("span");
+        tag.className = "tag";
+        tag.textContent = value;
+        tags.append(tag);
+      });
+
+      card.append(meta, title, description, tags);
+      if (item.url) {
+        const link = document.createElement("a");
+        link.className = "button";
+        link.href = item.url;
+        link.textContent = "Open";
+        link.style.display = "inline-block";
+        link.style.marginTop = ".8rem";
+        card.append(link);
+      }
+      return card;
+    }
+
+    function renderGrid(id, items) {
+      const target = document.getElementById(id);
+      target.replaceChildren(...items.map(makeCard));
+    }
+
+    function renderMetrics() {
+      const metrics = [
+        [data.signals.length, "synthetic signals"],
+        [data.decisions.length, "owner decisions"],
+        [data.builds.length, "local builds"],
+        [data.library.length, "reviewed patterns"]
+      ];
+      const target = document.getElementById("metrics");
+      metrics.forEach(([value, label]) => {
+        const metric = document.createElement("div");
+        metric.className = "metric";
+        const strong = document.createElement("strong");
+        strong.textContent = value;
+        const span = document.createElement("span");
+        span.textContent = label;
+        metric.append(strong, span);
+        target.append(metric);
+      });
+    }
+
+    function showView(name) {
+      document.querySelectorAll(".view").forEach(view => {
+        view.hidden = view.id !== `view-${name}`;
+      });
+      document.querySelectorAll("nav button").forEach(button => {
+        if (button.dataset.view === name) {
+          button.setAttribute("aria-current", "page");
+        } else {
+          button.removeAttribute("aria-current");
+        }
+      });
+      history.replaceState(null, "", `#${name}`);
+    }
+
+    renderMetrics();
+    renderGrid("today-grid", [...data.decisions, ...data.builds]);
+    renderGrid("signals-grid", data.signals);
+    renderGrid("builds-grid", data.builds);
+    renderGrid("library-grid", data.library);
+
+    document.querySelectorAll("nav button").forEach(button => {
+      button.addEventListener("click", () => showView(button.dataset.view));
+    });
+
+    const storedTheme = localStorage.getItem("seos-theme");
+    if (storedTheme) document.documentElement.dataset.theme = storedTheme;
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+      const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+      document.documentElement.dataset.theme = next;
+      localStorage.setItem("seos-theme", next);
+    });
+
+    const initialView = location.hash.slice(1);
+    showView(["today", "signals", "builds", "library", "setup"].includes(initialView) ? initialView : "today");
+  </script>
+</body>
+</html>

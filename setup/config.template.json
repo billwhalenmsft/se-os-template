@@ -1,0 +1,37 @@
+{
+  "_comment": "Copy this file to setup.config.json (gitignored) and fill in your SE details",
+  "se_name": "Your Name",
+  "se_alias": "youralias",
+  "practice_area": "Discrete Manufacturing",
+  "team_name": "Americas SE - [Your Practice]",
+  "deployment": {
+    "resource_group": "se-os-rg",
+    "location": "eastus2",
+    "static_web_app_name": "se-os-[youralias]",
+    "storage_account": "seos[youralias]"
+  },
+  "registration": {
+    "registrar_url": "",
+    "_note": "Optional. Leave blank unless an approved SE-OS or MCAPS OS registrar is provided to you."
+  },
+  "environments": {
+    "d365": {
+      "org_url": "https://[your-org].crm.dynamics.com",
+      "name": "My Demo Environment",
+      "type": "Customer Engagement"
+    },
+    "power_platform": {
+      "environment_url": "https://[your-env].crm.dynamics.com",
+      "name": "My PP Environment"
+    },
+    "azure": {
+      "subscription_id": "[your-subscription-id]",
+      "tenant_id": "[your-tenant-id]"
+    }
+  },
+  "integrations": {
+    "teams_channel": "",
+    "loop_workspace": "",
+    "sharepoint_site": ""
+  }
+}

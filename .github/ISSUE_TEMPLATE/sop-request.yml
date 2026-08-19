@@ -1,0 +1,48 @@
+name: SOP Request
+description: Request a new Standard Operating Procedure for SE workflows
+title: "[SOP] "
+labels: ["sop", "backlog"]
+body:
+  - type: input
+    id: process_name
+    attributes:
+      label: Process name
+      placeholder: "e.g., Pre-meeting customer prep, CDX environment reset, Post-demo follow-up"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: process_type
+    attributes:
+      label: Process type
+      options:
+        - Customer engagement (pre-meeting, post-meeting)
+        - Demo environment management
+        - Internal SE workflow
+        - Onboarding (new SE)
+        - CoE operations
+    validations:
+      required: true
+
+  - type: textarea
+    id: current_state
+    attributes:
+      label: How do SEs currently handle this?
+      description: Describe the current (manual / inconsistent) approach
+      placeholder: "e.g., Each SE does this differently. Some have notes, some wing it. Takes 30-60 min each time."
+    validations:
+      required: true
+
+  - type: textarea
+    id: desired_state
+    attributes:
+      label: What should the SOP define?
+      placeholder: "Steps, decision points, inputs, outputs, and who/what does each step."
+    validations:
+      required: true
+
+  - type: input
+    id: frequency
+    attributes:
+      label: How often is this process run?
+      placeholder: "e.g., Before every customer meeting, weekly, ad-hoc"

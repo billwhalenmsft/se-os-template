@@ -1,0 +1,87 @@
+name: Deploy SE OS site to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "README.md"
+      - "AGENTS.md"
+      - "CLAUDE.md"
+      - "CONTRIBUTING.md"
+      - "SECURITY.md"
+      - "LICENSE"
+      - "MANIFESTO.md"
+      - "agents/**"
+      - "docs/**"
+      - "knowledge_base/**"
+      - "tracks/**"
+      - "web_ui/**"
+      - "templates/**"
+      - ".github/workflows/deploy-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python scripts/validate_template.py
+      - run: python -m unittest discover -s tests -v
+
+  build:
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Stage site
+        run: |
+          mkdir -p _publish
+          # Marketing landing page at root
+          cp -r site/* _publish/
+          # Source-local links use ../; normalize them for the staged Pages root.
+          sed -i 's#\.\./web_ui/#web_ui/#g; s#\.\./README\.md#README.md#g' _publish/index.html
+          # Carry along the supporting assets users can deep-link to
+          mkdir -p _publish/web_ui _publish/agents _publish/docs _publish/knowledge_base _publish/templates _publish/tracks
+          cp -r web_ui/* _publish/web_ui/ 2>/dev/null || true
+          cp -r agents/* _publish/agents/ 2>/dev/null || true
+          cp -r docs/* _publish/docs/ 2>/dev/null || true
+          cp -r knowledge_base/* _publish/knowledge_base/ 2>/dev/null || true
+          cp -r templates/* _publish/templates/ 2>/dev/null || true
+          cp -r tracks/* _publish/tracks/ 2>/dev/null || true
+          cp AGENTS.md CLAUDE.md CONTRIBUTING.md LICENSE MANIFESTO.md README.md SECURITY.md _publish/
+          # Disable Jekyll processing so underscored paths work
+          touch _publish/.nojekyll
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _publish
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
