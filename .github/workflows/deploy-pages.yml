@@ -1,24 +1,6 @@
 name: Deploy SE OS site to GitHub Pages
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "site/**"
-      - "README.md"
-      - "AGENTS.md"
-      - "CLAUDE.md"
-      - "CONTRIBUTING.md"
-      - "SECURITY.md"
-      - "LICENSE"
-      - "MANIFESTO.md"
-      - "agents/**"
-      - "docs/**"
-      - "knowledge_base/**"
-      - "tracks/**"
-      - "web_ui/**"
-      - "templates/**"
-      - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 
 permissions:

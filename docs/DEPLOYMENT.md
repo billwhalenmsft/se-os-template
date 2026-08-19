@@ -13,8 +13,10 @@ The local Command Center contains synthetic data and performs no network writes.
 ## GitHub Pages preview
 
 The repository includes `.github\workflows\deploy-pages.yml`. In a generated
-repository, enable **Settings > Pages > Source: GitHub Actions**. A push to
-`main` publishes the landing page and static sandbox.
+repository, enable **Settings > Pages > Source: GitHub Actions**, then manually
+run **Deploy SE OS site to GitHub Pages** from the Actions tab. The workflow is
+manual-only so repositories that have not enabled Pages do not accumulate failed
+deployment runs.
 
 GitHub Pages is public unless repository and organization policy provide a
 different access model. Do not publish private or customer content through this

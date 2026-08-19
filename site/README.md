@@ -12,7 +12,9 @@ repository's Pages URL.
 
 ## How it's deployed
 
-`/.github/workflows/deploy-pages.yml` publishes this folder to GitHub Pages on every push to `main` that touches the site (or any of the linked content: MANIFESTO, agents/, docs/, web_ui/).
+After Pages is enabled with **GitHub Actions** as the source, manually run
+`/.github/workflows/deploy-pages.yml`. It publishes this folder plus the linked
+repository guides and static sandbox.
 
 The workflow also copies `MANIFESTO.md`, `web_ui/`, `agents/`, and `docs/` into the published site so that deep-links from the landing page resolve.
 
