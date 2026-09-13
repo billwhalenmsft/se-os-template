@@ -19,6 +19,7 @@ it does not connect to MCAPS OS or any central service by default.
 | Practice scaffolds | Track charters and knowledge-card templates |
 | Local agent example | A deterministic, customer-free outcome-framing agent with unit tests |
 | Setup automation | Dry-run-first Azure Static Web Apps provisioning |
+| Workspace organization | Explicit canonical homes, local project identity, AI placement templates, and a read-only checker |
 | Governance | Shared agent contract, review-and-go model, security guidance, and privacy validation |
 | CI | Unit tests, JSON validation, private-marker scans, and static-link checks |
 
@@ -78,6 +79,21 @@ Copy-Item .\setup\config.template.json .\setup.config.json
 
 Provisioning and workspace registration are separate actions. See
 [Deployment](docs/DEPLOYMENT.md).
+
+## Organize work without scattering files
+
+The optional [workspace standard](docs/WORKSPACE-STANDARD.md) gives an explicitly
+selected `WORKSPACE_ROOT` four content homes: `Customers`, `SE-OS-COE`, `Platform`,
+and `Personal`, plus a small `INCOMING` review queue. It covers current and
+historical customers, reusable role work, core platforms, and personal projects;
+CRM identifiers are optional, never a membership limit.
+
+Use `python scripts\workspace.py --help` for the dependency-free scaffolder and
+read-only placement checker. It creates only new homes, never moves or adopts
+existing files, and does not reconfigure AI hosts. Read the
+[migration and sanitized adoption guide](docs/WORKSPACE-MIGRATION.md) before
+organizing existing work. Real workspaces stay outside this public template;
+only synthetic, ignored test fixtures belong here.
 
 ## Operating model
 
@@ -151,6 +167,8 @@ se-os-template\
 - [Deployment](docs/DEPLOYMENT.md)
 - [Review and go](docs/REVIEW-AND-GO.md)
 - [Security](SECURITY.md)
+- [Workspace standard](docs/WORKSPACE-STANDARD.md)
+- [Workspace migration and adoption](docs/WORKSPACE-MIGRATION.md)
 - [MCAPS OS overview](https://github.com/billwhalenmsft/mcaps-os)
 
 ## License
