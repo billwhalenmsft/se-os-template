@@ -3,6 +3,10 @@ setup.config.json
 local.settings.json
 local.settings.json.bak*
 workspace.json
+workspace.local.json
+project.local.json
+customer.local.json
+.workspace-tests-*/
 web_ui/instance-config.local.js
 *.bak
 

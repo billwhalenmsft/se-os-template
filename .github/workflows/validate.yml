@@ -11,7 +11,10 @@ permissions:
 
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -19,5 +22,5 @@ jobs:
           python-version: "3.11"
       - name: Validate privacy and portability
         run: python scripts/validate_template.py
-      - name: Run unit tests
+      - name: Run unit tests and workspace placement checks
         run: python -m unittest discover -s tests -v
